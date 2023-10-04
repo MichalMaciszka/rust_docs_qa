@@ -1,0 +1,10 @@
+What 'dyn' means?
+What module can I use for heap allocation?
+Which type should I use for contiguous memory sequence?
+Which encoding is used by 'str' type?
+What difference is between 'i32' and 'f32' types?
+Which module should I use for SIMD?
+Which module contains overloadable operators?
+How can I create growable array?
+How can I print without a newline?
+When should I use 'move' keyword?
