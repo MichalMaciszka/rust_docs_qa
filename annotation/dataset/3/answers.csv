@@ -1,0 +1,3176 @@
+﻿answer_id,document_id,question_id,text,answer_start,answer_end,answer_category,question,file_name,context
+2003,44,2003,"print a failure message, unwind, clean up the stack, and quit",432,493,,What happens when 'panic' occur?,ch09-01-unrecoverable-errors-with-panic.txt,"cases, Rust has the `panic!` macro. There are two ways to cause a
+panic in practice: by taking an action that causes our code to panic (such as
+accessing an array past the end) or by explicitly calling the `panic!` macro.
+In both cases, we cause a panic in our program. By default, these panics will
+print a failure message, unwind, clean up the stack, and quit. Via an
+environment variable, you can also have Rust display the call stack when a
+panic occurs to make it easier to track down the source of the panic.
+
+> ### Unwinding the Stack or Aborting in Response to a Panic
+>
+> By default, when a panic occurs, the program starts *unwinding*, which
+> means R"
+2025,46,2024,"a *bad state* is when some
+assumption, guarantee, contract, or invariant has been broken, such as when
+invalid values, contradictory values, or missing values are passed to your
+code",3951,4133,,What is a bad state?,ch09-03-to-panic-or-not-to-panic.txt," will prompt us to
+change `expect` to better error handling code if in the future, we need to get
+the IP address from some other source instead.
+
+### Guidelines for Error Handling
+
+It’s advisable to have your code panic when it’s possible that your code
+could end up in a bad state. In this context, a *bad state* is when some
+assumption, guarantee, contract, or invariant has been broken, such as when
+invalid values, contradictory values, or missing values are passed to your
+code—plus one or more of the following:
+
+* The bad state is something that is unexpected, as opposed to something that
+  will likely happen occasionally, like a user entering data in the wrong
+  format.
+* Your code after this point needs to rely on not being in this bad state,
+  rather than checking for"
+2027,46,2025,"invalid values, contradictory values, or missing values are passed to your
+code",4054,4133,,What can be an example of bad state error?,ch09-03-to-panic-or-not-to-panic.txt,"P address from some other source instead.
+
+### Guidelines for Error Handling
+
+It’s advisable to have your code panic when it’s possible that your code
+could end up in a bad state. In this context, a *bad state* is when some
+assumption, guarantee, contract, or invariant has been broken, such as when
+invalid values, contradictory values, or missing values are passed to your
+code—plus one or more of the following:
+
+* The bad state is something that is unexpected, as opposed to something that
+  will likely happen occasionally, like a user entering data in the wrong
+  format.
+* Your code after this point needs to rely on not being in this bad state,
+  rather than checking for"
+2029,46,2026,"it’s
+best to return an error if you can so the user of the library can decide what
+they want to do in that case. However, in cases where continuing could be
+insecure or harmful, the best choice might be to call `panic!` and alert the
+person using your library to the bug in their code so they can fix it during
+development.",4754,5077,,What should I do when someone passes wrong parameters to function?,ch09-03-to-panic-or-not-to-panic.txt," step.
+* There’s not a good way to encode this information in the types you use. We’ll
+  work through an example of what we mean in the [“Encoding States and Behavior
+  as Types”][encoding]<!-- ignore --> section of Chapter 17.
+
+If someone calls your code and passes in values that don’t make sense, it’s
+best to return an error if you can so the user of the library can decide what
+they want to do in that case. However, in cases where continuing could be
+insecure or harmful, the best choice might be to call `panic!` and alert the
+person using your library to the bug in their code so they can fix it during
+development. Similarly, `panic!` is often appropriate if you’re calling
+external code that is out of your control and it returns an invalid state that
+you have no way of fixing.
+
+However, when failure is expected, it’s more appropriate to return a `Result`
+than to make a `panic!` call. Examples include a parser"
+2032,46,2029,"if you attempt
+an out-of-bounds memory access: trying to access memory that doesn’t belong to
+the current data structure is a common security problem",5993,6142,,What is the most common example of calling 'panic'?,ch09-03-to-panic-or-not-to-panic.txt,"t’s
+called using invalid values, your code should verify the values are valid first
+and panic if the values aren’t valid. This is mostly for safety reasons:
+attempting to operate on invalid data can expose your code to vulnerabilities.
+This is the main reason the standard library will call `panic!` if you attempt
+an out-of-bounds memory access: trying to access memory that doesn’t belong to
+the current data structure is a common security problem. Functions often have
+*contracts*: their behavior is only guaranteed if the inputs meet particular
+requirements. Panicking when the contract is violated makes sense because a
+contract violation always indicates a caller-side bug and it’s not a kind of
+error you want the calling code to have to expl"
+2033,46,2030,This is the main reason the standard library will call `panic!`,5929,5992,,What could happen when I'm trying to access memory not belonging to current data structure?,ch09-03-to-panic-or-not-to-panic.txt,"ur code performs an operation that could put a user at risk if it’s
+called using invalid values, your code should verify the values are valid first
+and panic if the values aren’t valid. This is mostly for safety reasons:
+attempting to operate on invalid data can expose your code to vulnerabilities.
+This is the main reason the standard library will call `panic!` if you attempt
+an out-of-bounds memory access: trying to access memory that doesn’t belong to
+the current data structure is a common security problem. Functions often have
+*contracts*: their behavior is only guaranteed if the inputs meet particular
+requirements. Panicking when the contract is viola"
+2034,46,2031,"their behavior is only guaranteed if the inputs meet particular
+requirements",6178,6254,,What does a 'contract' mean in terms of function?,ch09-03-to-panic-or-not-to-panic.txt,"alid data can expose your code to vulnerabilities.
+This is the main reason the standard library will call `panic!` if you attempt
+an out-of-bounds memory access: trying to access memory that doesn’t belong to
+the current data structure is a common security problem. Functions often have
+*contracts*: their behavior is only guaranteed if the inputs meet particular
+requirements. Panicking when the contract is violated makes sense because a
+contract violation always indicates a caller-side bug and it’s not a kind of
+error you want the calling code to have to explicitly handle. In fact, there’s
+no reasonable way for calling code to recover; the calling *programmers* need
+to"
+2035,46,2032,"Panicking when the contract is violated makes sense because a
+contract violation always indicates a caller-side bug and it’s not a kind of
+error you want the calling code to have to explicitly handle. In fact, there’s
+no reasonable way for calling code to recover; the calling *programmers* need
+to fix the code.",6256,6568,,What should be done when fuction contract is violated?,ch09-03-to-panic-or-not-to-panic.txt," standard library will call `panic!` if you attempt
+an out-of-bounds memory access: trying to access memory that doesn’t belong to
+the current data structure is a common security problem. Functions often have
+*contracts*: their behavior is only guaranteed if the inputs meet particular
+requirements. Panicking when the contract is violated makes sense because a
+contract violation always indicates a caller-side bug and it’s not a kind of
+error you want the calling code to have to explicitly handle. In fact, there’s
+no reasonable way for calling code to recover; the calling *programmers* need
+to fix the code. Contracts for a function, especially when a violation will
+cause a panic, should be explained in the API documentation for the function.
+
+However, having lots of error checks in all of your functions would be verbose
+and annoying. Fortunately, you can use Rust’s type system (and thus the type
+check"
+2013,47,2013,"abstract stand-ins for
+concrete types or other properties",169,226,,What are generics?,ch10-00-generics.txt,"# Generic Types, Traits, and Lifetimes
+
+Every programming language has tools for effectively handling the duplication
+of concepts. In Rust, one such tool is *generics*: abstract stand-ins for
+concrete types or other properties. We can express the behavior of generics or
+how they relate to other generics without knowing what will be in their place
+when compiling and running the code.
+
+Functions can take parameters of some generic type, instead of a concrete type
+like `i32` or `String`, in the same way a function takes par"
+2036,47,2014,"`Option‹T>`, Chapter 8 with `Vec‹T>`
+and `HashMap‹K, V>`, and Chapter 9 with `Result‹T, E>",659,749,,What are the examples of generics?,ch10-00-generics.txt,"ling and running the code.
+
+Functions can take parameters of some generic type, instead of a concrete type
+like `i32` or `String`, in the same way a function takes parameters with
+unknown values to run the same code on multiple concrete values. In fact, we’ve
+already used generics in Chapter 6 with `Option<T>`, Chapter 8 with `Vec<T>`
+and `HashMap<K, V>`, and Chapter 9 with `Result<T, E>`. In this chapter, you’ll
+explore how to define your own types, functions, and methods with generics!
+
+First, we’ll review how to extract a function to reduce code duplication. We’ll
+then use the same technique to make a generic function from two functions that
+differ only in the types of their par"
+2015,47,2015,"Generics allow us to replace specific types with a placeholder that represents
+multiple types to remove code duplication.",1736,1857,,What is the advantage of using generics?,ch10-00-generics.txt,"e the
+compiler information about how references relate to each other. Lifetimes allow
+us to give the compiler enough information about borrowed values so that it can
+ensure references will be valid in more situations than it could without our
+help.
+
+## Removing Duplication by Extracting a Function
+
+Generics allow us to replace specific types with a placeholder that represents
+multiple types to remove code duplication. Before diving into generics syntax,
+then, let’s first look at how to remove duplication in a way that doesn’t
+involve generic types by extracting a function that replaces specific values
+with a placeholder that represents multiple values. Then we’ll apply the same
+technique to extract a generic fun"
+2016,47,2016,"You
+can combine traits with generic types to constrain a generic type to accept
+only those types that have a particular behavior, as opposed to just any type.",1210,1368,,How can I restrict a generic type?,ch10-00-generics.txt,"ode duplication. We’ll
+then use the same technique to make a generic function from two functions that
+differ only in the types of their parameters. We’ll also explain how to use
+generic types in struct and enum definitions.
+
+Then you’ll learn how to use *traits* to define behavior in a generic way. You
+can combine traits with generic types to constrain a generic type to accept
+only those types that have a particular behavior, as opposed to just any type.
+
+Finally, we’ll discuss *lifetimes*: a variety of generics that give the
+compiler information about how references relate to each other. Lifetimes allow
+us to give the compiler enough information about borrowed values so that it can
+ensure references will be valid in more situations than it could w"
+2017,47,2017,"a variety of generics that give the
+compiler information about how references relate to each other.",1406,1505,,What are lifetimes in context of generics?,ch10-00-generics.txt,"truct and enum definitions.
+
+Then you’ll learn how to use *traits* to define behavior in a generic way. You
+can combine traits with generic types to constrain a generic type to accept
+only those types that have a particular behavior, as opposed to just any type.
+
+Finally, we’ll discuss *lifetimes*: a variety of generics that give the
+compiler information about how references relate to each other. Lifetimes allow
+us to give the compiler enough information about borrowed values so that it can
+ensure references will be valid in more situations than it could without our
+help.
+
+## Removing Duplication by Extracting a Function
+
+Generics allow us to replace specific types with a placeholder that r"
+2018,47,2018,"by extracting a function that replaces specific values
+with a placeholder that represents multiple values",1990,2095,,How can I avoid duplicating code without the usage of generics?,ch10-00-generics.txt,"emoving Duplication by Extracting a Function
+
+Generics allow us to replace specific types with a placeholder that represents
+multiple types to remove code duplication. Before diving into generics syntax,
+then, let’s first look at how to remove duplication in a way that doesn’t
+involve generic types by extracting a function that replaces specific values
+with a placeholder that represents multiple values. Then we’ll apply the same
+technique to extract a generic function! By looking at how to recognize
+duplicated code you can extract into a function, you’ll start to recognize
+duplicated code that can use generics.
+
+We begin with the short program in Listing 10-1 that finds the largest number
+in a li"
+2038,47,2034,"create an abstraction by defining a
+function",3971,4015,,How to eliminate code duplication?,ch10-00-generics.txt,"span class=""caption"">Listing 10-2: Code to find the largest number in *two*
+lists of numbers</span>
+
+Although this code works, duplicating code is tedious and error prone. We also
+have to remember to update the code in multiple places when we want to change
+it.
+
+To eliminate this duplication, we’ll create an abstraction by defining a
+function that operates on any list of integers passed in a parameter. This
+solution makes our code clearer and lets us express the concept of finding the
+largest number in a list abstractly.
+
+In Listing 10-3, we extract the code that finds the largest number into a
+function named `largest`. Then we call the"
+2039,48,2035,Generic Data Types,3,21,,What can be used for creating function signatures?,ch10-01-syntax.txt,"## Generic Data Types
+
+We use generics to create definitions for items like function signatures or
+structs, which we can then use with many different concrete data types. Let’s
+first look at how to define functions, structs, enums, and methods using
+generics. Then we’ll discuss how generics affect code performance.
+
+###"
+2040,48,2036,"to create definitions for items like function signatures or
+structs, which we can then use with many different concrete data types",39,169,,What are generics used for?,ch10-01-syntax.txt,"## Generic Data Types
+
+We use generics to create definitions for items like function signatures or
+structs, which we can then use with many different concrete data types. Let’s
+first look at how to define functions, structs, enums, and methods using
+generics. Then we’ll discuss how generics affect code performance.
+
+### In Function Definitions
+
+When defining a function that uses generics, we place the generics in the
+signature of the function where we would usually"
+2041,48,2037,"functions, structs, enums, and methods",205,243,,What can be defined using generics?,ch10-01-syntax.txt,"## Generic Data Types
+
+We use generics to create definitions for items like function signatures or
+structs, which we can then use with many different concrete data types. Let’s
+first look at how to define functions, structs, enums, and methods using
+generics. Then we’ll discuss how generics affect code performance.
+
+### In Function Definitions
+
+When defining a function that uses generics, we place the generics in the
+signature of the function where we would usually specify the data types of the
+parameters and return value. Doing so makes"
+2042,48,2038,"we place the generics in the
+signature of the function where we would usually specify the data types of the
+parameters and return value",392,527,,Where should the generic be placed?,ch10-01-syntax.txt,"res or
+structs, which we can then use with many different concrete data types. Let’s
+first look at how to define functions, structs, enums, and methods using
+generics. Then we’ll discuss how generics affect code performance.
+
+### In Function Definitions
+
+When defining a function that uses generics, we place the generics in the
+signature of the function where we would usually specify the data types of the
+parameters and return value. Doing so makes our code more flexible and provides
+more functionality to callers of our function while preventing code duplication.
+
+Continuing with our `largest` function, Listing 10-4 shows two functions that
+both find the largest value in a slice. We'll then combine these into a single
+function"
+2043,48,2039,"by
+convention, type parameter names in Rust are short, often just a letter",1676,1750,,How should generics be named in code?,ch10-01-syntax.txt,"he duplication by introducing a generic type parameter in a single function.
+
+To parameterize the types in a new single function, we need to name the type
+parameter, just as we do for the value parameters to a function. You can use
+any identifier as a type parameter name. But we’ll use `T` because, by
+convention, type parameter names in Rust are short, often just a letter, and
+Rust’s type-naming convention is UpperCamelCase. Short for “type,” `T` is the
+default choice of most Rust programmers.
+
+When we use a parameter in the body of the function, we have to declare the
+parameter name in the signature so the compiler knows what that name means.
+Similarly, when we use"
+2044,48,2040,UpperCamelCase,1789,1803,,Which naming convention is used in Rust?,ch10-01-syntax.txt,"single function, we need to name the type
+parameter, just as we do for the value parameters to a function. You can use
+any identifier as a type parameter name. But we’ll use `T` because, by
+convention, type parameter names in Rust are short, often just a letter, and
+Rust’s type-naming convention is UpperCamelCase. Short for “type,” `T` is the
+default choice of most Rust programmers.
+
+When we use a parameter in the body of the function, we have to declare the
+parameter name in the signature so the compiler knows what that name means.
+Similarly, when we use a type parameter name in a function signature, we ha"
+2045,48,2041,"Short for “type,”",1805,1822,,What does 'T' in generics stand for?,ch10-01-syntax.txt," we need to name the type
+parameter, just as we do for the value parameters to a function. You can use
+any identifier as a type parameter name. But we’ll use `T` because, by
+convention, type parameter names in Rust are short, often just a letter, and
+Rust’s type-naming convention is UpperCamelCase. Short for “type,” `T` is the
+default choice of most Rust programmers.
+
+When we use a parameter in the body of the function, we have to declare the
+parameter name in the signature so the compiler knows what that name means.
+Similarly, when we use a type parameter name in a function signature, we have
+to declare the t"
+2046,48,2042,"place type name declarations inside angle brackets, `‹>`,
+between the name of the function and the parameter list",2201,2314,,How to declare generic function?,ch10-01-syntax.txt,"n the body of the function, we have to declare the
+parameter name in the signature so the compiler knows what that name means.
+Similarly, when we use a type parameter name in a function signature, we have
+to declare the type parameter name before we use it. To define the generic
+`largest` function, place type name declarations inside angle brackets, `<>`,
+between the name of the function and the parameter list, like this:
+
+```rust,ignore
+fn largest<T>(list: &[T]) -> &T {
+```
+
+We read this definition as: the function `largest` is generic over some type
+`T`. This function has one parameter named `list`, which is a slice of values
+of type `T`. The `largest` function will return a reference to a value of the"
+2047,48,2043,fn largest‹T>(list: &[T]) -> &T,2343,2374,,Provide an example of generic function.,ch10-01-syntax.txt," we use a type parameter name in a function signature, we have
+to declare the type parameter name before we use it. To define the generic
+`largest` function, place type name declarations inside angle brackets, `<>`,
+between the name of the function and the parameter list, like this:
+
+```rust,ignore
+fn largest<T>(list: &[T]) -> &T {
+```
+
+We read this definition as: the function `largest` is generic over some type
+`T`. This function has one parameter named `list`, which is a slice of values
+of type `T`. The `largest` function will return a reference to a value of the
+same type `T`.
+
+Listing 10-5 shows the combined `largest` f"
+2048,48,2044,"First, we declare the name of the type parameter inside
+angle brackets just after the name of the struct. Then we use the generic type
+in the struct definition where we would otherwise specify concrete data types.",4733,4946,,How can I use struct in generic function?,ch10-01-syntax.txt,"include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-06/src/main.rs}}
+```
+
+<span class=""caption"">Listing 10-6: A `Point<T>` struct that holds `x` and `y`
+values of type `T`</span>
+
+The syntax for using generics in struct definitions is similar to that used in
+function definitions. First, we declare the name of the type parameter inside
+angle brackets just after the name of the struct. Then we use the generic type
+in the struct definition where we would otherwise specify concrete data types.
+
+Note that because we’ve used only one generic type to define `Point<T>`, this
+definition says that the `Point<T>` struct is generic over some type `T`, and
+the fields `x` and `y` are *both* that same type, whatever that type may be. If
+we create an instance of a `Point<T>` that has values of diffe"
+2037,47,2033,duplicating code is tedious and error prone,3798,3841,,Why is it bad to duplicate code?,ch10-00-generics.txt,"10-2.
+
+<span class=""filename"">Filename: src/main.rs</span>
+
+```rust
+{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-02/src/main.rs}}
+```
+
+<span class=""caption"">Listing 10-2: Code to find the largest number in *two*
+lists of numbers</span>
+
+Although this code works, duplicating code is tedious and error prone. We also
+have to remember to update the code in multiple places when we want to change
+it.
+
+To eliminate this duplication, we’ll create an abstraction by defining a
+function that operates on any list of integers passed in a parameter. This
+solution makes our code clearer and lets us express the con"
+2072,51,2068,We can write tests that assert,1309,1339,,Is it possible to use assertions in tests?,ch11-00-testing.txt,"for instance, we aren’t passing a `String` value or an invalid reference
+to this function. But Rust *can’t* check that this function will do precisely
+what we intend, which is return the parameter plus 2 rather than, say, the
+parameter plus 10 or the parameter minus 50! That’s where tests come in.
+
+We can write tests that assert, for example, that when we pass `3` to the
+`add_two` function, the returned value is `5`. We can run these tests whenever
+we make changes to our code to make sure any existing correct behavior has not
+changed.
+
+Testing is a complex skill: although we can’t cover every detail about how to
+write good"
+2186,43,2181,*file not found* error,563,585,,What could be an example of recoverable error?,ch09-00-error-handling.txt," compile. This requirement makes your program more robust by ensuring
+that you’ll discover errors and handle them appropriately before you’ve
+deployed your code to production!
+
+Rust groups errors into two major categories: *recoverable* and *unrecoverable*
+errors. For a recoverable error, such as a *file not found* error, we most
+likely just want to report the problem to the user and retry the operation.
+Unrecoverable errors are always symptoms of bugs, like trying to access a
+location beyond the end of an array, and so we want to immediately stop the
+program.
+
+Most languages don’t distinguish between these two kin"
+2049,48,2045,"we can define enums to hold generic data types in their
+variants",6990,7054,,Can I use generics in enum?,ch10-01-syntax.txt,"any generic
+type parameters in a definition as you want, but using more than a few makes
+your code hard to read. If you're finding you need lots of generic types in
+your code, it could indicate that your code needs restructuring into smaller
+pieces.
+
+### In Enum Definitions
+
+As we did with structs, we can define enums to hold generic data types in their
+variants. Let’s take another look at the `Option<T>` enum that the standard
+library provides, which we used in Chapter 6:
+
+```rust
+enum Option<T> {
+    Some(T),
+    None,
+}
+```
+
+This definition should now make more sense to you. As you can see, the
+`Option<T>` enum is generic over type `T` and has two varia"
+2050,48,2046,"using generic types won't make your program run
+any slower than it would with concrete types",12740,12832,,Can using generics make code slower?,ch10-01-syntax.txt,"y go with the struct definition. The generic parameters `X2`
+and `Y2` are declared after `fn mixup`, because they’re only relevant to the
+method.
+
+### Performance of Code Using Generics
+
+You might be wondering whether there is a runtime cost when using generic type
+parameters. The good news is that using generic types won't make your program run
+any slower than it would with concrete types.
+
+Rust accomplishes this by performing monomorphization of the code using
+generics at compile time. *Monomorphization* is the process of turning generic
+code into specific code by filling in the concrete types that are used when
+compiled. In this process, the compiler does the opposite of the steps"
+2051,48,2047,"the process of turning generic
+code into specific code by filling in the concrete types that are used when
+compiled",12955,13070,,What is monomorphization?,ch10-01-syntax.txt,"er there is a runtime cost when using generic type
+parameters. The good news is that using generic types won't make your program run
+any slower than it would with concrete types.
+
+Rust accomplishes this by performing monomorphization of the code using
+generics at compile time. *Monomorphization* is the process of turning generic
+code into specific code by filling in the concrete types that are used when
+compiled. In this process, the compiler does the opposite of the steps we used
+to create the generic function in Listing 10-5: the compiler looks at all the
+places where generic code is called and generates code for the concrete types
+the generic code is called with.
+
+Let’s look at how this works by using t"
+2052,48,2048,"enum Option‹T> {
+    Some(T),
+    None,
+}",7177,7218,,What can be an example of enum with generics?,ch10-01-syntax.txt,"dicate that your code needs restructuring into smaller
+pieces.
+
+### In Enum Definitions
+
+As we did with structs, we can define enums to hold generic data types in their
+variants. Let’s take another look at the `Option<T>` enum that the standard
+library provides, which we used in Chapter 6:
+
+```rust
+enum Option<T> {
+    Some(T),
+    None,
+}
+```
+
+This definition should now make more sense to you. As you can see, the
+`Option<T>` enum is generic over type `T` and has two variants: `Some`, which
+holds one value of type `T`, and a `None` variant that doesn’t hold any value.
+By using the `Option<T>` enum, we can express the abstract concept"
+2053,49,2049,Defining Shared Behavior,11,35,,What are traits used for?,ch10-02-traits.txt,"## Traits: Defining Shared Behavior
+
+A *trait* defines functionality a particular type has and can share with other
+types. We can use traits to define shared behavior in an abstract way. We can
+use *trait bounds* to specify that a generic type can be any type that has
+certain behavior.
+
+> Note: Traits are similar to a feature often c"
+2054,49,2050,"A *trait* defines functionality a particular type has and can share with other
+types.",37,122,,What are traits?,ch10-02-traits.txt,"## Traits: Defining Shared Behavior
+
+A *trait* defines functionality a particular type has and can share with other
+types. We can use traits to define shared behavior in an abstract way. We can
+use *trait bounds* to specify that a generic type can be any type that has
+certain behavior.
+
+> Note: Traits are similar to a feature often called *interfaces* in other
+> languages, although with some differences.
+
+### Defining "
+2055,49,2051,"Different
+types share the same behavior if we can call the same methods on all of those
+types",499,592,,Can different types share the same behavior?,ch10-02-traits.txt,"trait bounds* to specify that a generic type can be any type that has
+certain behavior.
+
+> Note: Traits are similar to a feature often called *interfaces* in other
+> languages, although with some differences.
+
+### Defining a Trait
+
+A type’s behavior consists of the methods we can call on that type. Different
+types share the same behavior if we can call the same methods on all of those
+types. Trait definitions are a way to group method signatures together to
+define a set of behaviors necessary to accomplish some purpose.
+
+For example, let’s say we have multiple structs that hold various kinds and
+amounts of text: a `NewsArticle` struct that holds a news story filed in a
+particular loca"
+2056,49,2052,we declare a trait using the `trait` keyword and then the trait’s name,1743,1813,,How to declare a trait?,ch10-02-traits.txt,"ass=""filename"">Filename: src/lib.rs</span>
+
+```rust,noplayground
+{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-12/src/lib.rs}}
+```
+
+<span class=""caption"">Listing 10-12: A `Summary` trait that consists of the
+behavior provided by a `summarize` method</span>
+
+Here, we declare a trait using the `trait` keyword and then the trait’s name,
+which is `Summary` in this case. We’ve also declared the trait as `pub` so that
+crates depending on this crate can make use of this trait too, as we’ll see in
+a few examples. Inside the curly brackets, we declare the method signatures
+that describe the behaviors of the types that implement this tr"
+2057,49,2053,"Implementing a trait on a type is similar to implementing regular methods. The
+difference is that after `impl`, we put the trait name we want to implement,
+then use the `for` keyword, and then specify the name of the type we want to
+implement the trait for.",3480,3737,,How to implement a trait?,ch10-02-traits.txt,"
+
+<span class=""filename"">Filename: src/lib.rs</span>
+
+```rust,noplayground
+{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-13/src/lib.rs:here}}
+```
+
+<span class=""caption"">Listing 10-13: Implementing the `Summary` trait on the
+`NewsArticle` and `Tweet` types</span>
+
+Implementing a trait on a type is similar to implementing regular methods. The
+difference is that after `impl`, we put the trait name we want to implement,
+then use the `for` keyword, and then specify the name of the type we want to
+implement the trait for. Within the `impl` block, we put the method signatures
+that the trait definition has defined. Instead of adding a semicolon after each
+signature, we use curly brackets and fill in the method body with the specific
+behavior that we want the methods of the trait to have for the particular type.
+
+Now t"
+2058,49,2054,curly brackets,3890,3904,,What is used after trait signature?,ch10-02-traits.txt,", we put the trait name we want to implement,
+then use the `for` keyword, and then specify the name of the type we want to
+implement the trait for. Within the `impl` block, we put the method signatures
+that the trait definition has defined. Instead of adding a semicolon after each
+signature, we use curly brackets and fill in the method body with the specific
+behavior that we want the methods of the trait to have for the particular type.
+
+Now that the library has implemented the `Summary` trait on `NewsArticle` and
+`Tweet`, users of the crate can call the trait methods on instances of
+`NewsArticle` and `Twee"
+2059,49,2055,"we can implement a trait on a type only if at least one of the
+trait or the type is local to our crate.",4830,4933,,What restrictions are used in traits?,ch10-02-traits.txt,"trait-method/src/main.rs}}
+```
+
+This code prints `1 new tweet: horse_ebooks: of course, as you probably already
+know, people`.
+
+Other crates that depend on the `aggregator` crate can also bring the `Summary`
+trait into scope to implement `Summary` on their own types. One restriction to
+note is that we can implement a trait on a type only if at least one of the
+trait or the type is local to our crate. For example, we can implement standard
+library traits like `Display` on a custom type like `Tweet` as part of our
+`aggregator` crate functionality, because the type `Tweet` is local to our
+`aggregator` crate. We can also implement `Summary` on `Vec<T>` in our
+`aggregator` crate, because the trait `"
+2060,49,2056,we can’t implement external traits on external types.,5283,5336,,Is it possible to implement external traits?,ch10-02-traits.txt,"aits like `Display` on a custom type like `Tweet` as part of our
+`aggregator` crate functionality, because the type `Tweet` is local to our
+`aggregator` crate. We can also implement `Summary` on `Vec<T>` in our
+`aggregator` crate, because the trait `Summary` is local to our `aggregator`
+crate.
+
+But we can’t implement external traits on external types. For example, we can’t
+implement the `Display` trait on `Vec<T>` within our `aggregator` crate,
+because `Display` and `Vec<T>` are both defined in the standard library and
+aren’t local to our `aggregator` crate. This restriction is part of a property
+called *coherence*, and more specifically the *or"
+2061,49,2057,the parent type is not present,5665,5695,,What is the orphan rule?,ch10-02-traits.txt,"ent the `Display` trait on `Vec<T>` within our `aggregator` crate,
+because `Display` and `Vec<T>` are both defined in the standard library and
+aren’t local to our `aggregator` crate. This restriction is part of a property
+called *coherence*, and more specifically the *orphan rule*, so named because
+the parent type is not present. This rule ensures that other people’s code
+can’t break your code and vice versa. Without the rule, two crates could
+implement the same trait for the same type, and Rust wouldn’t know which
+implementation to use.
+
+### Default Implementations
+
+Sometimes it’s useful to have default behavior for some "
+2062,49,2058,"ensures that other people’s code
+can’t break your code and vice versa",5707,5776,,What does the orphan rule prevent from?,ch10-02-traits.txt," our `aggregator` crate,
+because `Display` and `Vec<T>` are both defined in the standard library and
+aren’t local to our `aggregator` crate. This restriction is part of a property
+called *coherence*, and more specifically the *orphan rule*, so named because
+the parent type is not present. This rule ensures that other people’s code
+can’t break your code and vice versa. Without the rule, two crates could
+implement the same trait for the same type, and Rust wouldn’t know which
+implementation to use.
+
+### Default Implementations
+
+Sometimes it’s useful to have default behavior for some or all of the methods
+in a trait instead of requiring implementations for all met"
+2063,49,2059,in a trait instead of requiring implementations for all methods on every type,6017,6094,,How can I establish default behavior for few methods?,ch10-02-traits.txt,"at other people’s code
+can’t break your code and vice versa. Without the rule, two crates could
+implement the same trait for the same type, and Rust wouldn’t know which
+implementation to use.
+
+### Default Implementations
+
+Sometimes it’s useful to have default behavior for some or all of the methods
+in a trait instead of requiring implementations for all methods on every type.
+Then, as we implement the trait on a particular type, we can keep or override
+each method’s default behavior.
+
+In Listing 10-14 we specify a default string for the `summarize` method of the
+`Summary` trait instead of only defining the method signature, as we did in
+Listing 10-12.
+
+<span class=""fil"
+2064,49,2060,"we can keep or override
+each method’s default behavior",6150,6204,,Is it possible to override default behavior of a method?,ch10-02-traits.txt," type, and Rust wouldn’t know which
+implementation to use.
+
+### Default Implementations
+
+Sometimes it’s useful to have default behavior for some or all of the methods
+in a trait instead of requiring implementations for all methods on every type.
+Then, as we implement the trait on a particular type, we can keep or override
+each method’s default behavior.
+
+In Listing 10-14 we specify a default string for the `summarize` method of the
+`Summary` trait instead of only defining the method signature, as we did in
+Listing 10-12.
+
+<span class=""filename"">Filename: src/lib.rs</span>
+
+```rust,noplayground
+{{#rustdoc_include ../listings/ch10-generic-types-tra"
+2065,49,2061,with the `+` Syntax,11967,11986,,How can I set more than 1 trait bound?,ch10-02-traits.txt,"fn notify<T: Summary>(item1: &T, item2: &T) {
+```
+
+The generic type `T` specified as the type of the `item1` and `item2`
+parameters constrains the function such that the concrete type of the value
+passed as an argument for `item1` and `item2` must be the same.
+
+#### Specifying Multiple Trait Bounds with the `+` Syntax
+
+We can also specify more than one trait bound. Say we wanted `notify` to use
+display formatting as well as `summarize` on `item`: we specify in the `notify`
+definition that `item` must implement both `Display` and `Summary`. We can do
+so using the `+` syntax:
+
+```rust,ignore
+pub fn notify(item: &("
+2066,49,2062,The `+` syntax is also valid with trait bounds on generic types,12318,12381,,"Is  ""+"" syntax valid on generics?",ch10-02-traits.txt,"one trait bound. Say we wanted `notify` to use
+display formatting as well as `summarize` on `item`: we specify in the `notify`
+definition that `item` must implement both `Display` and `Summary`. We can do
+so using the `+` syntax:
+
+```rust,ignore
+pub fn notify(item: &(impl Summary + Display)) {
+```
+
+The `+` syntax is also valid with trait bounds on generic types:
+
+```rust,ignore
+pub fn notify<T: Summary + Display>(item: &T) {
+```
+
+With the two trait bounds specified, the body of `notify` can call `summarize`
+and use `{}` to format `item`.
+
+#### Clearer Trait Bounds with `where` Clauses
+
+Using too many trait bounds has its downsides. Each generic has its ow"
+2067,49,2063,use the `impl Trait` syntax in the return position,13541,13591,,How to return a value of type that implements a trait?,ch10-02-traits.txt,"ypes-traits-and-lifetimes/no-listing-07-where-clause/src/lib.rs:here}}
+```
+
+This function’s signature is less cluttered: the function name, parameter list,
+and return type are close together, similar to a function without lots of trait
+bounds.
+
+### Returning Types that Implement Traits
+
+We can also use the `impl Trait` syntax in the return position to return a
+value of some type that implements a trait, as shown here:
+
+```rust,ignore
+{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/no-listing-05-returning-impl-trait/src/lib.rs:here}}
+```
+
+By using `impl Summary` for the return type, we specify that the
+`returns_summariza"
+2068,49,2064,you can only use `impl Trait` if you’re returning a single type,14558,14621,,Can I use 'impl Trait' when I return multiple types?,ch10-02-traits.txt," in
+Chapter 13. Closures and iterators create types that only the compiler knows or
+types that are very long to specify. The `impl Trait` syntax lets you concisely
+specify that a function returns some type that implements the `Iterator` trait
+without needing to write out a very long type.
+
+However, you can only use `impl Trait` if you’re returning a single type. For
+example, this code that returns either a `NewsArticle` or a `Tweet` with the
+return type specified as `impl Summary` wouldn’t work:
+
+```rust,ignore,does_not_compile
+{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/no-listing-06-impl-trait-returns-one-type/src/lib.rs:here}"
+2069,49,2065,"Implementations of a trait on any type that satisfies the trait
+bounds",16429,16499,,What are blanket implementations?,ch10-02-traits.txt,"ude ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-15/src/lib.rs}}
+```
+
+<span class=""caption"">Listing 10-15: Conditionally implementing methods on a
+generic type depending on trait bounds</span>
+
+We can also conditionally implement a trait for any type that implements
+another trait. Implementations of a trait on any type that satisfies the trait
+bounds are called *blanket implementations* and are extensively used in the
+Rust standard library. For example, the standard library implements the
+`ToString` trait on any type that implements the `Display` trait. The `impl`
+block in the standard library looks similar to this code:
+
+```rust,ignore
+impl<T:"
+2070,49,2066,"in the
+Rust standard library",16562,16590,,Where are blanket implementations used?,ch10-02-traits.txt,"nally implementing methods on a
+generic type depending on trait bounds</span>
+
+We can also conditionally implement a trait for any type that implements
+another trait. Implementations of a trait on any type that satisfies the trait
+bounds are called *blanket implementations* and are extensively used in the
+Rust standard library. For example, the standard library implements the
+`ToString` trait on any type that implements the `Display` trait. The `impl`
+block in the standard library looks similar to this code:
+
+```rust,ignore
+impl<T: Display> ToString for T {
+    // --snip--
+}
+```
+
+Because the standard library has this bla"
+2071,50,2067,"The main aim of lifetimes is to prevent *dangling references*, which cause a
+program to reference data other than the data it’s intended to reference.",1263,1413,,What are lifetimes used for?,ch10-03-lifetime-syntax.txt," other programming languages
+have, so this is going to feel unfamiliar. Although we won’t cover lifetimes in
+their entirety in this chapter, we’ll discuss common ways you might encounter
+lifetime syntax so you can get comfortable with the concept.
+
+### Preventing Dangling References with Lifetimes
+
+The main aim of lifetimes is to prevent *dangling references*, which cause a
+program to reference data other than the data it’s intended to reference.
+Consider the program in Listing 10-16, which has an outer scope and an inner
+scope.
+
+```rust,ignore,does_not_compile
+{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-16/src/main.rs}}
+```
+
+<span class=""caption"">Listing 10-16: An attempt to use a reference whose value"
+2156,50,2151,"compares scopes to determine
+whether all borrows are valid",3257,3315,,What is borrow checker used for?,ch10-03-lifetime-syntax.txt,"work, `r` would be referencing memory that was
+deallocated when `x` went out of scope, and anything we tried to do with `r`
+wouldn’t work correctly. So how does Rust determine that this code is invalid?
+It uses a borrow checker.
+
+### The Borrow Checker
+
+The Rust compiler has a *borrow checker* that compares scopes to determine
+whether all borrows are valid. Listing 10-17 shows the same code as Listing
+10-16 but with annotations showing the lifetimes of the variables.
+
+```rust,ignore,does_not_compile
+{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-17/src/main.rs}}
+```
+
+<span class=""caption"">Listing 10-17: Annotations "
+2157,50,2152,"every reference in Rust has a *lifetime*, which is the scope for which
+that reference is valid",379,473,,Are Rust references permanent?,ch10-03-lifetime-syntax.txt,"that we’ve already been using. Rather
+than ensuring that a type has the behavior we want, lifetimes ensure that
+references are valid as long as we need them to be.
+
+One detail we didn’t discuss in the [“References and
+Borrowing”][references-and-borrowing]<!-- ignore --> section in Chapter 4 is
+that every reference in Rust has a *lifetime*, which is the scope for which
+that reference is valid. Most of the time, lifetimes are implicit and inferred,
+just like most of the time, types are inferred. We only must annotate types
+when multiple types are possible. In a similar way, we must annotate lifetimes
+when the lifetimes of references could be related in a few different ways. Rust
+requires"
+2158,50,2153,lifetimes are implicit and inferred,493,528,,Are lifetimes implicit?,ch10-03-lifetime-syntax.txt,"ferences are valid as long as we need them to be.
+
+One detail we didn’t discuss in the [“References and
+Borrowing”][references-and-borrowing]<!-- ignore --> section in Chapter 4 is
+that every reference in Rust has a *lifetime*, which is the scope for which
+that reference is valid. Most of the time, lifetimes are implicit and inferred,
+just like most of the time, types are inferred. We only must annotate types
+when multiple types are possible. In a similar way, we must annotate lifetimes
+when the lifetimes of references could be related in a few different ways. Rust
+requires us to annotate the relationships using generic lifetim"
+2159,50,2154,"We also don’t know the concrete lifetimes of the
+references that will be passed in",7018,7100,,Is it possible to know which lifetime of reference will be passed?,ch10-03-lifetime-syntax.txt,"e `if` block in the body
+of this function returns a reference to `x` and the `else` block returns a
+reference to `y`!
+
+When we’re defining this function, we don’t know the concrete values that will
+be passed into this function, so we don’t know whether the `if` case or the
+`else` case will execute. We also don’t know the concrete lifetimes of the
+references that will be passed in, so we can’t look at the scopes as we did in
+Listings 10-17 and 10-18 to determine whether the reference we return will
+always be valid. The borrow checker can’t determine this either, because it
+doesn’t know how the lifetimes of `x` and `y` relate to the lifetime of the
+return value. To fix this e"
+2160,50,2155,Lifetime annotations don’t change how long any of the references live,7577,7646,,Do lifetime annonations affect how long reference live?,ch10-03-lifetime-syntax.txt," either, because it
+doesn’t know how the lifetimes of `x` and `y` relate to the lifetime of the
+return value. To fix this error, we’ll add generic lifetime parameters that
+define the relationship between the references so the borrow checker can
+perform its analysis.
+
+### Lifetime Annotation Syntax
+
+Lifetime annotations don’t change how long any of the references live. Rather,
+they describe the relationships of the lifetimes of multiple references to each
+other without affecting the lifetimes. Just as functions can accept any type
+when the signature specifies a generic type parameter, functions can accept
+references with any lifetime by specifying a generic life"
+2161,50,2156,"the names of lifetime
+parameters must start with an apostrophe (`'`) and are usually all lowercase
+and very short, like generic types",8016,8149,,What is the naming convention of lifetimes?,ch10-03-lifetime-syntax.txt," references to each
+other without affecting the lifetimes. Just as functions can accept any type
+when the signature specifies a generic type parameter, functions can accept
+references with any lifetime by specifying a generic lifetime parameter.
+
+Lifetime annotations have a slightly unusual syntax: the names of lifetime
+parameters must start with an apostrophe (`'`) and are usually all lowercase
+and very short, like generic types. Most people use the name `'a` for the first
+lifetime annotation. We place lifetime parameter annotations after the `&` of a
+reference, using a space to separate the annotation from the reference’s type.
+
+Here are some examples: a reference to an `i32` without a lifetime parameter, a
+reference to a"
+2162,50,2157,"we need to declare the
+generic *lifetime* parameters inside angle brackets between the function name
+and the parameter list",9123,9246,,How to use lifetime annotations in function signature?,ch10-03-lifetime-syntax.txt,"t to tell Rust how generic lifetime parameters of multiple
+references relate to each other. Let’s examine how the lifetime annotations
+relate to each other in the context of the `longest` function.
+
+### Lifetime Annotations in Function Signatures
+
+To use lifetime annotations in function signatures, we need to declare the
+generic *lifetime* parameters inside angle brackets between the function name
+and the parameter list, just as we did with generic *type* parameters.
+
+We want the signature to express the following constraint: the returned
+reference will be valid as long as both the parameters are valid. This is the
+relationship between lifetimes of the parameters and the return value. We’ll
+name the lifetime `'a` "
+2163,50,2158,"the annotations go in the function
+signature, not in the function body",11115,11185,,Where should the annotation of lifetime be placed?,ch10-03-lifetime-syntax.txt,"e borrow checker should reject any values that don’t
+adhere to these constraints. Note that the `longest` function doesn’t need to
+know exactly how long `x` and `y` will live, only that some scope can be
+substituted for `'a` that will satisfy this signature.
+
+When annotating lifetimes in functions, the annotations go in the function
+signature, not in the function body. The lifetime annotations become part of
+the contract of the function, much like the types in the signature. Having
+function signatures contain the lifetime contract means the analysis the Rust
+compiler does can be simpler. If there’s a problem with the way a function is
+annotated or the way it is "
+2164,50,2159,"We can define structs to
+hold references, but in that case we would need to add a lifetime annotation on
+every reference in the struct’s definition",18007,18154,,Can we define structs to keep references?,ch10-03-lifetime-syntax.txt," of functions. Once they’re connected, Rust has
+enough information to allow memory-safe operations and disallow operations that
+would create dangling pointers or otherwise violate memory safety.
+
+### Lifetime Annotations in Struct Definitions
+
+So far, the structs we’ve defined all hold owned types. We can define structs to
+hold references, but in that case we would need to add a lifetime annotation on
+every reference in the struct’s definition. Listing 10-24 has a struct named
+`ImportantExcerpt` that holds a string slice.
+
+<span class=""filename"">Filename: src/main.rs</span>
+
+```rust
+{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/listing-10-24/src/main.rs}}
+```
+
+<span class=""caption"">Listing 10-24: A struct that ho"
+2165,50,2160,Lifetimes on function or method parameters,21595,21637,,What is input lifetime?,ch10-03-lifetime-syntax.txt,"rministically
+applies the rules but there is still ambiguity as to what lifetimes the
+references have, the compiler won’t guess what the lifetime of the remaining
+references should be. Instead of guessing, the compiler will give you an error
+that you can resolve by adding the lifetime annotations.
+
+Lifetimes on function or method parameters are called *input lifetimes*, and
+lifetimes on return values are called *output lifetimes*.
+
+The compiler uses three rules to figure out the lifetimes of the references
+when there aren’t explicit annotations. The first rule applies to input
+lifetimes, and the second and third rules apply to output "
+2166,50,2161,lifetimes on return values,21672,21698,,What are output lifetimes?,ch10-03-lifetime-syntax.txt,"imes the
+references have, the compiler won’t guess what the lifetime of the remaining
+references should be. Instead of guessing, the compiler will give you an error
+that you can resolve by adding the lifetime annotations.
+
+Lifetimes on function or method parameters are called *input lifetimes*, and
+lifetimes on return values are called *output lifetimes*.
+
+The compiler uses three rules to figure out the lifetimes of the references
+when there aren’t explicit annotations. The first rule applies to input
+lifetimes, and the second and third rules apply to output lifetimes. If the
+compiler gets to the end of the three rules"
+2167,50,2162,"the
+affected reference *can* live for the entire duration of the program",27129,27201,,What is a static lifetime?,ch10-03-lifetime-syntax.txt,"
+and gives both `&self` and `announcement` their own lifetimes. Then, because
+one of the parameters is `&self`, the return type gets the lifetime of `&self`,
+and all lifetimes have been accounted for.
+
+### The Static Lifetime
+
+One special lifetime we need to discuss is `'static`, which denotes that the
+affected reference *can* live for the entire duration of the program. All
+string literals have the `'static` lifetime, which we can annotate as follows:
+
+```rust
+let s: &'static str = ""I have a static lifetime."";
+```
+
+The text of this string is stored directly in the program’s binary, which
+is always available. Therefore, the lifetime of all string literals is
+`'sta"
+2193,50,2188,"after the `impl`
+keyword and then used after the struct’s name",25542,25604,,Where should lifetime name be placed?,ch10-03-lifetime-syntax.txt,"etimes, we use the same syntax as
+that of generic type parameters shown in Listing 10-11. Where we declare and
+use the lifetime parameters depends on whether they’re related to the struct
+fields or the method parameters and return values.
+
+Lifetime names for struct fields always need to be declared after the `impl`
+keyword and then used after the struct’s name, because those lifetimes are part
+of the struct’s type.
+
+In method signatures inside the `impl` block, references might be tied to the
+lifetime of references in the struct’s fields, or they might be independent. In
+addition, the lifetime elision rules often make it so that lifetime annotations
+aren"
+2194,50,2189,The elision rules don’t provide full inference.,21235,21282,,Do elision rule provide inference?,ch10-03-lifetime-syntax.txt,"
+The patterns programmed into Rust’s analysis of references are called the
+*lifetime elision rules*. These aren’t rules for programmers to follow; they’re
+a set of particular cases that the compiler will consider, and if your code
+fits these cases, you don’t need to write the lifetimes explicitly.
+
+The elision rules don’t provide full inference. If Rust deterministically
+applies the rules but there is still ambiguity as to what lifetimes the
+references have, the compiler won’t guess what the lifetime of the remaining
+references should be. Instead of guessing, the compiler will give you an error
+that you can resolve by adding the lifetime a"
+2195,50,2190," In such cases, the solution
+is fixing those problems, not specifying the `'static` lifetime.",27943,28036,,Should I use 'static' lifetime in error messages?,ch10-03-lifetime-syntax.txt,"nce, think about
+whether the reference you have actually lives the entire lifetime of your
+program or not, and whether you want it to. Most of the time, an error message
+suggesting the `'static` lifetime results from attempting to create a dangling
+reference or a mismatch of the available lifetimes. In such cases, the solution
+is fixing those problems, not specifying the `'static` lifetime.
+
+## Generic Type Parameters, Trait Bounds, and Lifetimes Together
+
+Let’s briefly look at the syntax of specifying generic type parameters, trait
+bounds, and lifetimes all in one function!
+
+```rust
+{{#rustdoc_include ../listings/ch10-generic-types-traits-and-lifetimes/no-listing-11-generics-traits-a"
+2196,50,2191,"In method signatures inside the `impl` block, references might be tied to the
+lifetime of references in the struct’s fields, or they might be independent",25662,25815,,Do references have to be tied to struct's fields?,ch10-03-lifetime-syntax.txt,"ifetime parameters depends on whether they’re related to the struct
+fields or the method parameters and return values.
+
+Lifetime names for struct fields always need to be declared after the `impl`
+keyword and then used after the struct’s name, because those lifetimes are part
+of the struct’s type.
+
+In method signatures inside the `impl` block, references might be tied to the
+lifetime of references in the struct’s fields, or they might be independent. In
+addition, the lifetime elision rules often make it so that lifetime annotations
+aren’t necessary in method signatures. Let’s look at some examples using the
+struct named `ImportantExcerpt` that we defined in Listing 10-24.
+
+First, we’ll use a method named `level` whose only parameter is a refer"
+2073,51,2069,"check that this function will do precisely
+what we intend",1117,1174,,Why should I write tests?,ch11-00-testing.txt," as a parameter and returns an
+integer as a result. When we implement and compile that function, Rust does all
+the type checking and borrow checking that you’ve learned so far to ensure
+that, for instance, we aren’t passing a `String` value or an invalid reference
+to this function. But Rust *can’t* check that this function will do precisely
+what we intend, which is return the parameter plus 2 rather than, say, the
+parameter plus 10 or the parameter minus 50! That’s where tests come in.
+
+We can write tests that assert, for example, that when we pass `3` to the
+`add_two` function, the returned value is `5`. We can run these tests whenever
+we make chan"
+2074,51,2070,annotations and macros,1741,1763,,What is important to be familiar with when writing tests in Rust?,ch11-00-testing.txt,"these tests whenever
+we make changes to our code to make sure any existing correct behavior has not
+changed.
+
+Testing is a complex skill: although we can’t cover every detail about how to
+write good tests in one chapter, we’ll discuss the mechanics of Rust’s testing
+facilities. We’ll talk about the annotations and macros available to you when
+writing your tests, the default behavior and options provided for running your
+tests, and how to organize tests into unit tests and integration tests.
+"
+2075,51,2071,Rust includes support for writing automated software tests.,630,689,,Does Rust support tests?,ch11-00-testing.txt,"e extent to which our code does what we intend
+it to do. Rust is designed with a high degree of concern about the correctness
+of programs, but correctness is complex and not easy to prove. Rust’s type
+system shoulders a huge part of this burden, but the type system cannot catch
+everything. As such, Rust includes support for writing automated software tests.
+
+Say we write a function `add_two` that adds 2 to whatever number is passed to
+it. This function’s signature accepts an integer as a parameter and returns an
+integer as a result. When we implement and compile that function, Rust does all
+the type checking and borrow checking that you’ve learned so "
+2076,51,2072,"whenever
+we make changes to our code to make sure any existing correct behavior has not
+changed",1453,1548,,When should I run tests?,ch11-00-testing.txt,"cisely
+what we intend, which is return the parameter plus 2 rather than, say, the
+parameter plus 10 or the parameter minus 50! That’s where tests come in.
+
+We can write tests that assert, for example, that when we pass `3` to the
+`add_two` function, the returned value is `5`. We can run these tests whenever
+we make changes to our code to make sure any existing correct behavior has not
+changed.
+
+Testing is a complex skill: although we can’t cover every detail about how to
+write good tests in one chapter, we’ll discuss the mechanics of Rust’s testing
+facilities. We’ll talk about the annotations and macros available to you when
+writing your tests, the default behavior and options provided "
+2077,52,2073,"functions that verify that the non-test code is functioning in
+the expected manner",38,120,,What are tests?,ch11-01-writing-tests.txt,"## How to Write Tests
+
+Tests are Rust functions that verify that the non-test code is functioning in
+the expected manner. The bodies of test functions typically perform these three
+actions:
+
+1. Set up any needed data or state.
+2. Run the code you want to test.
+3. Assert the results are what you expect.
+
+Let’s look at the features Rust provides specifically for writing tests that
+take these actions, which include the "
+2078,52,2074,"1. Set up any needed data or state.
+2. Run the code you want to test.
+3. Assert the results are what you expect.",191,303,,How do tests work?,ch11-01-writing-tests.txt,"## How to Write Tests
+
+Tests are Rust functions that verify that the non-test code is functioning in
+the expected manner. The bodies of test functions typically perform these three
+actions:
+
+1. Set up any needed data or state.
+2. Run the code you want to test.
+3. Assert the results are what you expect.
+
+Let’s look at the features Rust provides specifically for writing tests that
+take these actions, which include the `test` attribute, a few macros, and the
+`should_panic` attribute.
+
+### The Anatomy of a Test Function
+
+At its simplest, a test in Rust is a function that’s annotated with the `test`
+a"
+2079,52,2075,"a test in Rust is a function that’s annotated with the `test`
+attribute",540,611,,How to distinguish test function from normal function?,ch11-01-writing-tests.txt,"de you want to test.
+3. Assert the results are what you expect.
+
+Let’s look at the features Rust provides specifically for writing tests that
+take these actions, which include the `test` attribute, a few macros, and the
+`should_panic` attribute.
+
+### The Anatomy of a Test Function
+
+At its simplest, a test in Rust is a function that’s annotated with the `test`
+attribute. Attributes are metadata about pieces of Rust code; one example is
+the `derive` attribute we used with structs in Chapter 5. To change a function
+into a test function, add `#[test]` on the line before `fn`. When you run your
+tests with the `cargo test` command, Rust builds a test runner binary that"
+2080,52,2076,indicates this is a test function,2447,2480,,What does test annotation mean?,ch11-01-writing-tests.txt,"e ../listings/ch11-writing-automated-tests/listing-11-01/src/lib.rs}}
+```
+
+<span class=""caption"">Listing 11-1: The test module and function generated
+automatically by `cargo new`</span>
+
+For now, let’s ignore the top two lines and focus on the function. Note the
+`#[test]` annotation: this attribute indicates this is a test function, so the
+test runner knows to treat this function as a test. We might also have non-test
+functions in the `tests` module to help set up common scenarios or perform
+common operations, so we always need to indicate which functions are tests.
+
+The example function body uses the `assert_eq!` macro to as"
+2081,52,2077,add `#[test]` on the line before `fn`,780,817,,How to create a test function?,ch11-01-writing-tests.txt,"bute.
+
+### The Anatomy of a Test Function
+
+At its simplest, a test in Rust is a function that’s annotated with the `test`
+attribute. Attributes are metadata about pieces of Rust code; one example is
+the `derive` attribute we used with structs in Chapter 5. To change a function
+into a test function, add `#[test]` on the line before `fn`. When you run your
+tests with the `cargo test` command, Rust builds a test runner binary that runs
+the annotated functions and reports on whether each
+test function passes or fails.
+
+Whenever we make a new library project with Cargo, a test module with a test
+function in it is automatically generat"
+2082,52,2078,with the `cargo test` command,843,872,,How to run tests in Rust?,ch11-01-writing-tests.txt,"est in Rust is a function that’s annotated with the `test`
+attribute. Attributes are metadata about pieces of Rust code; one example is
+the `derive` attribute we used with structs in Chapter 5. To change a function
+into a test function, add `#[test]` on the line before `fn`. When you run your
+tests with the `cargo test` command, Rust builds a test runner binary that runs
+the annotated functions and reports on whether each
+test function passes or fails.
+
+Whenever we make a new library project with Cargo, a test module with a test
+function in it is automatically generated for us. This module gives you a
+template for writing"
+2083,52,2079,"runs
+the annotated functions and reports on whether each
+test function passes or fails",912,998,,What does 'cargo test' command do?,ch11-01-writing-tests.txt," Attributes are metadata about pieces of Rust code; one example is
+the `derive` attribute we used with structs in Chapter 5. To change a function
+into a test function, add `#[test]` on the line before `fn`. When you run your
+tests with the `cargo test` command, Rust builds a test runner binary that runs
+the annotated functions and reports on whether each
+test function passes or fails.
+
+Whenever we make a new library project with Cargo, a test module with a test
+function in it is automatically generated for us. This module gives you a
+template for writing your tests so you don’t have to look up the exact
+structure and syntax every time you start a new project. You can add as man"
+2085,52,2081,"it doesn’t run in a particular
+instance",3659,3698,,What does ignored test mean?,ch11-01-writing-tests.txt,"d test function, called `it_works`, and that
+the result of running that test is `ok`. The overall summary `test result: ok.`
+means that all the tests passed, and the portion that reads `1 passed; 0
+failed` totals the number of tests that passed or failed.
+
+It’s possible to mark a test as ignored so it doesn’t run in a particular
+instance; we’ll cover that in the [“Ignoring Some Tests Unless Specifically
+Requested”][ignoring]<!-- ignore --> section later in this chapter. Because we
+haven’t done that here, the summary shows `0 ignored`. We can also pass an
+argument to the `cargo test` command to run only tests whose name matches a
+st"
+2086,52,2082,only available in nightly Rust,4343,4373,,Are benchmark tests available in Rust?,ch11-01-writing-tests.txt,"ver that in the [“Running a
+Subset of Tests by Name”][subset]<!-- ignore --> section. We also haven’t
+filtered the tests being run, so the end of the summary shows `0 filtered out`.
+
+The `0 measured` statistic is for benchmark tests that measure performance.
+Benchmark tests are, as of this writing, only available in nightly Rust. See
+[the documentation about benchmark tests][bench] to learn more.
+
+The next part of the test output starting at `Doc-tests adder` is for the
+results of any documentation tests. We don’t have any documentation tests yet,
+but Rust can compile any code examples that appear in our API documentation."
+2087,52,2083,`assert!` macro calls `panic!` to cause the test to fail,7863,7919,,What happens when test result is different than expected?,ch11-01-writing-tests.txt,"
+The `assert!` macro, provided by the standard library, is useful when you want
+to ensure that some condition in a test evaluates to `true`. We give the
+`assert!` macro an argument that evaluates to a Boolean. If the value is
+`true`, nothing happens and the test passes. If the value is `false`, the
+`assert!` macro calls `panic!` to cause the test to fail. Using the `assert!`
+macro helps us check that our code is functioning in the way we intend.
+
+In Chapter 5, Listing 5-15, we used a `Rectangle` struct and a `can_hold`
+method, which are repeated here in Listing 11-5. Let’s put this code in the
+*src/lib.rs* file, then write some tests for it using t"
+2088,52,2084,`assert!`,7931,7940,,Which keyword is used for verification of result given by tested function?,ch11-01-writing-tests.txt,"en you want
+to ensure that some condition in a test evaluates to `true`. We give the
+`assert!` macro an argument that evaluates to a Boolean. If the value is
+`true`, nothing happens and the test passes. If the value is `false`, the
+`assert!` macro calls `panic!` to cause the test to fail. Using the `assert!`
+macro helps us check that our code is functioning in the way we intend.
+
+In Chapter 5, Listing 5-15, we used a `Rectangle` struct and a `can_hold`
+method, which are repeated here in Listing 11-5. Let’s put this code in the
+*src/lib.rs* file, then write some tests for it using the `assert!` macro.
+
+"
+2089,52,2085,helps us check that our code is functioning in the way we intend,7947,8011,,What is 'assert!' keyword used for?,ch11-01-writing-tests.txt,"nsure that some condition in a test evaluates to `true`. We give the
+`assert!` macro an argument that evaluates to a Boolean. If the value is
+`true`, nothing happens and the test passes. If the value is `false`, the
+`assert!` macro calls `panic!` to cause the test to fail. Using the `assert!`
+macro helps us check that our code is functioning in the way we intend.
+
+In Chapter 5, Listing 5-15, we used a `Rectangle` struct and a `can_hold`
+method, which are repeated here in Listing 11-5. Let’s put this code in the
+*src/lib.rs* file, then write some tests for it using the `assert!` macro.
+
+<span class=""filename"">Filename: src/lib.rs</span>
+
+```rust,noplaygroun"
+2090,52,2086,`assert_ne!`,11940,11952,,How can I check if result given by tested function is different than some value?,ch11-01-writing-tests.txt," equality between the result
+of the code under test and the value you expect the code to return. You could
+do this using the `assert!` macro and passing it an expression using the `==`
+operator. However, this is such a common test that the standard library
+provides a pair of macros—`assert_eq!` and `assert_ne!`—to perform this test
+more conveniently. These macros compare two arguments for equality or
+inequality, respectively. They’ll also print the two values if the assertion
+fails, which makes it easier to see *why* the test failed; conversely, the
+`assert!` macro only indicates that it got a `false` val"
+2091,52,2087,compare two arguments for equality,12006,12040,,What is 'assert_eq' used for?,ch11-01-writing-tests.txt,"you expect the code to return. You could
+do this using the `assert!` macro and passing it an expression using the `==`
+operator. However, this is such a common test that the standard library
+provides a pair of macros—`assert_eq!` and `assert_ne!`—to perform this test
+more conveniently. These macros compare two arguments for equality or
+inequality, respectively. They’ll also print the two values if the assertion
+fails, which makes it easier to see *why* the test failed; conversely, the
+`assert!` macro only indicates that it got a `false` value for the `==`
+expression, without printing the values that led to the `false` value.
+
+"
+2092,52,2088,inequality,12044,12054,,What does 'assert_ne!' check?,ch11-01-writing-tests.txt,"ld
+do this using the `assert!` macro and passing it an expression using the `==`
+operator. However, this is such a common test that the standard library
+provides a pair of macros—`assert_eq!` and `assert_ne!`—to perform this test
+more conveniently. These macros compare two arguments for equality or
+inequality, respectively. They’ll also print the two values if the assertion
+fails, which makes it easier to see *why* the test failed; conversely, the
+`assert!` macro only indicates that it got a `false` value for the `==`
+expression, without printing the values that led to the `false` value.
+
+In Listing 11-"
+2093,52,2089,"when we’re not sure
+what a value *will* be, but we know what the value definitely *shouldn’t* be.",14617,14714,,When could I use 'assert_ne!'?,ch11-01-writing-tests.txt," assertion in this test as
+`assert_eq!(add_two(2), 4)`, which would result in the same failure message
+that displays `` assertion failed: `(left == right)` ``.
+
+The `assert_ne!` macro will pass if the two values we give it are not equal and
+fail if they’re equal. This macro is most useful for cases when we’re not sure
+what a value *will* be, but we know what the value definitely *shouldn’t* be.
+For example, if we’re testing a function that is guaranteed to change its input
+in some way, but the way in which the input is changed depends on the day of
+the week that we run our tests, the best thing to assert might be that the
+output of the function is not equal to the input.
+
+Under the surfac"
+2094,52,2090,`format!` macro,16170,16185,,How can I add a custom failure message?,ch11-01-writing-tests.txt,"these and other derivable traits.
+
+### Adding Custom Failure Messages
+
+You can also add a custom message to be printed with the failure message as
+optional arguments to the `assert!`, `assert_eq!`, and `assert_ne!` macros. Any
+arguments specified after the required arguments are passed along to the
+`format!` macro (discussed in Chapter 8 in the [“Concatenation with the `+`
+Operator or the `format!`
+Macro”][concatenation-with-the--operator-or-the-format-macro]<!-- ignore -->
+section), so you can pass a format string that contains `{}` placeholders and
+values to go in those placeholders. Custom messages are us"
+2095,52,2091,"for documenting
+what an assertion means; when a test fails",16490,16548,,What are custom messages used for?,ch11-01-writing-tests.txt,"cussed in Chapter 8 in the [“Concatenation with the `+`
+Operator or the `format!`
+Macro”][concatenation-with-the--operator-or-the-format-macro]<!-- ignore -->
+section), so you can pass a format string that contains `{}` placeholders and
+values to go in those placeholders. Custom messages are useful for documenting
+what an assertion means; when a test fails, you’ll have a better idea of what
+the problem is with the code.
+
+For example, let’s say we have a function that greets people by name and we
+want to test that the name we pass into the function appears in the output:
+
+<span class=""filename"">Filename: src/lib.rs</span>
+
+```rust,noplayground
+{{#rust"
+2096,52,2092,should_panic,18606,18618,,How can I check if function throws an error?,ch11-01-writing-tests.txt,"essage:
+
+```console
+{{#include ../listings/ch11-writing-automated-tests/no-listing-07-custom-failure-message/output.txt}}
+```
+
+We can see the value we actually got in the test output, which would help us
+debug what happened instead of what we were expecting to happen.
+
+### Checking for Panics with `should_panic`
+
+In addition to checking return values, it’s important to check that our code
+handles error conditions as we expect. For example, consider the `Guess` type
+that we created in Chapter 9, Listing 9-13. Other code that uses `Guess`
+depends on the guarantee that `Guess` instances will contain only val"
+2097,52,2093,"to check that our code
+handles error conditions as we expect",18675,18735,,What is 'should_panic' used for?,ch11-01-writing-tests.txt,"ts/no-listing-07-custom-failure-message/output.txt}}
+```
+
+We can see the value we actually got in the test output, which would help us
+debug what happened instead of what we were expecting to happen.
+
+### Checking for Panics with `should_panic`
+
+In addition to checking return values, it’s important to check that our code
+handles error conditions as we expect. For example, consider the `Guess` type
+that we created in Chapter 9, Listing 9-13. Other code that uses `Guess`
+depends on the guarantee that `Guess` instances will contain only values
+between 1 and 100. We can write a test that ensures that attempting to create a
+`Guess` instance with a value out"
+2098,53,2094,compiles your code and then runs the resulting binary,54,107,,What does 'cargo run' do?,ch11-02-running-tests.txt,"## Controlling How Tests Are Run
+
+Just as `cargo run` compiles your code and then runs the resulting binary,
+`cargo test` compiles your code in test mode and runs the resulting test
+binary. The default behavior of the binary produced by `cargo test` is to run
+all the tests in parallel and capture output generated during test runs,
+preventing the output from being displayed and making it easier to read th"
+2099,53,2095,"run
+all the tests in parallel and capture output generated during test runs",256,331,,What is the default behavior of 'cargo test'?,ch11-02-running-tests.txt,"## Controlling How Tests Are Run
+
+Just as `cargo run` compiles your code and then runs the resulting binary,
+`cargo test` compiles your code in test mode and runs the resulting test
+binary. The default behavior of the binary produced by `cargo test` is to run
+all the tests in parallel and capture output generated during test runs,
+preventing the output from being displayed and making it easier to read the
+output related to the test results. You can, however, specify command line
+options to change this default behavior.
+
+Some command line options go to `cargo test`, and some go to the resulting test
+binary. To separate these"
+2100,53,2096, `cargo test --help`,787,807,,How can I check options of 'cargo test'?,ch11-02-running-tests.txt,"ions to change this default behavior.
+
+Some command line options go to `cargo test`, and some go to the resulting test
+binary. To separate these two types of arguments, you list the arguments that
+go to `cargo test` followed by the separator `--` and then the ones that go to
+the test binary. Running `cargo test --help` displays the options you can use
+with `cargo test`, and running `cargo test -- --help` displays the options you
+can use after the separator.
+
+### Running Tests in Parallel or Consecutively
+
+When you run multiple tests, by default they run in parallel using threads,
+meaning they finish running faste"
+2101,53,2097,`cargo test` followed by the separator `--`,690,733,,How can I add arguments to 'cargo test'?,ch11-02-running-tests.txt,"easier to read the
+output related to the test results. You can, however, specify command line
+options to change this default behavior.
+
+Some command line options go to `cargo test`, and some go to the resulting test
+binary. To separate these two types of arguments, you list the arguments that
+go to `cargo test` followed by the separator `--` and then the ones that go to
+the test binary. Running `cargo test --help` displays the options you can use
+with `cargo test`, and running `cargo test -- --help` displays the options you
+can use after the separator.
+
+### Running Tests in Parallel or Consecutively
+
+When you run multiple tests, by def"
+2102,53,2098,they run in parallel using threads,1038,1072,,How do parallel tests run by default?,ch11-02-running-tests.txt,"then the ones that go to
+the test binary. Running `cargo test --help` displays the options you can use
+with `cargo test`, and running `cargo test -- --help` displays the options you
+can use after the separator.
+
+### Running Tests in Parallel or Consecutively
+
+When you run multiple tests, by default they run in parallel using threads,
+meaning they finish running faster and you get feedback quicker. Because the
+tests are running at the same time, you must make sure your tests don’t depend
+on each other or on any shared state, including a shared environment, such as
+the current working directory or environment variables.
+
+For exa"
+2103,53,2099,"`--test-threads` flag
+and the number of threads you want to use",2176,2239,,How to change number of threads used to perform tests?,ch11-02-running-tests.txt,"ith each other while running
+in parallel. One solution is to make sure each test writes to a different file;
+another solution is to run the tests one at a time.
+
+If you don’t want to run the tests in parallel or if you want more fine-grained
+control over the number of threads used, you can send the `--test-threads` flag
+and the number of threads you want to use to the test binary. Take a look at
+the following example:
+
+```console
+$ cargo test -- --test-threads=1
+```
+
+We set the number of test threads to `1`, telling the program not to use any
+parallelism. Running the tests using one thread will take longer than running
+them in parallel, but the tests won’"
+2224,63,2219,Functions can implement all three of the `Fn` traits too.,16603,16660,,Which traits can functions implement?,ch13-01-closures.txt,"time. In the body of
+`unwrap_or_else`, we can see that if the `Option` is `Some`, `f` won’t be
+called. If the `Option` is `None`, `f` will be called once. Because all
+closures implement `FnOnce`, `unwrap_or_else` accepts the most different kinds
+of closures and is as flexible as it can be.
+
+> Note: Functions can implement all three of the `Fn` traits too. If what we
+> want to do doesn’t require capturing a value from the environment, we can use
+> the name of a function rather than a closure where we need something that
+> implements one of the `Fn` traits. For example, on an `Option<Vec<T>>` value,
+> we could call `unwrap_or_else(Vec::new)` to get a "
+2104,53,2100,"you must make sure your tests don’t depend
+on each other or on any shared state, including a shared environment, such as
+the current working directory or environment variables.",1187,1363,,Can tests depend on each other?,ch11-02-running-tests.txt,"--help` displays the options you
+can use after the separator.
+
+### Running Tests in Parallel or Consecutively
+
+When you run multiple tests, by default they run in parallel using threads,
+meaning they finish running faster and you get feedback quicker. Because the
+tests are running at the same time, you must make sure your tests don’t depend
+on each other or on any shared state, including a shared environment, such as
+the current working directory or environment variables.
+
+For example, say each of your tests runs some code that creates a file on disk
+named *test-output.txt* and writes some data to that file. Then each test reads
+the data in that file and asserts that the file contains a particular value,
+which is different in each test. Because the tests run at the "
+2105,53,2101,set the number of test threads to `1`,2351,2388,,How to make sure that tests don't interfere each other?,ch11-02-running-tests.txt,"want to run the tests in parallel or if you want more fine-grained
+control over the number of threads used, you can send the `--test-threads` flag
+and the number of threads you want to use to the test binary. Take a look at
+the following example:
+
+```console
+$ cargo test -- --test-threads=1
+```
+
+We set the number of test threads to `1`, telling the program not to use any
+parallelism. Running the tests using one thread will take longer than running
+them in parallel, but the tests won’t interfere with each other if they share
+state.
+
+### Showing Function Output
+
+By default, if a test passes, Rust’s test library captures anything pr"
+2106,53,2102,"test library captures anything printed to
+standard output",2655,2712,,What happens by default when test passes?,ch11-02-running-tests.txt,"the number of test threads to `1`, telling the program not to use any
+parallelism. Running the tests using one thread will take longer than running
+them in parallel, but the tests won’t interfere with each other if they share
+state.
+
+### Showing Function Output
+
+By default, if a test passes, Rust’s test library captures anything printed to
+standard output. For example, if we call `println!` in a test and the test
+passes, we won’t see the `println!` output in the terminal; we’ll see only the
+line that indicates the test passed. If a test fails, we’ll see whatever was
+printed to standard output with the rest of the failure message.
+
+As an example, Lis"
+2107,53,2103,"we’ll see whatever was
+printed to standard output with the rest of the failure message",2905,2991,,What is showed by default when test fails?,ch11-02-running-tests.txt,"tion Output
+
+By default, if a test passes, Rust’s test library captures anything printed to
+standard output. For example, if we call `println!` in a test and the test
+passes, we won’t see the `println!` output in the terminal; we’ll see only the
+line that indicates the test passed. If a test fails, we’ll see whatever was
+printed to standard output with the rest of the failure message.
+
+As an example, Listing 11-10 has a silly function that prints the value of its
+parameter and returns 10, as well as a test that passes and a test that fails.
+
+<span class=""filename"">Filename: src/lib.rs</span>
+
+```rust,panics,noplayground
+{{#rustdoc_include ../listings/ch11-writing-automated-test"
+2108,53,2104,cargo test -- --show-output,4052,4079,,How to enable printing output of passed tests?,ch11-02-running-tests.txt,"the test that failed, `I got the value 8`, appears in the section
+of the test summary output, which also shows the cause of the test failure.
+
+If we want to see printed values for passing tests as well, we can tell Rust
+to also show the output of successful tests with `--show-output`.
+
+```console
+$ cargo test -- --show-output
+```
+
+When we run the tests in Listing 11-10 again with the `--show-output` flag, we
+see the following output:
+
+```console
+{{#include ../listings/ch11-writing-automated-tests/output-only-01-show-output/output.txt}}
+```
+
+### Running a Subset of Tests by Name
+
+Sometimes, running a full test suite can "
+2109,53,2105,"`cargo test` the name
+or names of the test(s) you want to run as an argument",4552,4628,,How to run only selected set of tests?,ch11-02-running-tests.txt,"s/output-only-01-show-output/output.txt}}
+```
+
+### Running a Subset of Tests by Name
+
+Sometimes, running a full test suite can take a long time. If you’re working on
+code in a particular area, you might want to run only the tests pertaining to
+that code. You can choose which tests to run by passing `cargo test` the name
+or names of the test(s) you want to run as an argument.
+
+To demonstrate how to run a subset of tests, we’ll first create three tests for
+our `add_two` function, as shown in Listing 11-11, and choose which ones to run.
+
+<span class=""filename"">Filename: src/lib.rs</span>
+
+```rust,noplayground
+{{#rustdoc_include ../listings/ch11-writing-automated-tests/li"
+2110,53,2106,"all the
+tests will run in parallel",5112,5146,,What will happen when no parameters are passed when running tests?,ch11-02-running-tests.txt,"me"">Filename: src/lib.rs</span>
+
+```rust,noplayground
+{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-11/src/lib.rs}}
+```
+
+<span class=""caption"">Listing 11-11: Three tests with three different
+names</span>
+
+If we run the tests without passing any arguments, as we saw earlier, all the
+tests will run in parallel:
+
+```console
+{{#include ../listings/ch11-writing-automated-tests/listing-11-11/output.txt}}
+```
+
+#### Running Single Tests
+
+We can pass the name of any test function to `cargo test` to run only that test:
+
+```console
+{{#include ../listings/ch11-writing-automated-tests/output-only-02-single-test/out"
+2111,53,2107,pass the name of any test function to `cargo test` to run only that test,5278,5350,,How to run only one selected test?,ch11-02-running-tests.txt,""">Listing 11-11: Three tests with three different
+names</span>
+
+If we run the tests without passing any arguments, as we saw earlier, all the
+tests will run in parallel:
+
+```console
+{{#include ../listings/ch11-writing-automated-tests/listing-11-11/output.txt}}
+```
+
+#### Running Single Tests
+
+We can pass the name of any test function to `cargo test` to run only that test:
+
+```console
+{{#include ../listings/ch11-writing-automated-tests/output-only-02-single-test/output.txt}}
+```
+
+Only the test with the name `one_hundred` ran; the other two tests didn’t match
+that name. The test output lets us know we had more tests that didn’t run by
+displaying `2 filtered out` at t"
+2222,63,2217,"`FnMut` applies to closures that don’t move captured values out of their
+   body, but that might mutate the captured values. These closures can be
+   called more than once.",14690,14862,,Where does 'FnMut' apply?,ch13-01-closures.txt," `FnOnce` applies to closures that can be called once. All closures implement
+   at least this trait, because all closures can be called. A closure that
+   moves captured values out of its body will only implement `FnOnce` and none
+   of the other `Fn` traits, because it can only be called once.
+2. `FnMut` applies to closures that don’t move captured values out of their
+   body, but that might mutate the captured values. These closures can be
+   called more than once.
+3. `Fn` applies to closures that don’t move captured values out of their body
+   and that don’t mutate captured values, as well as closures that capture
+   nothing from their environment. These closures can be called more than once
+   without mutating their environment, which is important in cases "
+2112,53,2108,"We can specify part of a test name, and any test whose name matches that value
+will be run. For example, because two of our tests’ names contain `add`, we can
+run those two by running `cargo test add`",5855,6055,,Is it possible to run selected tests without having to pass all functions names in parameters?,ch11-02-running-tests.txt," test output lets us know we had more tests that didn’t run by
+displaying `2 filtered out` at the end.
+
+We can’t specify the names of multiple tests in this way; only the first value
+given to `cargo test` will be used. But there is a way to run multiple tests.
+
+#### Filtering to Run Multiple Tests
+
+We can specify part of a test name, and any test whose name matches that value
+will be run. For example, because two of our tests’ names contain `add`, we can
+run those two by running `cargo test add`:
+
+```console
+{{#include ../listings/ch11-writing-automated-tests/output-only-03-multiple-tests/output.txt}}
+```
+
+This command ran all tests with `add` in the name and filtered out the test
+named `one_hundred`. Also note that the module in which a test appears becomes
+part of the test’s name, so we "
+2113,53,2109,"annotate the
+time-consuming tests using the `ignore` attribute to exclude them",6697,6775,,How can I run all tests only with few of them excluded?,ch11-02-running-tests.txt,"ring
+on the module’s name.
+
+### Ignoring Some Tests Unless Specifically Requested
+
+Sometimes a few specific tests can be very time-consuming to execute, so you
+might want to exclude them during most runs of `cargo test`. Rather than
+listing as arguments all tests you do want to run, you can instead annotate the
+time-consuming tests using the `ignore` attribute to exclude them, as shown
+here:
+
+<span class=""filename"">Filename: src/lib.rs</span>
+
+```rust,noplayground
+{{#rustdoc_include ../listings/ch11-writing-automated-tests/no-listing-11-ignore-a-test/src/lib.rs}}
+```
+
+After `#[test]` we add the `#[ignore]` line to the test we want to exclude. Now
+when we run our tests, "
+2114,53,2110,cargo test -- --ignored,7713,7736,,How to run ignored tests only?,ch11-02-running-tests.txt,"-automated-tests/output-only-04-running-ignored/output.txt}}
+```
+
+By controlling which tests run, you can make sure your `cargo test` results
+will be fast. When you’re at a point where it makes sense to check the results
+of the `ignored` tests and you have time to wait for the results, you can run
+`cargo test -- --ignored` instead. If you want to run all tests whether they’re
+ignored or not, you can run `cargo test -- --include-ignored`.
+"
+2168,54,2163,"unit tests and integration
+tests",233,265,,What types of tests are possible to perform in Rust?,ch11-03-test-organization.txt,"## Test Organization
+
+As mentioned at the start of the chapter, testing is a complex discipline, and
+different people use different terminology and organization. The Rust community
+thinks about tests in terms of two main categories: unit tests and integration
+tests. *Unit tests* are small and more focused, testing one module in isolation
+at a time, and can test private interfaces. *Integration tests* are entirely
+external to your library and use your code in the same way any other external
+code would, using only the public interface and potentially exercising"
+2169,54,2164,"small and more focused, testing one module in isolation
+at a time, and can test private interfaces",284,382,,What are unit tests?,ch11-03-test-organization.txt,"## Test Organization
+
+As mentioned at the start of the chapter, testing is a complex discipline, and
+different people use different terminology and organization. The Rust community
+thinks about tests in terms of two main categories: unit tests and integration
+tests. *Unit tests* are small and more focused, testing one module in isolation
+at a time, and can test private interfaces. *Integration tests* are entirely
+external to your library and use your code in the same way any other external
+code would, using only the public interface and potentially exercising multiple
+modules per test.
+
+Writing both kinds of tests is important to ensure that the pieces of your
+library are d"
+2170,54,2165,"using only the public interface and potentially exercising multiple
+modules per test",507,591,,What are integration tests?,ch11-03-test-organization.txt,"s of two main categories: unit tests and integration
+tests. *Unit tests* are small and more focused, testing one module in isolation
+at a time, and can test private interfaces. *Integration tests* are entirely
+external to your library and use your code in the same way any other external
+code would, using only the public interface and potentially exercising multiple
+modules per test.
+
+Writing both kinds of tests is important to ensure that the pieces of your
+library are doing what you expect them to, separately and together.
+
+### Unit Tests
+
+The purpose of unit tests is to test each unit of code in isolation from the
+rest of the code to quickly pinpoint where code is and isn’t"
+2171,54,2166,"The purpose of unit tests is to test each unit of code in isolation from the
+rest of the code to quickly pinpoint where code is and isn’t working as
+expected. ",754,913,,What are unit tests used for?,ch11-03-test-organization.txt," code in the same way any other external
+code would, using only the public interface and potentially exercising multiple
+modules per test.
+
+Writing both kinds of tests is important to ensure that the pieces of your
+library are doing what you expect them to, separately and together.
+
+### Unit Tests
+
+The purpose of unit tests is to test each unit of code in isolation from the
+rest of the code to quickly pinpoint where code is and isn’t working as
+expected. You’ll put unit tests in the *src* directory in each file with the
+code that they’re testing. The convention is to create a module named `tests`
+in each file to contain the test functions and to annotate the module with
+`cfg(test)`.
+
+#### The Tests Module and `#[cfg(test)]`
+
+The `#[cfg(test)]` annot"
+2172,54,2167,"in the *src* directory in each file with the
+code that they’re testing",935,1005,,Where to put unit tests in Rust?,ch11-03-test-organization.txt,"to ensure that the pieces of your
+library are doing what you expect them to, separately and together.
+
+### Unit Tests
+
+The purpose of unit tests is to test each unit of code in isolation from the
+rest of the code to quickly pinpoint where code is and isn’t working as
+expected. You’ll put unit tests in the *src* directory in each file with the
+code that they’re testing. The convention is to create a module named `tests`
+in each file to contain the test functions and to annotate the module with
+`cfg(test)`.
+
+#### The Tests Module and `#[cfg(test)]`
+
+The `#[cfg(test)]` annotation on the tests module tells Rust to compile and run
+the test code only when you run `car"
+2173,54,2168,"to create a module named `tests`
+in each file to contain the test functions and to annotate the module with
+`cfg(test)`.",1025,1145,,What is the naming convention of tests in Rust?,ch11-03-test-organization.txt,"d together.
+
+### Unit Tests
+
+The purpose of unit tests is to test each unit of code in isolation from the
+rest of the code to quickly pinpoint where code is and isn’t working as
+expected. You’ll put unit tests in the *src* directory in each file with the
+code that they’re testing. The convention is to create a module named `tests`
+in each file to contain the test functions and to annotate the module with
+`cfg(test)`.
+
+#### The Tests Module and `#[cfg(test)]`
+
+The `#[cfg(test)]` annotation on the tests module tells Rust to compile and run
+the test code only when you run `cargo test`, not when you run `cargo build`.
+This saves compile time when you only want to build the library and saves space
+in the resulting c"
+2174,54,2169," tells Rust to compile and run
+the test code only when you run `cargo test`, not when you run `cargo build`.",1238,1346,,What is the purpose of #[cfg(test)] annotation?,ch11-03-test-organization.txt,"the *src* directory in each file with the
+code that they’re testing. The convention is to create a module named `tests`
+in each file to contain the test functions and to annotate the module with
+`cfg(test)`.
+
+#### The Tests Module and `#[cfg(test)]`
+
+The `#[cfg(test)]` annotation on the tests module tells Rust to compile and run
+the test code only when you run `cargo test`, not when you run `cargo build`.
+This saves compile time when you only want to build the library and saves space
+in the resulting compiled artifact because the tests are not included. You’ll
+see that because integration tests go in a different directory, they don’t need
+the `#[cfg(test)]` annotation. However, because unit tests go"
+2175,54,2170,"they don’t need
+the `#[cfg(test)]` annotation",1569,1614,,Do integration tests need #[cfg(test)] annotation?,ch11-03-test-organization.txt,"the test code only when you run `cargo test`, not when you run `cargo build`.
+This saves compile time when you only want to build the library and saves space
+in the resulting compiled artifact because the tests are not included. You’ll
+see that because integration tests go in a different directory, they don’t need
+the `#[cfg(test)]` annotation. However, because unit tests go in the same files
+as the code, you’ll use `#[cfg(test)]` to specify that they shouldn’t be
+included in the compiled result.
+
+Recall that when we generated the new `adder` project in the first section of
+this chapter, Cargo generated this code for us:
+
+<span class=""fi"
+2176,54,2171,Rust’s privacy rules do allow you to test private functions,2885,2944,,Is it possible to test private functions?,ch11-03-test-organization.txt,"annotated with `#[test]`.
+
+#### Testing Private Functions
+
+There’s debate within the testing community about whether or not private
+functions should be tested directly, and other languages make it difficult or
+impossible to test private functions. Regardless of which testing ideology you
+adhere to, Rust’s privacy rules do allow you to test private functions.
+Consider the code in Listing 11-12 with the private function `internal_adder`.
+
+<span class=""filename"">Filename: src/lib.rs</span>
+
+```rust,noplayground
+{{#rustdoc_include ../listings/ch11-writing-automated-tests/listing-11-12/src/lib.rs}}
+```
+
+<span class=""caption"">Listing 11-12: Testing a privat"
+2177,54,2172,"to test
+whether many parts of your library work together correctly",4080,4146,,What is the purpose of integration tests?,ch11-03-test-organization.txt," nothing in Rust that will compel
+you to do so.
+
+### Integration Tests
+
+In Rust, integration tests are entirely external to your library. They use your
+library in the same way any other code would, which means they can only call
+functions that are part of your library’s public API. Their purpose is to test
+whether many parts of your library work together correctly. Units of code that
+work correctly on their own could have problems when integrated, so test
+coverage of the integrated code is important as well. To create integration
+tests, you first need a *tests* directory.
+
+#### The *tests* Directory
+
+We create a *tests* directory at the top level of our proj"
+2178,54,2173,"use the `--test` argument of `cargo test`
+followed by the name of the file:",7030,7105,,How to run all the tests in particular integration test file?,ch11-03-test-organization.txt,"ts own section, so if we add more files in the
+*tests* directory, there will be more integration test sections.
+
+We can still run a particular integration test function by specifying the test
+function’s name as an argument to `cargo test`. To run all the tests in a
+particular integration test file, use the `--test` argument of `cargo test`
+followed by the name of the file:
+
+```console
+{{#include ../listings/ch11-writing-automated-tests/output-only-05-single-integration/output.txt}}
+```
+
+This command runs only the tests in the *tests/integration_test.rs* file.
+
+#### Submodules in Integration Tests
+
+As you add more integration tests, you might want to make more files i"
+2179,54,2174,Submodules in Integration Tests,7302,7333,,What could I use to better organize tests?,ch11-03-test-organization.txt,"ular integration test file, use the `--test` argument of `cargo test`
+followed by the name of the file:
+
+```console
+{{#include ../listings/ch11-writing-automated-tests/output-only-05-single-integration/output.txt}}
+```
+
+This command runs only the tests in the *tests/integration_test.rs* file.
+
+#### Submodules in Integration Tests
+
+As you add more integration tests, you might want to make more files in the
+*tests* directory to help organize them; for example, you can group the test
+functions by the functionality they’re testing. As mentioned earlier, each file
+in the *tests* directory is compiled as its own separate crate, w"
+2115,55,2111,stderr,1181,1187,,What is the name of error stream?,ch12-00-an-io-project.txt,"ong the way, we’ll show how to make our command line tool use the terminal
+features that many other command line tools use. We’ll read the value of an
+environment variable to allow the user to configure the behavior of our tool.
+We’ll also print error messages to the standard error console stream (`stderr`)
+instead of standard output (`stdout`), so, for example, the user can redirect
+successful output to a file while still seeing error messages onscreen.
+
+One Rust community member, Andrew Gallant, has already created a fully
+featured, very fast version of `grep`, called `ripgrep`. By comparison, our"
+2116,55,2112,stdout,1219,1225,,What is the name of standard output?,ch12-00-an-io-project.txt,"r command line tool use the terminal
+features that many other command line tools use. We’ll read the value of an
+environment variable to allow the user to configure the behavior of our tool.
+We’ll also print error messages to the standard error console stream (`stderr`)
+instead of standard output (`stdout`), so, for example, the user can redirect
+successful output to a file while still seeing error messages onscreen.
+
+One Rust community member, Andrew Gallant, has already created a fully
+featured, very fast version of `grep`, called `ripgrep`. By comparison, our
+version will be fairly simple, but th"
+2117,55,2113,a file path and a string,745,769,,Which parameters takes 'grep' for file search?,ch12-00-an-io-project.txt,"mand line tools, so for our project, we’ll
+make our own version of the classic command line search tool `grep`
+(**g**lobally search a **r**egular **e**xpression and **p**rint). In the
+simplest use case, `grep` searches a specified file for a specified string. To
+do so, `grep` takes as its arguments a file path and a string. Then it reads
+the file, finds lines in that file that contain the string argument, and prints
+those lines.
+
+Along the way, we’ll show how to make our command line tool use the terminal
+features that many other command line tools use. We’ll read the value of an
+environment variable to allow the use"
+2118,55,2114,print error messages,1121,1141,,What is the purpose of stderr?,ch12-00-an-io-project.txt,"hat contain the string argument, and prints
+those lines.
+
+Along the way, we’ll show how to make our command line tool use the terminal
+features that many other command line tools use. We’ll read the value of an
+environment variable to allow the user to configure the behavior of our tool.
+We’ll also print error messages to the standard error console stream (`stderr`)
+instead of standard output (`stdout`), so, for example, the user can redirect
+successful output to a file while still seeing error messages onscreen.
+
+One Rust community member, Andrew Gallant, has already created a fully
+featured, very fast version o"
+2119,56,2114,minigrep,343,351,,What is the purpose of stderr?,ch12-01-accepting-command-line-arguments.txt,"create a new project with, as always, `cargo new`. We’ll call our project
+`minigrep` to distinguish it from the `grep` tool that you might already have
+on your system.
+
+```console
+$ cargo new minigrep
+     Created binary (application) `minigrep` project
+$ cd minigrep
+```
+
+The first task is to make `minigrep` accept its two command line arguments: the
+file path and a string to search for. That is, we want to be able to run our
+program with `cargo run`, two hyphens to indicate the following arguments are
+for our program rather than for `cargo`, a string to search for, and a path to
+a file to search in, "
+2120,56,2115,two hyphens,499,510,,How are command line arguments marked with?,ch12-01-accepting-command-line-arguments.txt,"our system.
+
+```console
+$ cargo new minigrep
+     Created binary (application) `minigrep` project
+$ cd minigrep
+```
+
+The first task is to make `minigrep` accept its two command line arguments: the
+file path and a string to search for. That is, we want to be able to run our
+program with `cargo run`, two hyphens to indicate the following arguments are
+for our program rather than for `cargo`, a string to search for, and a path to
+a file to search in, like so:
+
+```console
+$ cargo run -- searchstring example-filename.txt
+```
+
+Right now, the program generated by `cargo new` cannot process arguments we
+give it."
+2121,56,2116,std::env::args,1160,1174,,Which function is needed to read command line arguments?,ch12-01-accepting-command-line-arguments.txt,"ates.io/) can help
+with writing a program that accepts command line arguments, but because you’re
+just learning this concept, let’s implement this capability ourselves.
+
+### Reading the Argument Values
+
+To enable `minigrep` to read the values of command line arguments we pass to
+it, we’ll need the `std::env::args` function provided in Rust’s standard
+library. This function returns an iterator of the command line arguments passed
+to `minigrep`. We’ll cover iterators fully in [Chapter 13][ch13]<!-- ignore
+-->. For now, you only need to know two details about iterators: iterators
+produce a series of values, an"
+2122,56,2117,"Rust’s standard
+library",1197,1220,,Where is 'std::env::args' provided?,ch12-01-accepting-command-line-arguments.txt,"gram that accepts command line arguments, but because you’re
+just learning this concept, let’s implement this capability ourselves.
+
+### Reading the Argument Values
+
+To enable `minigrep` to read the values of command line arguments we pass to
+it, we’ll need the `std::env::args` function provided in Rust’s standard
+library. This function returns an iterator of the command line arguments passed
+to `minigrep`. We’ll cover iterators fully in [Chapter 13][ch13]<!-- ignore
+-->. For now, you only need to know two details about iterators: iterators
+produce a series of values, and we can call the `collect` method on an itera"
+2123,56,2118,iterator of the command line arguments,1247,1285,,What does 'std::env::args' function return?,ch12-01-accepting-command-line-arguments.txt,"use you’re
+just learning this concept, let’s implement this capability ourselves.
+
+### Reading the Argument Values
+
+To enable `minigrep` to read the values of command line arguments we pass to
+it, we’ll need the `std::env::args` function provided in Rust’s standard
+library. This function returns an iterator of the command line arguments passed
+to `minigrep`. We’ll cover iterators fully in [Chapter 13][ch13]<!-- ignore
+-->. For now, you only need to know two details about iterators: iterators
+produce a series of values, and we can call the `collect` method on an iterator
+to turn it into a collection, such as a vector, that contains"
+2124,56,2119,a series of values,1452,1470,,What is an iterator?,ch12-01-accepting-command-line-arguments.txt,"ed the `std::env::args` function provided in Rust’s standard
+library. This function returns an iterator of the command line arguments passed
+to `minigrep`. We’ll cover iterators fully in [Chapter 13][ch13]<!-- ignore
+-->. For now, you only need to know two details about iterators: iterators
+produce a series of values, and we can call the `collect` method on an iterator
+to turn it into a collection, such as a vector, that contains all the elements
+the iterator produces.
+
+The code in Listing 12-1 allows your `minigrep` program to read any command
+line arguments passed to it and then collect the values into a vect"
+2125,56,2120,std::env,2054,2062,,What is the name of Rust's standard library?,ch12-01-accepting-command-line-arguments.txt,"lues into a vector.
+
+<span class=""filename"">Filename: src/main.rs</span>
+
+```rust
+{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-01/src/main.rs}}
+```
+
+<span class=""caption"">Listing 12-1: Collecting the command line arguments into
+a vector and printing them</span>
+
+First, we bring the `std::env` module into scope with a `use` statement so we
+can use its `args` function. Notice that the `std::env::args` function is
+nested in two levels of modules. As we discussed in [Chapter
+7][ch7-idiomatic-use]<!-- ignore -->, in cases where the desired function is
+nested in more than one module, we’ve c"
+2126,56,2121,`std::env::args` will panic,2756,2783,,What will happen if there is invalid character in command line argument?,ch12-01-accepting-command-line-arguments.txt,"ly use other functions
+from `std::env`. It’s also less ambiguous than adding `use std::env::args` and
+then calling the function with just `args`, because `args` might easily be
+mistaken for a function that’s defined in the current module.
+
+> ### The `args` Function and Invalid Unicode
+>
+> Note that `std::env::args` will panic if any argument contains invalid
+> Unicode. If your program needs to accept arguments containing invalid
+> Unicode, use `std::env::args_os` instead. That function returns an iterator
+> that produces `OsString` values instead of `String` values. We’ve chosen to
+> use `std::env::args` here for simpli"
+2127,56,2122,"to turn the iterator into a vector containing all the values produced
+by the iterator",3277,3362,,Why do we use fuction 'collect' on iterator?,ch12-01-accepting-command-line-arguments.txt,"duces `OsString` values instead of `String` values. We’ve chosen to
+> use `std::env::args` here for simplicity, because `OsString` values differ
+> per platform and are more complex to work with than `String` values.
+
+On the first line of `main`, we call `env::args`, and we immediately use
+`collect` to turn the iterator into a vector containing all the values produced
+by the iterator. We can use the `collect` function to create many kinds of
+collections, so we explicitly annotate the type of `args` to specify that we
+want a vector of strings. Although we very rarely need to annotate types in
+Rust, `collect` is one function you do often need to annotate because Rust
+isn’t able t"
+2128,56,2123,the name of our binary,4099,4121,,What is the first command line argument?,ch12-01-accepting-command-line-arguments.txt,"guments and then with two arguments:
+
+```console
+{{#include ../listings/ch12-an-io-project/listing-12-01/output.txt}}
+```
+
+```console
+{{#include ../listings/ch12-an-io-project/output-only-01-with-args/output.txt}}
+```
+
+Notice that the first value in the vector is `""target/debug/minigrep""`, which
+is the name of our binary. This matches the behavior of the arguments list in
+C, letting programs use the name by which they were invoked in their execution.
+It’s often convenient to have access to the program name in case you want to
+print it in messages or change behavior of the program based on what command
+line alias wa"
+2129,56,2124,args[0],5218,5225,,How to access first command line argument?,ch12-01-accepting-command-line-arguments.txt,"und
+{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-02/src/main.rs}}
+```
+
+<span class=""caption"">Listing 12-2: Creating variables to hold the query
+argument and file path argument</span>
+
+As we saw when we printed the vector, the program’s name takes up the first
+value in the vector at `args[0]`, so we’re starting arguments at index `1`. The
+first argument `minigrep` takes is the string we’re searching for, so we put a
+reference to the first argument in the variable `query`. The second argument
+will be the file path, so we put a reference to the second argument in the
+variable `file_path`"
+2130,57,2125,to handle files,1126,1141,,What is the usage of 'std::fs'?,ch12-02-reading-a-file.txt,"
+{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-04/src/main.rs:here}}
+```
+
+<span class=""caption"">Listing 12-4: Reading the contents of the file specified
+by the second argument</span>
+
+First, we bring in a relevant part of the standard library with a `use`
+statement: we need `std::fs` to handle files.
+
+In `main`, the new statement `fs::read_to_string` takes the `file_path`, opens
+that file, and returns a `std::io::Result<String>` of the file’s contents.
+
+After that, we again add a temporary `println!` statement that prints the value
+of `contents` after the file is read, so we can check that the"
+2131,57,2126,std::fs,1117,1124,,What is the name of module used to handle files?,ch12-02-reading-a-file.txt,"layground
+{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-04/src/main.rs:here}}
+```
+
+<span class=""caption"">Listing 12-4: Reading the contents of the file specified
+by the second argument</span>
+
+First, we bring in a relevant part of the standard library with a `use`
+statement: we need `std::fs` to handle files.
+
+In `main`, the new statement `fs::read_to_string` takes the `file_path`, opens
+that file, and returns a `std::io::Result<String>` of the file’s contents.
+
+After that, we again add a temporary `println!` statement that prints the value
+of `contents` after the file is read, so we c"
+2132,57,2127,fs::read_to_string,1174,1192,,How to read the entire content of file?,ch12-02-reading-a-file.txt,"ct/listing-12-04/src/main.rs:here}}
+```
+
+<span class=""caption"">Listing 12-4: Reading the contents of the file specified
+by the second argument</span>
+
+First, we bring in a relevant part of the standard library with a `use`
+statement: we need `std::fs` to handle files.
+
+In `main`, the new statement `fs::read_to_string` takes the `file_path`, opens
+that file, and returns a `std::io::Result<String>` of the file’s contents.
+
+After that, we again add a temporary `println!` statement that prints the value
+of `contents` after the file is read, so we can check that the program is
+working so far.
+
+Let’s run this code wi"
+2133,57,2128,"opens
+that file, and returns a `std::io::Result‹String>` of the file’s contents",1217,1296,,What does 'fs::read_to_string' do?,ch12-02-reading-a-file.txt,"pan class=""caption"">Listing 12-4: Reading the contents of the file specified
+by the second argument</span>
+
+First, we bring in a relevant part of the standard library with a `use`
+statement: we need `std::fs` to handle files.
+
+In `main`, the new statement `fs::read_to_string` takes the `file_path`, opens
+that file, and returns a `std::io::Result<String>` of the file’s contents.
+
+After that, we again add a temporary `println!` statement that prints the value
+of `contents` after the file is read, so we can check that the program is
+working so far.
+
+Let’s run this code with any string as the first command line argument (because
+we haven’t implemented the searching part yet)"
+2180,58,2175,"Split your program into a *main.rs* and a *lib.rs* and move your program’s
+  logic to *lib.rs*.
+* As long as your command line parsing logic is small, it can remain in
+  *main.rs*.
+* When the command line parsing logic starts getting complicated, extract it
+  from *main.rs* and move it to *lib.rs*.",2482,2781,,Are there any guidelines how to split program properly?,ch12-03-improving-error-handling-and-modularity.txt,"oblem of allocating responsibility for multiple tasks to
+the `main` function is common to many binary projects. As a result, the Rust
+community has developed guidelines for splitting the separate concerns of a
+binary program when `main` starts getting large. This process has the following
+steps:
+
+* Split your program into a *main.rs* and a *lib.rs* and move your program’s
+  logic to *lib.rs*.
+* As long as your command line parsing logic is small, it can remain in
+  *main.rs*.
+* When the command line parsing logic starts getting complicated, extract it
+  from *main.rs* and move it to *lib.rs*.
+
+The responsibilities that remain in the `main` function after this process
+should be limited to the following:
+
+* Calling the command line parsing logic with the argument values
+* Setting up any other configuration
+* Calling a `run` function in *lib.rs*
+* Handling the error if `run` returns an err"
+2197,58,2192,"There’s a tendency among many Rustaceans to avoid using `clone` to fix
+> ownership problems because of its runtime cost.",7415,7535,,Is is good to use 'clone'?,ch12-03-improving-error-handling-and-modularity.txt,"rence to the string data.
+However, cloning the data also makes our code very straightforward because we
+don’t have to manage the lifetimes of the references; in this circumstance,
+giving up a little performance to gain simplicity is a worthwhile trade-off.
+
+> ### The Trade-Offs of Using `clone`
+>
+> There’s a tendency among many Rustaceans to avoid using `clone` to fix
+> ownership problems because of its runtime cost. In
+> [Chapter 13][ch13]<!-- ignore -->, you’ll learn how to use more efficient
+> methods in this type of situation. But for now, it’s okay to copy a few
+> strings to continue making progress because you’ll make these copies only
+> once and your file path and query string are very small. It’s better"
+2198,58,2193,"We can create instances of types in the
+standard library, such as `String`, by calling `String::new`",9403,9503,,How to create new instance of a type?,ch12-03-improving-error-handling-and-modularity.txt,"from the `parse_config` function.
+
+So now that the purpose of the `parse_config` function is to create a `Config`
+instance, we can change `parse_config` from a plain function to a function
+named `new` that is associated with the `Config` struct. Making this change
+will make the code more idiomatic. We can create instances of types in the
+standard library, such as `String`, by calling `String::new`. Similarly, by
+changing `parse_config` into a `new` function associated with `Config`, we’ll
+be able to create instances of `Config` by calling `Config::new`. Listing 12-7
+shows the changes we need to make.
+
+<span class=""filename"">Filename: src/main.rs</span>
+
+```rust,should_panic,noplayground
+{{#r"
+2199,58,2194,"Using `unwrap_or_else` allows us to define some custom, non-`panic!` error
+handling.",15635,15719,,"What are benefits of using 'unwrap_or_else""?",ch12-03-improving-error-handling-and-modularity.txt,"-io-project/listing-12-10/src/main.rs:here}}
+```
+
+<span class=""caption"">Listing 12-10: Exiting with an error code if building a
+`Config` fails</span>
+
+In this listing, we’ve used a method we haven’t covered in detail yet:
+`unwrap_or_else`, which is defined on `Result<T, E>` by the standard library.
+Using `unwrap_or_else` allows us to define some custom, non-`panic!` error
+handling. If the `Result` is an `Ok` value, this method’s behavior is similar
+to `unwrap`: it returns the inner value `Ok` is wrapping. However, if the value
+is an `Err` value, this method calls the code in the *closure*, which is an
+anonymous function we define and pass as an argument to `unwrap_or_else`. W"
+2200,58,2195,"*main.rs* handles running the
+program",3128,3165,,What is the purpose of main.rs file?,ch12-03-improving-error-handling-and-modularity.txt,"` function after this process
+should be limited to the following:
+
+* Calling the command line parsing logic with the argument values
+* Setting up any other configuration
+* Calling a `run` function in *lib.rs*
+* Handling the error if `run` returns an error
+
+This pattern is about separating concerns: *main.rs* handles running the
+program, and *lib.rs* handles all the logic of the task at hand. Because you
+can’t test the `main` function directly, this structure lets you test all of
+your program’s logic by moving it into functions in *lib.rs*. The code that
+remains in *main.rs* will be small enough to verify its correctness by readin"
+2201,58,2196,handles all the logic of the task at hand,3180,3221,,What is the purpose of lib.rs file?,ch12-03-improving-error-handling-and-modularity.txt,"he following:
+
+* Calling the command line parsing logic with the argument values
+* Setting up any other configuration
+* Calling a `run` function in *lib.rs*
+* Handling the error if `run` returns an error
+
+This pattern is about separating concerns: *main.rs* handles running the
+program, and *lib.rs* handles all the logic of the task at hand. Because you
+can’t test the `main` function directly, this structure lets you test all of
+your program’s logic by moving it into functions in *lib.rs*. The code that
+remains in *main.rs* will be small enough to verify its correctness by reading
+it. Let’s rework our program by following this process"
+2202,59,2197,"1. Write a test that fails and run it to make sure it fails for the reason you
+   expect.
+2. Write or modify just enough code to make the new test pass.
+3. Refactor the code you just added or changed and make sure the tests
+   continue to pass.
+4. Repeat from step 1!",551,818,,How do I produce code using Test Driven Development?,ch12-04-testing-the-librarys-functionality.txt,"ty of our code. We can call functions directly with
+various arguments and check return values without having to call our binary
+from the command line.
+
+In this section, we’ll add the searching logic to the `minigrep` program
+using the test-driven development (TDD) process with the following steps:
+
+1. Write a test that fails and run it to make sure it fails for the reason you
+   expect.
+2. Write or modify just enough code to make the new test pass.
+3. Refactor the code you just added or changed and make sure the tests
+   continue to pass.
+4. Repeat from step 1!
+
+Though it’s just one of many ways to write software, TDD can help drive code
+design. Writing the test before you write the code that makes the test pass
+helps to maintain high test coverage throughout the process.
+
+We’ll test drive the implementation of the functionality that will actually do
+the "
+2203,59,2198,"Writing the test before you write the code that makes the test pass
+helps to maintain high test coverage throughout the process.",905,1033,,What are the benefits of TDD?,ch12-04-testing-the-librarys-functionality.txt,"fails for the reason you
+   expect.
+2. Write or modify just enough code to make the new test pass.
+3. Refactor the code you just added or changed and make sure the tests
+   continue to pass.
+4. Repeat from step 1!
+
+Though it’s just one of many ways to write software, TDD can help drive code
+design. Writing the test before you write the code that makes the test pass
+helps to maintain high test coverage throughout the process.
+
+We’ll test drive the implementation of the functionality that will actually do
+the searching for the query string in the file contents and produce a list of
+lines that match the query. We’ll add this functionality in a function called
+`search`.
+
+### Writing a Failing Test
+
+Because we don’t need th"
+2204,59,2199,"Write a test that fails and run it to make sure it fails for the reason you
+   expect.",554,640,,From what should I start in Test Driven Development?,ch12-04-testing-the-librarys-functionality.txt,"of our code. We can call functions directly with
+various arguments and check return values without having to call our binary
+from the command line.
+
+In this section, we’ll add the searching logic to the `minigrep` program
+using the test-driven development (TDD) process with the following steps:
+
+1. Write a test that fails and run it to make sure it fails for the reason you
+   expect.
+2. Write or modify just enough code to make the new test pass.
+3. Refactor the code you just added or changed and make sure the tests
+   continue to pass.
+4. Repeat from step 1!
+
+Though it’s just one of many ways to write software, TDD can help drive code
+design. Writing the test before you write t"
+2205,60,2200,Environment Variables,16,37,,How can I avoid passing the same command line argument in each running of the program?,ch12-05-working-with-environment-variables.txt,"## Working with Environment Variables
+
+We’ll improve `minigrep` by adding an extra feature: an option for
+case-insensitive searching that the user can turn on via an environment
+variable. We could make this feature a command line option and require that
+users enter it each time they want it to apply, but by instead making it an
+environ"
+2206,60,2201,`to_lowercase` will handle basic Unicode,3331,3371,,Does 'to_lowercase' work on every letter from Unicode ?,ch12-05-working-with-environment-variables.txt,"owercase the `query` string and store it in a shadowed variable with
+the same name. Calling `to_lowercase` on the query is necessary so no
+matter whether the user’s query is `""rust""`, `""RUST""`, `""Rust""`, or `""rUsT""`,
+we’ll treat the query as if it were `""rust""` and be insensitive to the case.
+While `to_lowercase` will handle basic Unicode, it won’t be 100% accurate. If
+we were writing a real application, we’d want to do a bit more work here, but
+this section is about environment variables, not Unicode, so we’ll leave it at
+that here.
+
+Note that `query` is now a `String` rather than a string slice, because calling
+`to_lowercase` crea"
+2207,60,2202,"`env::var` function and pass it the name of the `IGNORE_CASE` environment
+variable.",6253,6336,,How to set up an environment variable?,ch12-05-working-with-environment-variables.txt,"
+```rust,noplayground
+{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-23/src/lib.rs:here}}
+```
+
+<span class=""caption"">Listing 12-23: Checking for any value in an environment
+variable named `IGNORE_CASE`</span>
+
+Here, we create a new variable `ignore_case`. To set its value, we call the
+`env::var` function and pass it the name of the `IGNORE_CASE` environment
+variable. The `env::var` function returns a `Result` that will be the
+successful `Ok` variant that contains the value of the environment variable if
+the environment variable is set to any value. It will return the `Err` variant
+if the environment variable is not set.
+
+We’re using the `is_ok` method on the `R"
+2208,60,2203,"returns a `Result` that will be the
+successful `Ok` variant that contains the value of the environment variable if
+the environment variable is set to any value. It will return the `Err` variant
+if the environment variable is not set.",6361,6594,,What is the return value of env::val?,ch12-05-working-with-environment-variables.txt,"
+<span class=""caption"">Listing 12-23: Checking for any value in an environment
+variable named `IGNORE_CASE`</span>
+
+Here, we create a new variable `ignore_case`. To set its value, we call the
+`env::var` function and pass it the name of the `IGNORE_CASE` environment
+variable. The `env::var` function returns a `Result` that will be the
+successful `Ok` variant that contains the value of the environment variable if
+the environment variable is set to any value. It will return the `Err` variant
+if the environment variable is not set.
+
+We’re using the `is_ok` method on the `Result` to check whether the environment
+variable is set, which means the program should do a case-insensitive search.
+If the `IGNORE_CASE` environment variable isn’t set to anything, `is_ok` will
+return false and the program will perform a case-sensitive sea"
+2209,60,2204,"```console
+PS> Remove-Item Env:IGNORE_CASE
+```",8081,8127,,How to delete a environment variable?,ch12-05-working-with-environment-variables.txt,"e using PowerShell, you will need to set the environment variable and
+run the program as separate commands:
+
+```console
+PS> $Env:IGNORE_CASE=1; cargo run -- to poem.txt
+```
+
+This will make `IGNORE_CASE` persist for the remainder of your shell
+session. It can be unset with the `Remove-Item` cmdlet:
+
+```console
+PS> Remove-Item Env:IGNORE_CASE
+```
+
+We should get lines that contain “to” that might have uppercase letters:
+
+<!-- manual-regeneration
+cd listings/ch12-an-io-project/listing-12-23
+IGNORE_CASE=1 cargo run -- to poem.txt
+can't extract because of the environment variable
+-->
+
+```console
+Are you nobody, too?
+How dreary to be somebody!
+T"
+2210,60,2205,"```console
+PS> $Env:IGNORE_CASE=1; cargo run -- to poem.txt
+```",7890,7953,,How to set up a environment variable in Powershell?,ch12-05-working-with-environment-variables.txt,"t}}
+```
+
+Looks like that still works! Now, let’s run the program with `IGNORE_CASE`
+set to `1` but with the same query `to`.
+
+```console
+$ IGNORE_CASE=1 cargo run -- to poem.txt
+```
+
+If you’re using PowerShell, you will need to set the environment variable and
+run the program as separate commands:
+
+```console
+PS> $Env:IGNORE_CASE=1; cargo run -- to poem.txt
+```
+
+This will make `IGNORE_CASE` persist for the remainder of your shell
+session. It can be unset with the `Remove-Item` cmdlet:
+
+```console
+PS> Remove-Item Env:IGNORE_CASE
+```
+
+We should get lines that contain “to” that might have uppercase letters:
+
+<!-- manual-regeneration
+cd listings/ch12-an-io-pr"
+2134,61,2129,for general information,242,265,,What is stdout used for?,ch12-06-writing-to-stderr-instead-of-stdout.txt,"## Writing Error Messages to Standard Error Instead of Standard Output
+
+At the moment, we’re writing all of our output to the terminal using the
+`println!` macro. In most terminals, there are two kinds of output: *standard
+output* (`stdout`) for general information and *standard error* (`stderr`) for
+error messages. This distinction enables users to choose to direct the
+successful output of a program to a file but still print error messages to the
+screen.
+
+The `println!` macro is only capable of printing to standard output, so we
+have to use something else to"
+2135,61,2130,"for
+error messages",298,316,,What is stderr used for?,ch12-06-writing-to-stderr-instead-of-stdout.txt,"## Writing Error Messages to Standard Error Instead of Standard Output
+
+At the moment, we’re writing all of our output to the terminal using the
+`println!` macro. In most terminals, there are two kinds of output: *standard
+output* (`stdout`) for general information and *standard error* (`stderr`) for
+error messages. This distinction enables users to choose to direct the
+successful output of a program to a file but still print error messages to the
+screen.
+
+The `println!` macro is only capable of printing to standard output, so we
+have to use something else to print to standard error.
+
+### Checking Where Error"
+2136,61,2131,`println!` macro is only capable of printing to standard output,465,528,,Is 'println!' able to print error message?,ch12-06-writing-to-stderr-instead-of-stdout.txt," most terminals, there are two kinds of output: *standard
+output* (`stdout`) for general information and *standard error* (`stderr`) for
+error messages. This distinction enables users to choose to direct the
+successful output of a program to a file but still print error messages to the
+screen.
+
+The `println!` macro is only capable of printing to standard output, so we
+have to use something else to print to standard error.
+
+### Checking Where Errors Are Written
+
+First, let’s observe how the content printed by `minigrep` is currently being
+written to standard output, including any error messages we want to write to
+standard error instead. We’ll do that by r"
+2137,61,2132,with `>` and the file path,1405,1431,,How to redirect output stream to file?,ch12-06-writing-to-stderr-instead-of-stdout.txt,"andard error
+stream so we can still see error messages on the screen even if we redirect the
+standard output stream to a file. Our program is not currently well-behaved:
+we’re about to see that it saves the error message output to a file instead!
+
+To demonstrate this behavior, we’ll run the program with `>` and the file path,
+*output.txt*, that we want to redirect the standard output stream to. We won’t
+pass any arguments, which should cause an error:
+
+```console
+$ cargo run > output.txt
+```
+
+The `>` syntax tells the shell to write the contents of standard output to
+*output.txt* instead of the screen. We didn’t see the"
+2138,61,2133, to print errors,2548,2564,,What is the usage of 'eprintln!'?,ch12-06-writing-to-stderr-instead-of-stdout.txt,"messages are printed.
+Because of the refactoring we did earlier in this chapter, all the code that
+prints error messages is in one function, `main`. The standard library provides
+the `eprintln!` macro that prints to the standard error stream, so let’s change
+the two places we were calling `println!` to print errors to use `eprintln!`
+instead.
+
+<span class=""filename"">Filename: src/main.rs</span>
+
+```rust,ignore
+{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-24/src/main.rs:here}}
+```
+
+<span class=""caption"">Listing 12-24: Writing error messages to standard error
+instead of standard output using `ep"
+2139,61,2134,`eprintln!`,2572,2583,,Which macro enables us to add message to error stream?,ch12-06-writing-to-stderr-instead-of-stdout.txt,"cause of the refactoring we did earlier in this chapter, all the code that
+prints error messages is in one function, `main`. The standard library provides
+the `eprintln!` macro that prints to the standard error stream, so let’s change
+the two places we were calling `println!` to print errors to use `eprintln!`
+instead.
+
+<span class=""filename"">Filename: src/main.rs</span>
+
+```rust,ignore
+{{#rustdoc_include ../listings/ch12-an-io-project/listing-12-24/src/main.rs:here}}
+```
+
+<span class=""caption"">Listing 12-24: Writing error messages to standard error
+instead of standard output using `eprintln!`</span>
+
+Le"
+2140,62,2135,a function-like construct you can store in a variable,663,716,,What is a closure?,ch13-00-functional-features.txt,"es for later execution, and so forth.
+
+In this chapter, we won’t debate the issue of what functional programming is or
+isn’t but will instead discuss some features of Rust that are similar to
+features in many languages often referred to as functional.
+
+More specifically, we’ll cover:
+
+* *Closures*, a function-like construct you can store in a variable
+* *Iterators*, a way of processing a series of elements
+* How to use closures and iterators to improve the I/O project in Chapter 12
+* The performance of closures and iterators (Spoiler alert: they’re faster than
+  you might think!)
+
+We’ve already covered some other Rust features, such as pattern m"
+2141,62,2136,a way of processing a series of elements,732,772,,What is an iterator?,ch13-00-functional-features.txt,"te the issue of what functional programming is or
+isn’t but will instead discuss some features of Rust that are similar to
+features in many languages often referred to as functional.
+
+More specifically, we’ll cover:
+
+* *Closures*, a function-like construct you can store in a variable
+* *Iterators*, a way of processing a series of elements
+* How to use closures and iterators to improve the I/O project in Chapter 12
+* The performance of closures and iterators (Spoiler alert: they’re faster than
+  you might think!)
+
+We’ve already covered some other Rust features, such as pattern matching and
+enums, that are also influenced by the funct"
+2142,62,2137,Iterators and Closures,32,54,,Which functional language features are used in Rust?,ch13-00-functional-features.txt,"# Functional Language Features: Iterators and Closures
+
+Rust’s design has taken inspiration from many existing languages and
+techniques, and one significant influence is *functional programming*.
+Programming in a functional style often includes using functions as values by
+passing them in arguments, returning them from other functions, assigning them
+t"
+2143,62,2138,"includes using functions as values by
+passing them in arguments, returning them from other functions, assigning them
+to variables for later execution, and so forth.",236,400,,What are the characteristics of functional programming?,ch13-00-functional-features.txt,"# Functional Language Features: Iterators and Closures
+
+Rust’s design has taken inspiration from many existing languages and
+techniques, and one significant influence is *functional programming*.
+Programming in a functional style often includes using functions as values by
+passing them in arguments, returning them from other functions, assigning them
+to variables for later execution, and so forth.
+
+In this chapter, we won’t debate the issue of what functional programming is or
+isn’t but will instead discuss some features of Rust that are similar to
+features in many languages often referred to as functional.
+
+More specifically, we’ll cover:
+
+* *Closures*, a function-like construct you can sto"
+2211,63,2206,"anonymous functions you can save in a variable or pass as
+arguments to other functions",219,305,,What are closures?,ch13-01-closures.txt,"<!-- Old heading. Do not remove or links may break. -->
+<a id=""closures-anonymous-functions-that-can-capture-their-environment""></a>
+
+## Closures: Anonymous Functions that Capture Their Environment
+
+Rust’s closures are anonymous functions you can save in a variable or pass as
+arguments to other functions. You can create the closure in one place and then
+call the closure elsewhere to evaluate it in a different context. Unlike
+functions, closures can capture values from the scope in which they’re defined.
+We’ll demonstrate how these closure features allow for code reuse and behavior
+customization.
+
+<"
+2212,63,2207,"You can create the closure in one place and then
+call the closure elsewhere to evaluate it in a different context.",307,421,,How to use closures?,ch13-01-closures.txt,"d heading. Do not remove or links may break. -->
+<a id=""closures-anonymous-functions-that-can-capture-their-environment""></a>
+
+## Closures: Anonymous Functions that Capture Their Environment
+
+Rust’s closures are anonymous functions you can save in a variable or pass as
+arguments to other functions. You can create the closure in one place and then
+call the closure elsewhere to evaluate it in a different context. Unlike
+functions, closures can capture values from the scope in which they’re defined.
+We’ll demonstrate how these closure features allow for code reuse and behavior
+customization.
+
+<!-- Old headings. Do not remove or links may break. -->
+<a id=""creating-an-abstraction-of-behavior-with-closures""></"
+2213,63,2208,"Unlike
+functions, closures can capture values from the scope in which they’re defined.",422,508,,What is the difference between functions and closures?,ch13-01-closures.txt,"ment""></a>
+
+## Closures: Anonymous Functions that Capture Their Environment
+
+Rust’s closures are anonymous functions you can save in a variable or pass as
+arguments to other functions. You can create the closure in one place and then
+call the closure elsewhere to evaluate it in a different context. Unlike
+functions, closures can capture values from the scope in which they’re defined.
+We’ll demonstrate how these closure features allow for code reuse and behavior
+customization.
+
+<!-- Old headings. Do not remove or links may break. -->
+<a id=""creating-an-abstraction-of-behavior-with-closures""></a>
+<a id=""refactoring-using-functions""></a>
+<a id=""refactoring-with-closures-to-store-c"
+2214,63,2209,"Every so
+often, our t-shirt company gives away an exclusive, limited-edition shirt to
+someone on our mailing list as a promotion. People on the mailing list can
+optionally add their favorite color to their profile. If the person chosen for
+a free shirt has their favorite color set, they get that color shirt. If the
+person hasn’t specified a favorite color, they get whatever color the company
+currently has the most of.",1002,1423,,Give me a scenario where can I use closure?,ch13-01-closures.txt,"r-with-closures""></a>
+<a id=""refactoring-using-functions""></a>
+<a id=""refactoring-with-closures-to-store-code""></a>
+
+### Capturing the Environment with Closures
+
+We’ll first examine how we can use closures to capture values from the
+environment they’re defined in for later use. Here’s the scenario: Every so
+often, our t-shirt company gives away an exclusive, limited-edition shirt to
+someone on our mailing list as a promotion. People on the mailing list can
+optionally add their favorite color to their profile. If the person chosen for
+a free shirt has their favorite color set, they get that color shirt. If the
+person hasn’t specified a favorite color, they get whatever color the company
+currently has the most of.
+
+There are many ways to implement this. For this example, we’re going to use an
+enum called `ShirtColor` that has the variants `Red` and `Blue` (limiting the
+number of colors available for simplicity). We represent the company’s
+inventory with an `Inventory` struct that has a field named `shirts` t"
+2215,63,2210,"Closures don’t
+usually require you to annotate the types of the parameters or the return value
+like `fn` functions do.",4499,4617,,Do I have to annotate type of parameters in closures?,ch13-01-closures.txt,"rence to the `self` `Inventory` instance and passes it with the
+code we specify to the `unwrap_or_else` method. Functions, on the other hand,
+are not able to capture their environment in this way.
+
+### Closure Type Inference and Annotation
+
+There are more differences between functions and closures. Closures don’t
+usually require you to annotate the types of the parameters or the return value
+like `fn` functions do. Type annotations are required on functions because the
+types are part of an explicit interface exposed to your users. Defining this
+interface rigidly is important for ensuring that everyone agrees on what types
+of values a function uses and returns. Closures, on the other hand, aren’t used
+in an ex"
+2185,43,2180,into two major categories: *recoverable* and *unrecoverable*,459,519,,How can we categorize errors?,ch09-00-error-handling.txt," Rust requires
+you to acknowledge the possibility of an error and take some action before your
+code will compile. This requirement makes your program more robust by ensuring
+that you’ll discover errors and handle them appropriately before you’ve
+deployed your code to production!
+
+Rust groups errors into two major categories: *recoverable* and *unrecoverable*
+errors. For a recoverable error, such as a *file not found* error, we most
+likely just want to report the problem to the user and retry the operation.
+Unrecoverable errors are always symptoms of bugs, like trying to access a
+location beyond the end of an array, and so we want to immediately stop th"
+2187,43,2182,"we most
+likely just want to report the problem to the user and retry the operation",587,669,,What should I do with a recoverable error?,ch09-00-error-handling.txt,"nt makes your program more robust by ensuring
+that you’ll discover errors and handle them appropriately before you’ve
+deployed your code to production!
+
+Rust groups errors into two major categories: *recoverable* and *unrecoverable*
+errors. For a recoverable error, such as a *file not found* error, we most
+likely just want to report the problem to the user and retry the operation.
+Unrecoverable errors are always symptoms of bugs, like trying to access a
+location beyond the end of an array, and so we want to immediately stop the
+program.
+
+Most languages don’t distinguish between these two kinds of errors and handle
+both in the same way, using mechanisms such as exceptions. R"
+2188,43,2183,"trying to access a
+location beyond the end of an array",726,780,,What is an example of unrecoverable error?,ch09-00-error-handling.txt," production!
+
+Rust groups errors into two major categories: *recoverable* and *unrecoverable*
+errors. For a recoverable error, such as a *file not found* error, we most
+likely just want to report the problem to the user and retry the operation.
+Unrecoverable errors are always symptoms of bugs, like trying to access a
+location beyond the end of an array, and so we want to immediately stop the
+program.
+
+Most languages don’t distinguish between these two kinds of errors and handle
+both in the same way, using mechanisms such as exceptions. Rust doesn’t have
+exceptions. Instead, it has the type `Result<T, E>` for recoverable errors and
+the `panic!` ma"
+2189,43,2184,"Rust doesn’t have
+exceptions",968,996,,Does Rust language contain exceptions?,ch09-00-error-handling.txt,"n.
+Unrecoverable errors are always symptoms of bugs, like trying to access a
+location beyond the end of an array, and so we want to immediately stop the
+program.
+
+Most languages don’t distinguish between these two kinds of errors and handle
+both in the same way, using mechanisms such as exceptions. Rust doesn’t have
+exceptions. Instead, it has the type `Result<T, E>` for recoverable errors and
+the `panic!` macro that stops execution when the program encounters an
+unrecoverable error. This chapter covers calling `panic!` first and then talks
+about returning `Result<T, E>` values. Additionally, we’ll explore
+considerations"
+2190,43,2185,"`Result‹T, E>`",1023,1037,,What should be used to handle recoverable error?,ch09-00-error-handling.txt,"ke trying to access a
+location beyond the end of an array, and so we want to immediately stop the
+program.
+
+Most languages don’t distinguish between these two kinds of errors and handle
+both in the same way, using mechanisms such as exceptions. Rust doesn’t have
+exceptions. Instead, it has the type `Result<T, E>` for recoverable errors and
+the `panic!` macro that stops execution when the program encounters an
+unrecoverable error. This chapter covers calling `panic!` first and then talks
+about returning `Result<T, E>` values. Additionally, we’ll explore
+considerations when deciding whether to try to recover "
+2191,43,2186,`panic!` macro,1069,1083,,What should be used for unrecoverable errors?,ch09-00-error-handling.txt,"of an array, and so we want to immediately stop the
+program.
+
+Most languages don’t distinguish between these two kinds of errors and handle
+both in the same way, using mechanisms such as exceptions. Rust doesn’t have
+exceptions. Instead, it has the type `Result<T, E>` for recoverable errors and
+the `panic!` macro that stops execution when the program encounters an
+unrecoverable error. This chapter covers calling `panic!` first and then talks
+about returning `Result<T, E>` values. Additionally, we’ll explore
+considerations when deciding whether to try to recover from an error or to stop
+execution.
+"
+2192,43,2187,"stops execution when the program encounters an
+unrecoverable error",1089,1155,,How does 'panic!' macro work?,ch09-00-error-handling.txt,"we want to immediately stop the
+program.
+
+Most languages don’t distinguish between these two kinds of errors and handle
+both in the same way, using mechanisms such as exceptions. Rust doesn’t have
+exceptions. Instead, it has the type `Result<T, E>` for recoverable errors and
+the `panic!` macro that stops execution when the program encounters an
+unrecoverable error. This chapter covers calling `panic!` first and then talks
+about returning `Result<T, E>` values. Additionally, we’ll explore
+considerations when deciding whether to try to recover from an error or to stop
+execution.
+"
+2004,44,2004,"Via an
+environment variable, you can also have Rust display the call stack when a
+panic occurs to make it easier to track down the source of the panic.",495,646,,How can I display stack trace?,ch09-01-unrecoverable-errors-with-panic.txt," a
+panic in practice: by taking an action that causes our code to panic (such as
+accessing an array past the end) or by explicitly calling the `panic!` macro.
+In both cases, we cause a panic in our program. By default, these panics will
+print a failure message, unwind, clean up the stack, and quit. Via an
+environment variable, you can also have Rust display the call stack when a
+panic occurs to make it easier to track down the source of the panic.
+
+> ### Unwinding the Stack or Aborting in Response to a Panic
+>
+> By default, when a panic occurs, the program starts *unwinding*, which
+> means Rust walks back up the stack and cleans up the data from each function
+> it encounters. However, this walking back and cleanup is a lot of work. Rust,
+> t"
+2005,44,2005,"by taking an action that causes our code to panic (such as
+accessing an array past the end) or by explicitly calling the `panic!` macro.",217,353,,How can I terminate program when and provide feedback to the caller?,ch09-01-unrecoverable-errors-with-panic.txt,"## Unrecoverable Errors with `panic!`
+
+Sometimes, bad things happen in your code, and there’s nothing you can do about
+it. In these cases, Rust has the `panic!` macro. There are two ways to cause a
+panic in practice: by taking an action that causes our code to panic (such as
+accessing an array past the end) or by explicitly calling the `panic!` macro.
+In both cases, we cause a panic in our program. By default, these panics will
+print a failure message, unwind, clean up the stack, and quit. Via an
+environment variable, you can also have Rust display the call stack when a
+panic occurs to make it easier to track down the source of the panic.
+
+> ###"
+2144,44,2139,"Rust will stop execution and refuse to
+continue",4292,4339,,What will happen when I try to read an elements with unexisting index?,ch09-01-unrecoverable-errors-with-panic.txt,"lead to security vulnerabilities if an attacker is able to manipulate the index
+in such a way as to read data they shouldn’t be allowed to that is stored after
+the data structure.
+
+To protect your program from this sort of vulnerability, if you try to read an
+element at an index that doesn’t exist, Rust will stop execution and refuse to
+continue. Let’s try it and see:
+
+```console
+{{#include ../listings/ch09-error-handling/listing-09-01/output.txt}}
+```
+
+This error points at line 4 of our `main.rs` where we attempt to access index
+99. The next note line tells us that we can set the `RUST_BACKTRACE`
+environment variable to get a backtrace of"
+2145,44,2140," set the `RUST_BACKTRACE`
+environment variable",4571,4617,,How to get backtrace of an error?,ch09-01-unrecoverable-errors-with-panic.txt," that doesn’t exist, Rust will stop execution and refuse to
+continue. Let’s try it and see:
+
+```console
+{{#include ../listings/ch09-error-handling/listing-09-01/output.txt}}
+```
+
+This error points at line 4 of our `main.rs` where we attempt to access index
+99. The next note line tells us that we can set the `RUST_BACKTRACE`
+environment variable to get a backtrace of exactly what happened to cause the
+error. A *backtrace* is a list of all the functions that have been called to
+get to this point. Backtraces in Rust work as they do in other languages: the
+key to reading the backtrace is to start from the top and read until you see
+files you "
+2146,44,2141,"a list of all the functions that have been called to
+get to this point",4699,4769,,What is a backtrace?,ch09-01-unrecoverable-errors-with-panic.txt,"h09-error-handling/listing-09-01/output.txt}}
+```
+
+This error points at line 4 of our `main.rs` where we attempt to access index
+99. The next note line tells us that we can set the `RUST_BACKTRACE`
+environment variable to get a backtrace of exactly what happened to cause the
+error. A *backtrace* is a list of all the functions that have been called to
+get to this point. Backtraces in Rust work as they do in other languages: the
+key to reading the backtrace is to start from the top and read until you see
+files you wrote. That’s the spot where the problem originated. The lines above
+that spot are code that your code has called; the lines below are code that
+called "
+2147,44,2142,`cargo build` or `cargo run` without the `--release` flag,7308,7365,,How to enable debug symbols?,ch09-01-unrecoverable-errors-with-panic.txt,"ironment variable `RUST_BACKTRACE` is set</span>
+
+That’s a lot of output! The exact output you see might be different depending
+on your operating system and Rust version. In order to get backtraces with this
+information, debug symbols must be enabled. Debug symbols are enabled by
+default when using `cargo build` or `cargo run` without the `--release` flag,
+as we have here.
+
+In the output in Listing 9-2, line 6 of the backtrace points to the line in our
+project that’s causing the problem: line 4 of *src/main.rs*. If we don’t want
+our program to panic, we should start our investigation at the location pointed
+to by the first line mentioning a file we "
+2148,44,2143,"You might get whatever is at the location in memory that would
+correspond to that element in the data structure, even though the memory
+doesn’t belong to that structure",3779,3947,,What is buffer overread?,ch09-01-unrecoverable-errors-with-panic.txt,"he vector has only 3 elements.
+In this situation, Rust will panic. Using `[]` is supposed to return an
+element, but if you pass an invalid index, there’s no element that Rust could
+return here that would be correct.
+
+In C, attempting to read beyond the end of a data structure is undefined
+behavior. You might get whatever is at the location in memory that would
+correspond to that element in the data structure, even though the memory
+doesn’t belong to that structure. This is called a *buffer overread* and can
+lead to security vulnerabilities if an attacker is able to manipulate the index
+in such a way as to read data they shouldn’t be allowed to that is stored after
+the data structure.
+
+To protect your program from this sort of vulnerability, if you try to rea"
+2006,45,2006,"For example, if you try to open a file and that
+operation fails because the file doesn’t exist, you might want to create the
+file instead of terminating the process",210,374,,When can I use 'result' instead of 'panic'?,ch09-02-recoverable-errors-with-result.txt,"## Recoverable Errors with `Result`
+
+Most errors aren’t serious enough to require the program to stop entirely.
+Sometimes, when a function fails, it’s for a reason that you can easily
+interpret and respond to. For example, if you try to open a file and that
+operation fails because the file doesn’t exist, you might want to create the
+file instead of terminating the process.
+
+Recall from [“Handling Potential Failure with `Result`”][handle_failure]<!--
+ignore --> in Chapter 2 that the `Result` enum is defined as having two
+variants, `Ok` and `Err`, as follows:
+
+```rust
+enum Result<T, E> {
+    Ok(T),
+    Err(E),
+}
+```
+
+The `T` and `E` are generic type parameters: we’ll "
+2008,45,2008,"`T` represents
+the type of the value that will be returned in a success case within the `Ok`
+variant,",761,862,,What does 'T' mean in generics?,ch09-02-recoverable-errors-with-result.txt,"--> in Chapter 2 that the `Result` enum is defined as having two
+variants, `Ok` and `Err`, as follows:
+
+```rust
+enum Result<T, E> {
+    Ok(T),
+    Err(E),
+}
+```
+
+The `T` and `E` are generic type parameters: we’ll discuss generics in more
+detail in Chapter 10. What you need to know right now is that `T` represents
+the type of the value that will be returned in a success case within the `Ok`
+variant, and `E` represents the type of the error that will be returned in a
+failure case within the `Err` variant. Because `Result` has these generic type
+parameters, we can use the `Result` type and the functions defined on it in
+many different situations where the successful value and error value we want"
+2009,45,2009," `E` represents the type of the error that will be returned in a
+failure case within the `Err`",866,960,,What does 'E' mean in generics?,ch09-02-recoverable-errors-with-result.txt,"``rust
+enum Result<T, E> {
+    Ok(T),
+    Err(E),
+}
+```
+
+The `T` and `E` are generic type parameters: we’ll discuss generics in more
+detail in Chapter 10. What you need to know right now is that `T` represents
+the type of the value that will be returned in a success case within the `Ok`
+variant, and `E` represents the type of the error that will be returned in a
+failure case within the `Err` variant. Because `Result` has these generic type
+parameters, we can use the `Result` type and the functions defined on it in
+many different situations where the successful value and error value we want to
+return may differ.
+
+Let’s call a function that returns a `Result` value because the function c"
+2010,45,2010,"we can use the `Result` type and the functions defined on it in
+many different situations where the successful value and error value we want to
+return may differ.",1022,1184,,When the fact that 'result' uses generics can be useful?,ch09-02-recoverable-errors-with-result.txt,"hat you need to know right now is that `T` represents
+the type of the value that will be returned in a success case within the `Ok`
+variant, and `E` represents the type of the error that will be returned in a
+failure case within the `Err` variant. Because `Result` has these generic type
+parameters, we can use the `Result` type and the functions defined on it in
+many different situations where the successful value and error value we want to
+return may differ.
+
+Let’s call a function that returns a `Result` value because the function could
+fail. In Listing 9-3 we try to open a file.
+
+<span class=""filename"">Filename: src/main.rs</span>
+
+```rust
+{{#rustdoc_include ../listings/ch09-error-handling/listing-09-03/src/main.rs}}
+```
+
+<span class=""caption"">Listing"
+2149,45,2144,io::Error,4964,4973,,What type 'File::open' returns for Err variant?,ch09-02-recoverable-errors-with-result.txt,"ther
+tests to fail lol -->
+
+```rust,ignore
+{{#rustdoc_include ../listings/ch09-error-handling/listing-09-05/src/main.rs}}
+```
+
+<span class=""caption"">Listing 9-5: Handling different kinds of errors in
+different ways</span>
+
+The type of the value that `File::open` returns inside the `Err` variant is
+`io::Error`, which is a struct provided by the standard library. This struct
+has a method `kind` that we can call to get an `io::ErrorKind` value. The enum
+`io::ErrorKind` is provided by the standard library and has variants
+representing the different kinds of errors that might result from an `io`
+operation. "
+2216,63,2211,"Closures, on the other hand, aren’t used
+in an exposed interface",4868,4932,,Are closures used in exposed interface?,ch13-01-closures.txt,"eters or the return value
+like `fn` functions do. Type annotations are required on functions because the
+types are part of an explicit interface exposed to your users. Defining this
+interface rigidly is important for ensuring that everyone agrees on what types
+of values a function uses and returns. Closures, on the other hand, aren’t used
+in an exposed interface like this: they’re stored in variables and used without
+naming them and exposing them to users of our library.
+
+Closures are typically short and relevant only within a narrow context rather
+than in any arbitrary scenario. Within these limited contexts, the compiler can
+infer the types of the parame"
+2217,63,2212,"fn  add_one_v1   (x: u32) -> u32 { x + 1 }
+let add_one_v2 = |x: u32| -> u32 { x + 1 };
+let add_one_v3 = |x|             { x + 1 };
+let add_one_v4 = |x|               x + 1  ;",6522,6696,,What is the difference between functions and closures syntax?,ch13-01-closures.txt,"tion that adds 1 to its parameter and
+a closure that has the same behavior, for comparison. We’ve added some spaces
+to line up the relevant parts. This illustrates how closure syntax is similar
+to function syntax except for the use of pipes and the amount of syntax that is
+optional:
+
+```rust,ignore
+fn  add_one_v1   (x: u32) -> u32 { x + 1 }
+let add_one_v2 = |x: u32| -> u32 { x + 1 };
+let add_one_v3 = |x|             { x + 1 };
+let add_one_v4 = |x|               x + 1  ;
+```
+
+The first line shows a function definition, and the second line shows a fully
+annotated closure definition. In the third line, we remove the type annotations
+from the closure definition. In the fourth line, we remove the brackets, which
+are optional because the closure body has only one expres"
+2218,63,2213,"in three ways, which
+directly map to the three ways a function can take a parameter: borrowing
+immutably, borrowing mutably, and taking ownership.",8838,8984,,How can closures capture values?,ch13-01-closures.txt,"the return type of the closure to be `String`. Those
+types are then locked into the closure in `example_closure`, and we get a type
+error when we next try to use a different type with the same closure.
+
+### Capturing References or Moving Ownership
+
+Closures can capture values from their environment in three ways, which
+directly map to the three ways a function can take a parameter: borrowing
+immutably, borrowing mutably, and taking ownership. The closure will decide
+which of these to use based on what the body of the function does with the
+captured values.
+
+In Listing 13-4, we define a closure that captures an immutable reference to
+the vector named `list` because it only needs an immutable reference to print
+the value:
+
+<span class=""fi"
+2219,63,2214,This example also illustrates that a variable can bind to a closure definition,9531,9609,,Can closure definition be binded with a variable?,ch13-01-closures.txt,"utable reference to print
+the value:
+
+<span class=""filename"">Filename: src/main.rs</span>
+
+```rust
+{{#rustdoc_include ../listings/ch13-functional-features/listing-13-04/src/main.rs}}
+```
+
+<span class=""caption"">Listing 13-4: Defining and calling a closure that
+captures an immutable reference</span>
+
+This example also illustrates that a variable can bind to a closure definition,
+and we can later call the closure by using the variable name and parentheses as
+if the variable name were a function name.
+
+Because we can have multiple immutable references to `list` at the same time,
+`list` is still accessible from the code before the closure definition, after
+the closure defini"
+2220,63,2215," move a captured value out of the closure, mutate the
+captured value, neither move nor mutate the value, or capture nothing from the
+environment to begin with.",13861,14020,,What is closure allowed to do?,ch13-01-closures.txt,"ned (thus affecting what, if anything,
+is moved *into* the closure), the code in the body of the closure defines what
+happens to the references or values when the closure is evaluated later (thus
+affecting what, if anything, is moved *out of* the closure). A closure body can
+do any of the following: move a captured value out of the closure, mutate the
+captured value, neither move nor mutate the value, or capture nothing from the
+environment to begin with.
+
+The way a closure captures and handles values from the environment affects
+which traits the closure implements, and traits are how functions and structs
+can specify what kinds of closures they can use. Closures will automatically
+implement one, two, or all three of these `Fn` traits, in an additiv"
+2031,46,2028,"This is mostly for safety reasons:
+attempting to operate on invalid data can expose your code to vulnerabilities.",5815,5928,,Why should I validate parameters passed to the function?,ch09-03-to-panic-or-not-to-panic.txt,"esult` indicates that failure is an
+expected possibility that the calling code must decide how to handle.
+
+When your code performs an operation that could put a user at risk if it’s
+called using invalid values, your code should verify the values are valid first
+and panic if the values aren’t valid. This is mostly for safety reasons:
+attempting to operate on invalid data can expose your code to vulnerabilities.
+This is the main reason the standard library will call `panic!` if you attempt
+an out-of-bounds memory access: trying to access memory that doesn’t belong to
+the current data structure is a common security problem. Functions often have
+*contracts*: their behavior is only guaranteed if the inputs me"
+2221,63,2216," `FnOnce` applies to closures that can be called once. All closures implement
+   at least this trait, because all closures can be called. A closure that
+   moves captured values out of its body will only implement `FnOnce` and none
+   of the other `Fn` traits, because it can only be called once",14390,14685,,What is 'FnOnce'?,ch13-01-closures.txt,"ffects
+which traits the closure implements, and traits are how functions and structs
+can specify what kinds of closures they can use. Closures will automatically
+implement one, two, or all three of these `Fn` traits, in an additive fashion,
+depending on how the closure’s body handles the values:
+
+1. `FnOnce` applies to closures that can be called once. All closures implement
+   at least this trait, because all closures can be called. A closure that
+   moves captured values out of its body will only implement `FnOnce` and none
+   of the other `Fn` traits, because it can only be called once.
+2. `FnMut` applies to closures that don’t move captured values out of their
+   body, but that might mutate the captured values. These closures can be
+   called more than once.
+3. `Fn` applies to closures that don’t move captured values out of their body
+   and that don’t mutate captured values, as"
+2223,63,2218," `Fn` applies to closures that don’t move captured values out of their body
+   and that don’t mutate captured values, as well as closures that capture
+   nothing from their environment.",14865,15050,,To which closures does 'Fn' apply?,ch13-01-closures.txt,"es out of its body will only implement `FnOnce` and none
+   of the other `Fn` traits, because it can only be called once.
+2. `FnMut` applies to closures that don’t move captured values out of their
+   body, but that might mutate the captured values. These closures can be
+   called more than once.
+3. `Fn` applies to closures that don’t move captured values out of their body
+   and that don’t mutate captured values, as well as closures that capture
+   nothing from their environment. These closures can be called more than once
+   without mutating their environment, which is important in cases such as
+   calling a closure multiple times concurrently.
+
+Let’s look at the definition of the `unwrap_or_else` method on `Option<T>` that
+we used in Listing 13-1:
+
+```rust,ignore
+impl<T> "
+2181,64,2176,"allows you to perform some task on a sequence of items in
+turn",69,131,,What is the purpose of an iterator?,ch13-02-iterators.txt,"## Processing a Series of Items with Iterators
+
+The iterator pattern allows you to perform some task on a sequence of items in
+turn. An iterator is responsible for the logic of iterating over each item and
+determining when the sequence has finished. When you use iterators, you don’t
+have to reimplement that logic yourself.
+
+In Rust, iterators are *lazy*, meaning they have no effect until you call
+methods that consume the iterat"
+2182,64,2177,"for the logic of iterating over each item and
+determining when the sequence has finished",160,248,,What is iterator responsible for?,ch13-02-iterators.txt,"## Processing a Series of Items with Iterators
+
+The iterator pattern allows you to perform some task on a sequence of items in
+turn. An iterator is responsible for the logic of iterating over each item and
+determining when the sequence has finished. When you use iterators, you don’t
+have to reimplement that logic yourself.
+
+In Rust, iterators are *lazy*, meaning they have no effect until you call
+methods that consume the iterator to use it up. For example, the code in
+Listing 13-10 creates an iterator over the items in the vector `v1` by call"
+2183,64,2178,"In Rust, iterators are *lazy*",326,355,,Are iterators in Rust eager?,ch13-02-iterators.txt,"Items with Iterators
+
+The iterator pattern allows you to perform some task on a sequence of items in
+turn. An iterator is responsible for the logic of iterating over each item and
+determining when the sequence has finished. When you use iterators, you don’t
+have to reimplement that logic yourself.
+
+In Rust, iterators are *lazy*, meaning they have no effect until you call
+methods that consume the iterator to use it up. For example, the code in
+Listing 13-10 creates an iterator over the items in the vector `v1` by calling
+the `iter` method defined on `Vec<T>`. This code by itself doesn’t do anything
+useful.
+
+```rust
+{{#rust"
+2184,64,2179,"they have no effect until you call
+methods that consume the iterator to use it up",365,446,,What does it mean that iterators are lazy?,ch13-02-iterators.txt,"ern allows you to perform some task on a sequence of items in
+turn. An iterator is responsible for the logic of iterating over each item and
+determining when the sequence has finished. When you use iterators, you don’t
+have to reimplement that logic yourself.
+
+In Rust, iterators are *lazy*, meaning they have no effect until you call
+methods that consume the iterator to use it up. For example, the code in
+Listing 13-10 creates an iterator over the items in the vector `v1` by calling
+the `iter` method defined on `Vec<T>`. This code by itself doesn’t do anything
+useful.
+
+```rust
+{{#rustdoc_include ../listings/ch13-functional-features/listing-13-10/src/main.rs:here}}
+```
+
+<spa"
+2084,52,2080,assert_eq!,2757,2767,,How can I verify if tested function returns correct value?,ch11-01-writing-tests.txt,"this is a test function, so the
+test runner knows to treat this function as a test. We might also have non-test
+functions in the `tests` module to help set up common scenarios or perform
+common operations, so we always need to indicate which functions are tests.
+
+The example function body uses the `assert_eq!` macro to assert that `result`,
+which contains the result of adding 2 and 2, equals 4. This assertion serves as
+an example of the format for a typical test. Let’s run it to see that this test
+passes.
+
+The `cargo test` command runs all tests in our project, as shown in Listing
+11-2.
+
+```console
+{{#i"
+2150,45,2145,error.kind(),5566,5578,,How to check the type of error?,ch09-02-recoverable-errors-with-result.txt,"ation. The variant we want to use is `ErrorKind::NotFound`, which indicates
+the file we’re trying to open doesn’t exist yet. So we match on
+`greeting_file_result`, but we also have an inner match on `error.kind()`.
+
+The condition we want to check in the inner match is whether the value returned
+by `error.kind()` is the `NotFound` variant of the `ErrorKind` enum. If it is,
+we try to create the file with `File::create`. However, because `File::create`
+could also fail, we need a second arm in the inner `match` expression. When the
+file can’t be created, a different error message is printed. The second arm of"
+2151,45,2146,lets us also choose the `panic!` error message,8640,8686,,What does expect method of Result do?,ch09-02-recoverable-errors-with-result.txt,"d listings/ch09-error-handling/no-listing-04-unwrap
+cargo run
+copy and paste relevant text
+-->
+
+```text
+thread 'main' panicked at 'called `Result::unwrap()` on an `Err` value: Os {
+code: 2, kind: NotFound, message: ""No such file or directory"" }',
+src/main.rs:4:49
+```
+
+Similarly, the `expect` method lets us also choose the `panic!` error message.
+Using `expect` instead of `unwrap` and providing good error messages can convey
+your intent and make tracking down the source of a panic easier. The syntax of
+`expect` looks like this:
+
+<span class=""filename"">Filename: src/main.rs</span>
+
+```rust,should_panic
+{{#rustdoc_include ../listings/ch09-er"
+2152,45,2147,"instead of
+handling the error within the function itself, you can return the error to the
+calling code so that it can decide what to do",9979,10114,,What is error propagating?,ch09-02-recoverable-errors-with-result.txt,"e `expect` rather than
+`unwrap` and give more context about why the operation is expected to always
+succeed. That way, if your assumptions are ever proven wrong, you have more
+information to use in debugging.
+
+### Propagating Errors
+
+When a function’s implementation calls something that might fail, instead of
+handling the error within the function itself, you can return the error to the
+calling code so that it can decide what to do. This is known as *propagating*
+the error and gives more control to the calling code, where there might be more
+information or logic that dictates how the error should be handled than what
+you have available in the context of your code.
+
+For example, Listing 9-6 shows a function that reads a userna"
+2153,45,2148,"The `?` operator can only be used in functions whose return type is compatible
+with the value the `?` is used on.",19085,19198,,Where The `?` Operator Can Be Used,ch09-02-recoverable-errors-with-result.txt,"e
+file, creates a new `String`, reads the contents of the file, puts the contents
+into that `String`, and returns it. Of course, using `fs::read_to_string`
+doesn’t give us the opportunity to explain all the error handling, so we did it
+the longer way first.
+
+#### Where The `?` Operator Can Be Used
+
+The `?` operator can only be used in functions whose return type is compatible
+with the value the `?` is used on. This is because the `?` operator is defined
+to perform an early return of a value out of the function, in the same manner
+as the `match` expression we defined in Listing 9-6. In Listing 9-6, the
+`match` was using a `Result` value, and the early return arm returned an
+`Err(e)` value. The return type"
+2154,45,2149,"If the `Result` value is the `Ok` variant, `unwrap` will return
+the value inside the `Ok`. If the `Result` is the `Err` variant, `unwrap` will
+call the `panic!` macro for us.",7800,7974,,What is the purpose of unwrap method of Result?,ch09-02-recoverable-errors-with-result.txt,"works well enough, but it can be a bit verbose and doesn’t always
+communicate intent well. The `Result<T, E>` type has many helper methods
+defined on it to do various, more specific tasks. The `unwrap` method is a
+shortcut method implemented just like the `match` expression we wrote in
+Listing 9-4. If the `Result` value is the `Ok` variant, `unwrap` will return
+the value inside the `Ok`. If the `Result` is the `Err` variant, `unwrap` will
+call the `panic!` macro for us. Here is an example of `unwrap` in action:
+
+<span class=""filename"">Filename: src/main.rs</span>
+
+```rust,should_panic
+{{#rustdoc_include ../listings/ch09-error-handling/no-listing-04-unwrap/src/main.rs}}
+```
+
+If we run this code without a *hello.txt* file, we’ll see an error message from
+the `panic!"
+2019,46,2019,"In situations such as examples, prototype code, and tests, it’s more
+appropriate to write code that panics instead of returning a `Result`",804,942,,When is it better to use panic instead of result?,ch09-03-to-panic-or-not-to-panic.txt,"way that’s appropriate for its situation, or it could decide that an `Err`
+value in this case is unrecoverable, so it can call `panic!` and turn your
+recoverable error into an unrecoverable one. Therefore, returning `Result` is a
+good default choice when you’re defining a function that might fail.
+
+In situations such as examples, prototype code, and tests, it’s more
+appropriate to write code that panics instead of returning a `Result`. Let’s
+explore why, then discuss situations in which the compiler can’t tell that
+failure is impossible, but you as a human can. The chapter will conclude with
+some general guidelines on how to decide whether to panic in library code.
+
+### Examples, Prototype Code, and Tests
+
+When you’re writing an"
+2022,46,2021,"You could call `panic!`
+for any error situation, whether there’s a possible way to recover or not, but
+then you’re making the decision that a situation is unrecoverable on behalf of
+the calling code",168,366,,When should I call 'panic'?,ch09-03-to-panic-or-not-to-panic.txt,"## To `panic!` or Not to `panic!`
+
+So how do you decide when you should call `panic!` and when you should return
+`Result`? When code panics, there’s no way to recover. You could call `panic!`
+for any error situation, whether there’s a possible way to recover or not, but
+then you’re making the decision that a situation is unrecoverable on behalf of
+the calling code. When you choose to return a `Result` value, you give the
+calling code options. The calling code could choose to attempt to recover in a
+way that’s appropriate for its situation, or it could decide that an `Err`
+value in this case is unrecoverable, so it can call `panic!` and turn your
+recoverable "
+2023,46,2022,"The calling code could choose to attempt to recover in a
+way that’s appropriate for its situation, or it could decide that an `Err`
+value in this case is unrecoverable, so it can call `panic!` and turn your
+recoverable error into an unrecoverable one.",447,698,,When is it better to use result instead of panic?,ch09-03-to-panic-or-not-to-panic.txt,"s no way to recover. You could call `panic!`
+for any error situation, whether there’s a possible way to recover or not, but
+then you’re making the decision that a situation is unrecoverable on behalf of
+the calling code. When you choose to return a `Result` value, you give the
+calling code options. The calling code could choose to attempt to recover in a
+way that’s appropriate for its situation, or it could decide that an `Err`
+value in this case is unrecoverable, so it can call `panic!` and turn your
+recoverable error into an unrecoverable one. Therefore, returning `Result` is a
+good default choice when you’re defining a function that might fail.
+
+In situations such as examples, prototype code, and tests, it’s more
+appropriate to write code that panics instead of returning a `Result`. Let’s
+explore why, then discuss situations in which th"
+2024,46,2023,"Therefore, returning `Result` is a
+good default choice when you’re defining a function that might fail.",699,802,,When should I call 'result'?,ch09-03-to-panic-or-not-to-panic.txt,"sult` value, you give the
+calling code options. The calling code could choose to attempt to recover in a
+way that’s appropriate for its situation, or it could decide that an `Err`
+value in this case is unrecoverable, so it can call `panic!` and turn your
+recoverable error into an unrecoverable one. Therefore, returning `Result` is a
+good default choice when you’re defining a function that might fail.
+
+In situations such as examples, prototype code, and tests, it’s more
+appropriate to write code that panics instead of returning a `Result`. Let’s
+explore why, then discuss situations in which the compiler can’t tell that
+failure is impossible, but you as a human can. The chapter will conclude with"
+2030,46,2027,"a parser being given malformed
+data or an HTTP request returning a status that indicates you have hit a rate
+limit.",5369,5484,,What is an example of situation when it is better to use 'result' instead of 'panic'?,ch09-03-to-panic-or-not-to-panic.txt,"lopment. Similarly, `panic!` is often appropriate if you’re calling
+external code that is out of your control and it returns an invalid state that
+you have no way of fixing.
+
+However, when failure is expected, it’s more appropriate to return a `Result`
+than to make a `panic!` call. Examples include a parser being given malformed
+data or an HTTP request returning a status that indicates you have hit a rate
+limit. In these cases, returning a `Result` indicates that failure is an
+expected possibility that the calling code must decide how to handle.
+
+When your code performs an operation that could put a user at risk if it’s
+called using invalid values, your code should verify the values are valid first
+and pan"
+2155,50,2150,references are valid as long as we need them to be,191,241,,What do lifetimes ensure?,ch10-03-lifetime-syntax.txt,"## Validating References with Lifetimes
+
+Lifetimes are another kind of generic that we’ve already been using. Rather
+than ensuring that a type has the behavior we want, lifetimes ensure that
+references are valid as long as we need them to be.
+
+One detail we didn’t discuss in the [“References and
+Borrowing”][references-and-borrowing]<!-- ignore --> section in Chapter 4 is
+that every reference in Rust has a *lifetime*, which is the scope for which
+that reference is valid. Most of the time, lifetimes are implicit and inferred,
+just like m"

@@ -6,16 +6,31 @@ logging.getLogger("haystack").setLevel(logging.INFO)
 logger = logging.getLogger("haystack")
 
 from haystack.document_stores import InMemoryDocumentStore
-from haystack.nodes import MarkdownConverter
+from haystack.nodes import MarkdownConverter, TextConverter
 from haystack.pipelines import Pipeline, ExtractiveQAPipeline
 from pathlib import Path
-from haystack.nodes import FARMReader, TransformersReader, EmbeddingRetriever
+from haystack.nodes import FARMReader, TransformersReader, EmbeddingRetriever, BM25Retriever
 from haystack.nodes.file_classifier import FileTypeClassifier
 from haystack.nodes.preprocessor import PreProcessor
 from haystack.utils import print_answers
 from haystack.nodes.prompt import PromptModel, PromptNode
 
 
+
+
+# langchain
+# sbert
+"""
+I indexing pipeline:
+    1. file type classifier
+    2. markdown converter
+    3. preprocessor
+    4. document store
+II. query pipeline:
+    1. retriever
+    2. reader
+    3. prompt
+"""
 def basic_qa():
     paths = [p for p in Path("rust_book").glob("**/*")]
 
@@ -41,19 +56,21 @@ def basic_qa():
 
     indexing_pipeline.run(file_paths=paths)
 
-    # retriever = BM25Retriever(document_store=document_store)
-    retriever = EmbeddingRetriever(document_store=document_store, embedding_model="sentence-transformers/all-mpnet-base-v2", use_gpu=True)
-    reader = FARMReader(model_name_or_path="deepset/roberta-base-squad2", use_gpu=True)
-    prompt_model = PromptModel()
-    prompt_node = PromptNode(prompt_model, default_prompt_template="deepset/question-answering-per-document")
+    retriever = BM25Retriever(document_store=document_store)
+    reader = FARMReader(model_name_or_path="annotation/final_model", use_gpu=True)
+    # retriever = EmbeddingRetriever(document_store=document_store, embedding_model="sentence-transformers/all-mpnet-base-v2", use_gpu=True)
+    # reader = FARMReader(model_name_or_path="deepset/roberta-base-squad2", use_gpu=False)
+    # reader = TransformersReader(model_name_or_path="impira/layoutlm-document-qa", use_gpu=False)
+    # prompt_model = PromptModel()
+    # prompt_node = PromptNode(prompt_model, default_prompt_template="deepset/question-answering-per-document")
 
-    document_store.update_embeddings(retriever)
+    # document_store.update_embeddings(retriever)
 
     # Query Pipeline
     pipeline = Pipeline()
     pipeline.add_node(component=retriever, name="Retriever", inputs=["Query"])
     pipeline.add_node(component=reader, name="Reader", inputs=["Retriever"])
-    pipeline.add_node(component=prompt_node, name="Prompt node", inputs=["Reader"])
+    # pipeline.add_node(component=prompt_node, name="Prompt node", inputs=["Reader"])
 
     while True:
         question = input("Question: ")
