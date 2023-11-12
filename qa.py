@@ -6,14 +6,13 @@ logging.getLogger("haystack").setLevel(logging.INFO)
 logger = logging.getLogger("haystack")
 
 from haystack.document_stores import InMemoryDocumentStore
-from haystack.nodes import MarkdownConverter, TextConverter
+from haystack.nodes import MarkdownConverter
 from haystack.pipelines import Pipeline, ExtractiveQAPipeline
 from pathlib import Path
 from haystack.nodes import FARMReader, TransformersReader, EmbeddingRetriever, BM25Retriever
 from haystack.nodes.file_classifier import FileTypeClassifier
 from haystack.nodes.preprocessor import PreProcessor
 from haystack.utils import print_answers
-from haystack.nodes.prompt import PromptModel, PromptNode
 
 
 
