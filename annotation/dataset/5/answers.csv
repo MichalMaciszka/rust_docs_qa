@@ -1,0 +1,2417 @@
+﻿answer_id,document_id,question_id,text,answer_start,answer_end,answer_category,question,file_name,context
+1,1,1,"> Object-oriented programs are made up of objects. An *object* packages both
+> data and the procedures that operate on that data. The procedures are
+> typically called *methods* or *operations*.",869,1063,,How does book 'Gang of four' define object orientated programming?,ch17-01-what-is-oo.txt," book *Design Patterns: Elements of Reusable Object-Oriented Software* by
+Erich Gamma, Richard Helm, Ralph Johnson, and John Vlissides (Addison-Wesley
+Professional, 1994), colloquially referred to as *The Gang of Four* book, is a
+catalog of object-oriented design patterns. It defines OOP this way:
+
+> Object-oriented programs are made up of objects. An *object* packages both
+> data and the procedures that operate on that data. The procedures are
+> typically called *methods* or *operations*.
+
+Using this definition, Rust is object-oriented: structs and enums have data,
+and `impl` blocks provide methods on structs and enums. Even though structs and
+enums with methods aren’t *called* objects, they provide the same
+functionality, according to the Gang of Four’s definition of objects.
+
+### "
+2,1,2,"Rust is object-oriented: structs and enums have data,
+and `impl` blocks provide methods on structs and enums. Even though structs and
+enums with methods aren’t *called* objects, they provide the same
+functionality",1088,1301,,Is Rust object-oriented language,ch17-01-what-is-oo.txt,"book, is a
+catalog of object-oriented design patterns. It defines OOP this way:
+
+> Object-oriented programs are made up of objects. An *object* packages both
+> data and the procedures that operate on that data. The procedures are
+> typically called *methods* or *operations*.
+
+Using this definition, Rust is object-oriented: structs and enums have data,
+and `impl` blocks provide methods on structs and enums. Even though structs and
+enums with methods aren’t *called* objects, they provide the same
+functionality, according to the Gang of Four’s definition of objects.
+
+### Encapsulation that Hides Implementation Details
+
+Another aspect commonly associated with OOP is the idea of *encapsulation*,
+which means that the implementation details of an object aren’t accessible to
+code using that object. Therefore, "
+3,1,3," implementation details of an object aren’t accessible to
+code using that object. Therefore, the only way to interact with an object is
+through its public API; code using the object shouldn’t be able to reach into
+the object’s internals and change data or behavior directly.",1508,1782,,What does encapsulation regarding OOP means?,ch17-01-what-is-oo.txt,"h structs and
+enums with methods aren’t *called* objects, they provide the same
+functionality, according to the Gang of Four’s definition of objects.
+
+### Encapsulation that Hides Implementation Details
+
+Another aspect commonly associated with OOP is the idea of *encapsulation*,
+which means that the implementation details of an object aren’t accessible to
+code using that object. Therefore, the only way to interact with an object is
+through its public API; code using the object shouldn’t be able to reach into
+the object’s internals and change data or behavior directly. This enables the
+programmer to change and refactor an object’s internals without needing to
+change the code that uses the object.
+
+We discussed how to control encapsulation in Chapter 7: we can use the `pub`
+keyword to decide which modules, types, functions, and methods in our code
+should be public"
+4,1,4,"we can use the `pub`
+keyword",1970,1998,,"Which keyword should I use to mark modules, types, functions or methods in my code as public?",ch17-01-what-is-oo.txt,"de using the object shouldn’t be able to reach into
+the object’s internals and change data or behavior directly. This enables the
+programmer to change and refactor an object’s internals without needing to
+change the code that uses the object.
+
+We discussed how to control encapsulation in Chapter 7: we can use the `pub`
+keyword to decide which modules, types, functions, and methods in our code
+should be public, and by default everything else is private. For example, we
+can define a struct `AveragedCollection` that has a field containing a vector
+of `i32` values. The struct can also have a field that contains the average o"
+5,1,5,by default everything else is private,2088,2125,,What access modifier have by default all methods or fields?,ch17-01-what-is-oo.txt,"enables the
+programmer to change and refactor an object’s internals without needing to
+change the code that uses the object.
+
+We discussed how to control encapsulation in Chapter 7: we can use the `pub`
+keyword to decide which modules, types, functions, and methods in our code
+should be public, and by default everything else is private. For example, we
+can define a struct `AveragedCollection` that has a field containing a vector
+of `i32` values. The struct can also have a field that contains the average of
+the values in the vector, meaning the average doesn’t have to be computed
+on demand whenever anyone needs it. In other words,"
+6,1,6,"*Inheritance* is a mechanism whereby an object can inherit elements from
+another object’s definition, thus gaining the parent object’s data and behavior
+without you having to define them again.",5140,5333,,What is inheritance?,ch17-01-what-is-oo.txt,"ist` directly.
+
+If encapsulation is a required aspect for a language to be considered
+object-oriented, then Rust meets that requirement. The option to use `pub` or
+not for different parts of code enables encapsulation of implementation details.
+
+### Inheritance as a Type System and as Code Sharing
+
+*Inheritance* is a mechanism whereby an object can inherit elements from
+another object’s definition, thus gaining the parent object’s data and behavior
+without you having to define them again.
+
+If a language must have inheritance to be an object-oriented language, then
+Rust is not one. There is no way to define a struct that inherits the parent
+struct’s fields and method implementations without using a macro.
+
+However, if you’re used to having inheritance in your programming toolbox, you"
+7,1,7,"There is no way to define a struct that inherits the parent
+struct’s fields and method implementations without using a macro.",5428,5553,,Is there an easy way to implement inheritance in rust?,ch17-01-what-is-oo.txt,"de Sharing
+
+*Inheritance* is a mechanism whereby an object can inherit elements from
+another object’s definition, thus gaining the parent object’s data and behavior
+without you having to define them again.
+
+If a language must have inheritance to be an object-oriented language, then
+Rust is not one. There is no way to define a struct that inherits the parent
+struct’s fields and method implementations without using a macro.
+
+However, if you’re used to having inheritance in your programming toolbox, you
+can use other solutions in Rust, depending on your reason for reaching for
+inheritance in the first place.
+
+You would choose inheritance for two main reasons. One is for reuse of code:
+you can implement particular behav"
+8,1,8,"for reuse of code:
+you can implement particular behavior for one type, and inheritance enables you
+to reuse that implementation for a different type.",5800,5949,,Why is inheritance important?,ch17-01-what-is-oo.txt,"lds and method implementations without using a macro.
+
+However, if you’re used to having inheritance in your programming toolbox, you
+can use other solutions in Rust, depending on your reason for reaching for
+inheritance in the first place.
+
+You would choose inheritance for two main reasons. One is for reuse of code:
+you can implement particular behavior for one type, and inheritance enables you
+to reuse that implementation for a different type. You can do this in a limited
+way in Rust code using default trait method implementations, which you saw in
+Listing 10-14 when we added a default implementation of the `summarize` method
+on the `Summary` trait. Any type implementing the `Summary` trait would have
+the `summarize` method available on "
+9,1,9,"to use inheritance relates to the type system: to enable a
+child type to be used in the same places as the parent type.",6663,6782,,Why is inheritance important?,ch17-01-what-is-oo.txt,"ing child class also having the implementation of the method. We can
+also override the default implementation of the `summarize` method when we
+implement the `Summary` trait, which is similar to a child class overriding the
+implementation of a method inherited from a parent class.
+
+The other reason to use inheritance relates to the type system: to enable a
+child type to be used in the same places as the parent type. This is also
+called *polymorphism*, which means that you can substitute multiple objects for
+each other at runtime if they share certain characteristics.
+
+> ### Polymorphism
+>
+> To many people, polymorphism is synonymous with inheritance. But it’s
+> actually a more general concept that refers to co"
+10,1,10,"which means that you can substitute multiple objects for
+each other at runtime if they share certain characteristics.",6819,6936,,What is polymorphism?,ch17-01-what-is-oo.txt,"e `Summary` trait, which is similar to a child class overriding the
+implementation of a method inherited from a parent class.
+
+The other reason to use inheritance relates to the type system: to enable a
+child type to be used in the same places as the parent type. This is also
+called *polymorphism*, which means that you can substitute multiple objects for
+each other at runtime if they share certain characteristics.
+
+> ### Polymorphism
+>
+> To many people, polymorphism is synonymous with inheritance. But it’s
+> actually a more general concept that refers to code that can work with data
+> of multiple types. For inheritance, those types are generally subclasses.
+>
+> Rust instead uses generics to abstract over dif"
+11,1,11,"code that can work with data
+> of multiple types.",7080,7129,,What is polymorphism?,ch17-01-what-is-oo.txt,"e. This is also
+called *polymorphism*, which means that you can substitute multiple objects for
+each other at runtime if they share certain characteristics.
+
+> ### Polymorphism
+>
+> To many people, polymorphism is synonymous with inheritance. But it’s
+> actually a more general concept that refers to code that can work with data
+> of multiple types. For inheritance, those types are generally subclasses.
+>
+> Rust instead uses generics to abstract over different possible types and
+> trait bounds to impose constraints on what those types must provide. This is
+> sometimes called *bounded parametric polymorphism*.
+
+Inheritance has recently fallen o"
+12,1,12," Rust instead uses generics to abstract over different possible types and
+> trait bounds to impose constraints on what those types must provide.",7188,7332,,What is bounded parametric polymorphism?,ch17-01-what-is-oo.txt,"t runtime if they share certain characteristics.
+
+> ### Polymorphism
+>
+> To many people, polymorphism is synonymous with inheritance. But it’s
+> actually a more general concept that refers to code that can work with data
+> of multiple types. For inheritance, those types are generally subclasses.
+>
+> Rust instead uses generics to abstract over different possible types and
+> trait bounds to impose constraints on what those types must provide. This is
+> sometimes called *bounded parametric polymorphism*.
+
+Inheritance has recently fallen out of favor as a programming design solution
+in many programming languages because it’s often at risk of sharing more code
+than necessary. Subclasses shouldn’t always share all characteristics of their
+p"
+13,1,13,"because it’s often at risk of sharing more code
+than necessary. Subclasses shouldn’t always share all characteristics of their
+parent class but will do so with inheritance. This can make a program’s design
+less flexible. It also introduces the possibility of calling methods on
+subclasses that don’t make sense or that cause errors because the methods don’t
+apply to the subclass. In addition, some languages will only allow single
+inheritance (meaning a subclass can only inherit from one class), further
+restricting the flexibility of a program’s design.",7504,8060,,Why has inheritance recently fallen out of favor as a programming design solution in many programming languages?,ch17-01-what-is-oo.txt,"es generics to abstract over different possible types and
+> trait bounds to impose constraints on what those types must provide. This is
+> sometimes called *bounded parametric polymorphism*.
+
+Inheritance has recently fallen out of favor as a programming design solution
+in many programming languages because it’s often at risk of sharing more code
+than necessary. Subclasses shouldn’t always share all characteristics of their
+parent class but will do so with inheritance. This can make a program’s design
+less flexible. It also introduces the possibility of calling methods on
+subclasses that don’t make sense or that cause errors because the methods don’t
+apply to the subclass. In addition, some languages will only allow single
+inheritance (meaning a subclass can only inherit from one class), further
+restricting the flexibility of a program’s design.
+
+For these reasons, Rust takes the different approach of using trait objects
+instead of inheritance. Let’s look at how trait objects enable polymorphism in
+Rust.
+"
+14,2,14,"In a struct or
+enum, the data in the struct fields and the behavior in `impl` blocks are
+separated, whereas in other languages, the data and behavior combined into one
+concept is often labeled an object.",3534,3737,,What differs rust from other languages?,ch17-02-trait-objects.txt,"ompile time that any value
+used in that context will implement the trait object’s trait. Consequently, we
+don’t need to know all the possible types at compile time.
+
+We’ve mentioned that, in Rust, we refrain from calling structs and enums
+“objects” to distinguish them from other languages’ objects. In a struct or
+enum, the data in the struct fields and the behavior in `impl` blocks are
+separated, whereas in other languages, the data and behavior combined into one
+concept is often labeled an object. However, trait objects *are* more like
+objects in other languages in the sense that they combine data and behavior.
+But trait objects differ from traditional objects in that we can’t add data to
+a trait object. Trait objects aren’t as generally useful as objects in other
+languages: their specific p"
+15,2,15,"their specific purpose is to allow abstraction across common
+behavior.",4021,4091,,What is the purpose of trait?,ch17-02-trait-objects.txt,"beled an object. However, trait objects *are* more like
+objects in other languages in the sense that they combine data and behavior.
+But trait objects differ from traditional objects in that we can’t add data to
+a trait object. Trait objects aren’t as generally useful as objects in other
+languages: their specific purpose is to allow abstraction across common
+behavior.
+
+Listing 17-3 shows how to define a trait named `Draw` with one method named
+`draw`:
+
+<span class=""filename"">Filename: src/lib.rs</span>
+
+```rust,noplayground
+{{#rustdoc_include ../listings/ch17-oop/listing-17-03/src/lib.rs}}
+```
+
+<span class=""caption"">Listing 17-3: Definition of the `Draw` trait</"
+16,2,16,"A generic type parameter can only be substituted
+with one concrete type at a time, whereas trait objects allow for multiple
+concrete types to fill in for the trait object at runtime.",5583,5765,,What differs generic type from trait object?,ch17-02-trait-objects.txt,"ound
+{{#rustdoc_include ../listings/ch17-oop/listing-17-05/src/lib.rs:here}}
+```
+
+<span class=""caption"">Listing 17-5: A `run` method on `Screen` that calls the
+`draw` method on each component</span>
+
+This works differently from defining a struct that uses a generic type
+parameter with trait bounds. A generic type parameter can only be substituted
+with one concrete type at a time, whereas trait objects allow for multiple
+concrete types to fill in for the trait object at runtime. For example, we
+could have defined the `Screen` struct using a generic type and a trait bound
+as in Listing 17-6:
+
+<span class=""filename"">Filename: src/lib.rs</span>
+
+```rust,noplayground
+{{#rustdoc_include ../listings/ch17-oop/listing-17-06/src/lib.rs:here}}
+```
+
+<span class=""caption"">Listing 17-6"
+17,2,17,"If you’ll only ever have homogeneous
+collections, using generics and trait bounds is preferable because the
+definitions will be monomorphized at compile time to use the concrete types.",6299,6483,,What type of objects should I use in my application if  I have homogeneous collections?,ch17-02-trait-objects.txt,"ng-17-06/src/lib.rs:here}}
+```
+
+<span class=""caption"">Listing 17-6: An alternate implementation of the `Screen`
+struct and its `run` method using generics and trait bounds</span>
+
+This restricts us to a `Screen` instance that has a list of components all of
+type `Button` or all of type `TextField`. If you’ll only ever have homogeneous
+collections, using generics and trait bounds is preferable because the
+definitions will be monomorphized at compile time to use the concrete types.
+
+On the other hand, with the method using trait objects, one `Screen` instance
+can hold a `Vec<T>` that contains a `Box<Button>` as well as a
+`Box<TextField>`. Let’s look at how this works, and then we’ll talk about the
+runtime performance implications.
+
+### Implementing the Trait
+
+Now we’ll add so"
+18,2,18,"if it walks like a duck and quacks
+like a duck, then it must be a duck!",9616,9687,,What is duck typing?,ch17-02-trait-objects.txt,"type and draw it because `SelectBox` implements the `Draw` trait, which
+means it implements the `draw` method.
+
+This concept—of being concerned only with the messages a value responds to
+rather than the value’s concrete type—is similar to the concept of *duck
+typing* in dynamically typed languages: if it walks like a duck and quacks
+like a duck, then it must be a duck! In the implementation of `run` on `Screen`
+in Listing 17-5, `run` doesn’t need to know what the concrete type of each
+component is. It doesn’t check whether a component is an instance of a `Button`
+or a `SelectBox`, it just calls the `draw` method on the component. By
+specifying `Box<dyn Draw>` as "
+19,2,19,"we never have to check whether a
+value implements a particular method at runtime or worry about getting errors
+if a value doesn’t implement a method but we call it anyway. Rust won’t compile
+our code if the values don’t implement the traits that the trait objects need.",10232,10501,,What is the advantage of using trait objects and Rust’s type system to write code?,ch17-02-trait-objects.txt,"hod on the component. By
+specifying `Box<dyn Draw>` as the type of the values in the `components`
+vector, we’ve defined `Screen` to need values that we can call the `draw`
+method on.
+
+The advantage of using trait objects and Rust’s type system to write code
+similar to code using duck typing is that we never have to check whether a
+value implements a particular method at runtime or worry about getting errors
+if a value doesn’t implement a method but we call it anyway. Rust won’t compile
+our code if the values don’t implement the traits that the trait objects need.
+
+For example, Listing 17-10 shows what happens if we try to create a `Screen`
+with a `String` as a component:
+
+<span class=""filename"">Filename: src/main.rs</span>
+
+```rust,ignore,does_not_compile
+{{#rustdoc_include ../listings/ch17-oop/listing-17-10/src/main.rs}}
+```
+
+<span class=""caption"">Listing "
+21,2,21,"which is when the compiler can’t tell at compile time which method
+you’re calling.",11877,11959,,What is dynamic dispatch?,ch17-02-trait-objects.txt,"plementations of functions and methods for each concrete type that
+we use in place of a generic type parameter. The code that results from
+monomorphization is doing *static dispatch*, which is when the compiler knows
+what method you’re calling at compile time. This is opposed to *dynamic
+dispatch*, which is when the compiler can’t tell at compile time which method
+you’re calling. In dynamic dispatch cases, the compiler emits code that at
+runtime will figure out which method to call.
+
+When we use trait objects, Rust must use dynamic dispatch. The compiler doesn’t
+know all the types that might be used with the code that’s using trait objects,
+so it doesn’t know which method i"
+27,3,26,"the states implement the
+transitions between states, some of the states are coupled to each other.",17385,17483,,What is the downside of the state pattern?,ch17-03-oo-design-patterns.txt," the state can be changed to `Published`.
+* Allow users to add text content only when a post is in the `Draft` state.
+  Hint: have the state object responsible for what might change about the
+  content but not responsible for modifying the `Post`.
+
+One downside of the state pattern is that, because the states implement the
+transitions between states, some of the states are coupled to each other. If we
+add another state between `PendingReview` and `Published`, such as `Scheduled`,
+we would have to change the code in `PendingReview` to transition to
+`Scheduled` instead. It would be less work if `PendingReview` didn’t need to
+change with the addition of a new state, but that would mean switch"
+20,2,20,"the compiler generates
+nongeneric implementations of functions and methods for each concrete type that
+we use in place of a generic type parameter",11541,11687,,What does compilerdo during monomorphization process when we use trait bounds on generics?,ch17-02-trait-objects.txt,"all `draw` on it.
+
+### Trait Objects Perform Dynamic Dispatch
+
+Recall in the [“Performance of Code Using
+Generics”][performance-of-code-using-generics]<!-- ignore --> section in
+Chapter 10 our discussion on the monomorphization process performed by the
+compiler when we use trait bounds on generics: the compiler generates
+nongeneric implementations of functions and methods for each concrete type that
+we use in place of a generic type parameter. The code that results from
+monomorphization is doing *static dispatch*, which is when the compiler knows
+what method you’re calling at compile time. This is opposed to *dynamic
+dispatch*, which is when the compiler can’t tell at compile time which method
+you’re calling. In dynamic dispatch cases, "
+22,2,22,"When we use trait objects, Rust must use dynamic dispatch.",12066,12124,,What happens in dynamic dispatch?,ch17-02-trait-objects.txt," is when the compiler knows
+what method you’re calling at compile time. This is opposed to *dynamic
+dispatch*, which is when the compiler can’t tell at compile time which method
+you’re calling. In dynamic dispatch cases, the compiler emits code that at
+runtime will figure out which method to call.
+
+When we use trait objects, Rust must use dynamic dispatch. The compiler doesn’t
+know all the types that might be used with the code that’s using trait objects,
+so it doesn’t know which method implemented on which type to call. Instead, at
+runtime, Rust uses the pointers inside the trait object to know which method to
+call. This lookup incurs a runtime cost"
+23,2,23," The compiler doesn’t
+know all the types that might be used with the code that’s using trait objects,
+so it doesn’t know which method implemented on which type to call. Instead, at
+runtime, Rust uses the pointers inside the trait object to know which method to
+call. This lookup incurs a runtime cost that doesn’t occur with static
+dispatch. Dynamic dispatch also prevents the compiler from choosing to inline a
+method’s code, which in turn prevents some optimizations.",12124,12593,,"Why when we use trait objects, Rust must use dynamic dispatch?",ch17-02-trait-objects.txt,"compile time. This is opposed to *dynamic
+dispatch*, which is when the compiler can’t tell at compile time which method
+you’re calling. In dynamic dispatch cases, the compiler emits code that at
+runtime will figure out which method to call.
+
+When we use trait objects, Rust must use dynamic dispatch. The compiler doesn’t
+know all the types that might be used with the code that’s using trait objects,
+so it doesn’t know which method implemented on which type to call. Instead, at
+runtime, Rust uses the pointers inside the trait object to know which method to
+call. This lookup incurs a runtime cost that doesn’t occur with static
+dispatch. Dynamic dispatch also prevents the compiler from choosing to inline a
+method’s code, which in turn prevents some optimizations. However, we did get
+extra flexibility in the code that we wrote in Listing 17-5 and were able to
+support in Listing 17-9, so it’s a trade-off to consider.
+
+[performance-of-code-using-generics]:
+ch10-01-syntax.html#performance-of-code-using-generics
+[dynamically-sized]: ch19-04-advanced-types.html#d"
+25,3,24,"The *state pattern* is an object-oriented design pattern. The crux of the
+pattern is that we define a set of states a value can have internally. The
+states are represented by a set of *state objects*, and the value’s behavior
+changes based on its state.",51,304,,What is state pattern?,ch17-03-oo-design-patterns.txt,"## Implementing an Object-Oriented Design Pattern
+
+The *state pattern* is an object-oriented design pattern. The crux of the
+pattern is that we define a set of states a value can have internally. The
+states are represented by a set of *state objects*, and the value’s behavior
+changes based on its state. We’re going to work through an example of a blog
+post struct that has a field to hold its state, which will be a state object
+from the set ""draft"", ""review"", or ""published"".
+
+The state objects share functionality: in Rust, of course, we use structs and
+traits rather than objects and inheritance. Ea"
+26,3,25,"The advantage of using the state pattern is that, when the business
+requirements of the program change, we won’t need to change the code of the
+value holding the state or the code that uses the value. We’ll only need to
+update the code inside one of the state objects to change its rules or perhaps
+add more state objects.",848,1170,,What is the advantage of using the state pattern?,ch17-03-oo-design-patterns.txt,"ructs and
+traits rather than objects and inheritance. Each state object is responsible
+for its own behavior and for governing when it should change into another
+state. The value that holds a state object knows nothing about the different
+behavior of the states or when to transition between states.
+
+The advantage of using the state pattern is that, when the business
+requirements of the program change, we won’t need to change the code of the
+value holding the state or the code that uses the value. We’ll only need to
+update the code inside one of the state objects to change its rules or perhaps
+add more state objects.
+
+First, we’re going to implement the state pattern in a more traditional
+object-oriented way, then we’ll use an approach that’s a bit more natural in
+Rust. Let’s dig in to incrementally implementing a blog post workflow using the
+state pattern.
+
+The final functionality will look like this:
+
+1. A bl"
+28,3,27,"Dynamic dispatch can give your code some
+flexibility in exchange for a bit of runtime performance.",25623,25721,,What gives the programmer dynamic dispatch?,ch17-03-oo-design-patterns.txt,"ution in Rust due to certain features, like ownership, that
+object-oriented languages don’t have.
+
+## Summary
+
+No matter whether or not you think Rust is an object-oriented language after
+reading this chapter, you now know that you can use trait objects to get some
+object-oriented features in Rust. Dynamic dispatch can give your code some
+flexibility in exchange for a bit of runtime performance. You can use this
+flexibility to implement object-oriented patterns that can help your code’s
+maintainability. Rust also has other features, like ownership, that
+object-oriented languages don’t have. An object-oriented pattern won’t always
+be the best way to take advantage of Rust’s strengths, but i"
+29,4,28,"*Patterns* are a special syntax in Rust for matching against the structure of
+types, both complex and simple. Using patterns in conjunction with `match`
+expressions and other constructs gives you more control over a program’s
+control flow. A pattern consists of some combination of the following:
+
+* Literals
+* Destructured arrays, enums, structs, or tuples
+* Variables
+* Wildcards
+* Placeholders",25,421,,What are Patterns in Rust?,ch18-00-patterns.txt,"# Patterns and Matching
+
+*Patterns* are a special syntax in Rust for matching against the structure of
+types, both complex and simple. Using patterns in conjunction with `match`
+expressions and other constructs gives you more control over a program’s
+control flow. A pattern consists of some combination of the following:
+
+* Literals
+* Destructured arrays, enums, structs, or tuples
+* Variables
+* Wildcards
+* Placeholders
+
+Some example patterns include `x`, `(a, 3)`, and `Some(Color::Red)`. In the
+contexts in which patterns are valid, these components describe the shape of
+data. Our program then matches values against the patterns to determine whether
+it has the correct shape of data to continue running a particular"
+30,4,29,"To use a pattern, we compare it to some value. If the pattern matches the
+value, we use the value parts in our code. ",738,855,,How to use a pattern?,ch18-00-patterns.txt,"tterns include `x`, `(a, 3)`, and `Some(Color::Red)`. In the
+contexts in which patterns are valid, these components describe the shape of
+data. Our program then matches values against the patterns to determine whether
+it has the correct shape of data to continue running a particular piece of code.
+
+To use a pattern, we compare it to some value. If the pattern matches the
+value, we use the value parts in our code. Recall the `match` expressions in
+Chapter 6 that used patterns, such as the coin-sorting machine example. If the
+value fits the shape of the pattern, we can use the named pieces. If it
+doesn’t, the code associated with the pattern won’t run.
+
+This chapter is a reference on all things related to patt"
+31,5,30,"match VALUE {
+    PATTERN => EXPRESSION,
+    PATTERN => EXPRESSION,
+    PATTERN => EXPRESSION,
+}",530,626,,How to use patterns in the arms of `match` expressions?,ch18-01-all-the-places-for-patterns.txt,"scussed in Chapter 6, we use patterns in the arms of `match` expressions.
+Formally, `match` expressions are defined as the keyword `match`, a value to
+match on, and one or more match arms that consist of a pattern and an
+expression to run if the value matches that arm’s pattern, like this:
+
+```text
+match VALUE {
+    PATTERN => EXPRESSION,
+    PATTERN => EXPRESSION,
+    PATTERN => EXPRESSION,
+}
+```
+
+For example, here's the `match` expression from Listing 6-5 that matches on an
+`Option<i32>` value in the variable `x`:
+
+```rust,ignore
+match x {
+    None => None,
+    Some(i) => Some(i + 1),
+}
+```
+
+The patterns in this `match` expression are the `None` and `Some(i)` on the
+left of each arrow."
+60,9,57,"Keep
+`unsafe` blocks small; you’ll be thankful later when you investigate memory
+bugs.",2768,2854,,Should the code in unsafe block be short?,ch19-01-unsafe-rust.txt,"nsure the code inside an `unsafe` block will
+access memory in a valid way.
+
+People are fallible, and mistakes will happen, but by requiring these five
+unsafe operations to be inside blocks annotated with `unsafe` you’ll know that
+any errors related to memory safety must be within an `unsafe` block. Keep
+`unsafe` blocks small; you’ll be thankful later when you investigate memory
+bugs.
+
+To isolate unsafe code as much as possible, it’s best to enclose unsafe code
+within a safe abstraction and provide a safe API, which we’ll discuss later in
+the chapter when we examine unsafe functions and methods. Parts of the standard
+library are implemented as safe abstractions over unsafe code "
+33,5,31,"One way to ensure you’ve covered every possibility is to have
+a catchall pattern for the last arm: for example, a variable name matching any
+value can never fail and thus covers every remaining case.
+
+The particular pattern `_` will match anything, but it never binds to a
+variable, so it’s often used in the last match arm. The `_` pattern can be
+useful when you want to ignore any value not specified, for example.",1104,1520,,How can I be sure that I covered every possibility in arms of match expression?,ch18-01-all-the-places-for-patterns.txt,"(i) => Some(i + 1),
+}
+```
+
+The patterns in this `match` expression are the `None` and `Some(i)` on the
+left of each arrow.
+
+One requirement for `match` expressions is that they need to be *exhaustive* in
+the sense that all possibilities for the value in the `match` expression must
+be accounted for. One way to ensure you’ve covered every possibility is to have
+a catchall pattern for the last arm: for example, a variable name matching any
+value can never fail and thus covers every remaining case.
+
+The particular pattern `_` will match anything, but it never binds to a
+variable, so it’s often used in the last match arm. The `_` pattern can be
+useful when you want to ignore any value not specified, for example. We’ll
+cover the `_` pattern in more detail in the [“Ignoring Values in a
+Pattern”][ignoring-values-in-a-pattern]<!-- ignore --> section later in this
+chapter.
+
+### Conditional `if let` Expressions
+
+In Chapter 6 we discussed how to use `if let` expressions mainly as a shorter
+way to write the equiva"
+34,5,32,"The downside of using `if let` expressions is that the compiler doesn’t check
+for exhaustiveness, whereas with `match` expressions it does. If we omitted the
+last `else` block and therefore missed handling some cases, the compiler would
+not alert us to the possible logic bug.",3909,4185,,What is the downside of using `if let` expressions?,ch18-01-all-the-places-for-patterns.txt,"ns the value inside the `Ok` variant. This
+means we need to place the `if age > 30` condition within that block: we can’t
+combine these two conditions into `if let Ok(age) = age && age > 30`. The
+shadowed `age` we want to compare to 30 isn’t valid until the new scope starts
+with the curly bracket.
+
+The downside of using `if let` expressions is that the compiler doesn’t check
+for exhaustiveness, whereas with `match` expressions it does. If we omitted the
+last `else` block and therefore missed handling some cases, the compiler would
+not alert us to the possible logic bug.
+
+### `while let` Conditional Loops
+
+Similar in construction to `if let`, the `while let` conditional loop allows a
+`while` loop to run for as long as a pattern continues to match. In Listing
+18-2 we code a `while let` loop that uses a vector as a stack and prints the
+values in the vector in the opp"
+35,5,33,"`while let` conditional loop allows a
+`while` loop to run for as long as a pattern continues to match.",4263,4365,,How does `while let` conditional Loop works?,ch18-01-all-the-places-for-patterns.txt," compiler doesn’t check
+for exhaustiveness, whereas with `match` expressions it does. If we omitted the
+last `else` block and therefore missed handling some cases, the compiler would
+not alert us to the possible logic bug.
+
+### `while let` Conditional Loops
+
+Similar in construction to `if let`, the `while let` conditional loop allows a
+`while` loop to run for as long as a pattern continues to match. In Listing
+18-2 we code a `while let` loop that uses a vector as a stack and prints the
+values in the vector in the opposite order in which they were pushed.
+
+```rust
+{{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-02/src/main.rs:here}}
+```
+
+<span class=""caption"">Listing 18-2: "
+36,5,34,"In a `for` loop, the value that directly follows the keyword `for` is a
+pattern. For example, in `for x in y` the `x` is the pattern.",5137,5270,,Is there a loop with pattern in Rust?,ch18-01-all-the-places-for-patterns.txt,"ut of the vector and returns `Some(value)`. If the vector is empty, `pop`
+returns `None`. The `while` loop continues running the code in its block as
+long as `pop` returns `Some`. When `pop` returns `None`, the loop stops. We can
+use `while let` to pop every element off our stack.
+
+### `for` Loops
+
+In a `for` loop, the value that directly follows the keyword `for` is a
+pattern. For example, in `for x in y` the `x` is the pattern. Listing 18-3
+demonstrates how to use a pattern in a `for` loop to destructure, or break
+apart, a tuple as part of the `for` loop.
+
+```rust
+{{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-03/src/main.rs:here}}
+```
+
+<span class=""caption"">Listing 18-3: Using a pattern in a `for` l"
+37,5,35,"If the number of elements in the pattern doesn’t match the number of elements
+in the tuple, the overall type won’t match and we’ll get a compiler error.",7715,7867,,What happens when pattern doesn’t match the number of elements in the tuple?,ch18-01-all-the-places-for-patterns.txt,"
+
+Here, we match a tuple against a pattern. Rust compares the value `(1, 2, 3)`
+to the pattern `(x, y, z)` and sees that the value matches the pattern, so Rust
+binds `1` to `x`, `2` to `y`, and `3` to `z`. You can think of this tuple
+pattern as nesting three individual variable patterns inside it.
+
+If the number of elements in the pattern doesn’t match the number of elements
+in the tuple, the overall type won’t match and we’ll get a compiler error. For
+example, Listing 18-5 shows an attempt to destructure a tuple with three
+elements into two variables, which won’t work.
+
+```rust,ignore,does_not_compile
+{{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-05/src/main.rs:here}}
+```
+
+<span class=""caption"">Listing 18-5: Incorrectl"
+39,6,36,"Patterns that will match
+for any possible value passed are *irrefutable*. An example would be `x` in the
+statement `let x = 5;` because `x` matches anything and therefore cannot fail
+to match.",111,303,,What are irrefutable patterns?,ch18-02-refutability.txt,"## Refutability: Whether a Pattern Might Fail to Match
+
+Patterns come in two forms: refutable and irrefutable. Patterns that will match
+for any possible value passed are *irrefutable*. An example would be `x` in the
+statement `let x = 5;` because `x` matches anything and therefore cannot fail
+to match. Patterns that can fail to match for some possible value are
+*refutable*. An example would be `Some(x)` in the expression `if let Some(x) =
+a_value` because if the value in the `a_value` variable is `None` rather than
+`Some`, the `Some(x)` pattern will not match.
+
+Function parameters, `let` statemen"
+40,6,37,"Patterns that can fail to match for some possible value are
+*refutable*. An example would be `Some(x)` in the expression `if let Some(x) =
+a_value` because if the value in the `a_value` variable is `None` rather than
+`Some`, the `Some(x)` pattern will not match.",304,566,,What are refutable patterns?,ch18-02-refutability.txt,"efutability: Whether a Pattern Might Fail to Match
+
+Patterns come in two forms: refutable and irrefutable. Patterns that will match
+for any possible value passed are *irrefutable*. An example would be `x` in the
+statement `let x = 5;` because `x` matches anything and therefore cannot fail
+to match. Patterns that can fail to match for some possible value are
+*refutable*. An example would be `Some(x)` in the expression `if let Some(x) =
+a_value` because if the value in the `a_value` variable is `None` rather than
+`Some`, the `Some(x)` pattern will not match.
+
+Function parameters, `let` statements, and `for` loops can only accept
+irrefutable patterns, because the program cannot do anything meaningful when
+values don’t match. The `if let` and `while let` expressions accept
+refutable and irrefutable patterns, but the compiler warns against
+irrefutable pat"
+41,6,38,"Function parameters, `let` statements, and `for` loops can only accept
+irrefutable patterns, because the program cannot do anything meaningful when
+values don’t match. ",568,736,,"Why function parameters, `let` statements, and `for` loops can accept only irrefutable patterns?",ch18-02-refutability.txt,"and therefore cannot fail
+to match. Patterns that can fail to match for some possible value are
+*refutable*. An example would be `Some(x)` in the expression `if let Some(x) =
+a_value` because if the value in the `a_value` variable is `None` rather than
+`Some`, the `Some(x)` pattern will not match.
+
+Function parameters, `let` statements, and `for` loops can only accept
+irrefutable patterns, because the program cannot do anything meaningful when
+values don’t match. The `if let` and `while let` expressions accept
+refutable and irrefutable patterns, but the compiler warns against
+irrefutable patterns because by definition they’re intended to handle possible
+failure: the functionality of a conditional is in its ability to perform
+differently depending on success "
+42,6,39,"The `if let` and `while let` expressions accept
+refutable and irrefutable patterns, but the compiler warns against
+irrefutable patterns because by definition they’re intended to handle possible
+failure: the functionality of a conditional is in its ability to perform
+differently depending on success or failure.",736,1047,,Which patterns can accept the `if let` and `while let` expressions?,ch18-02-refutability.txt,"e(x) =
+a_value` because if the value in the `a_value` variable is `None` rather than
+`Some`, the `Some(x)` pattern will not match.
+
+Function parameters, `let` statements, and `for` loops can only accept
+irrefutable patterns, because the program cannot do anything meaningful when
+values don’t match. The `if let` and `while let` expressions accept
+refutable and irrefutable patterns, but the compiler warns against
+irrefutable patterns because by definition they’re intended to handle possible
+failure: the functionality of a conditional is in its ability to perform
+differently depending on success or failure.
+
+In general, you shouldn’t have to worry about the distinction between refutable
+and irrefutable patterns; however, you do need to be familiar with the concept
+of refutability so you can respond when you see it in an error message. In
+those cases, you’ll need to change either the pattern or the con"
+43,6,40,"match arms must use refutable patterns, except for the last
+arm, which should match any remaining values with an irrefutable pattern.",3809,3942,,Does each arm in match arms must use refutable patterns?,ch18-02-refutability.txt,"
+
+<span class=""caption"">Listing 18-10: Attempting to use an irrefutable pattern
+with `if let`</span>
+
+Rust complains that it doesn’t make sense to use `if let` with an irrefutable
+pattern:
+
+```console
+{{#include ../listings/ch18-patterns-and-matching/listing-18-10/output.txt}}
+```
+
+For this reason, match arms must use refutable patterns, except for the last
+arm, which should match any remaining values with an irrefutable pattern. Rust
+allows us to use an irrefutable pattern in a `match` with only one arm, but
+this syntax isn’t particularly useful and could be replaced with a simpler
+`let` statement.
+
+Now that you know where to use patterns and the difference between refutable
+and irrefutable patterns, let’s cover all the sy"
+44,6,41,"Rust
+allows us to use an irrefutable pattern in a `match` with only one arm, but
+this syntax isn’t particularly useful and could be replaced with a simpler
+`let` statement.",3943,4115,,Does Rust allow to use an irrefutable pattern in a `match` with only one arm?,ch18-02-refutability.txt,"ake sense to use `if let` with an irrefutable
+pattern:
+
+```console
+{{#include ../listings/ch18-patterns-and-matching/listing-18-10/output.txt}}
+```
+
+For this reason, match arms must use refutable patterns, except for the last
+arm, which should match any remaining values with an irrefutable pattern. Rust
+allows us to use an irrefutable pattern in a `match` with only one arm, but
+this syntax isn’t particularly useful and could be replaced with a simpler
+`let` statement.
+
+Now that you know where to use patterns and the difference between refutable
+and irrefutable patterns, let’s cover all the syntax we can use to create
+patterns.
+"
+57,9,54,"Another reason Rust has an unsafe alter ego is that the underlying computer
+hardware is inherently unsafe. If Rust didn’t let you do unsafe operations, you
+couldn’t do certain tasks. Rust needs to allow you to do low-level systems
+programming, such as directly interacting with the operating system or even
+writing your own operating system. Working with low-level systems programming
+is one of the goals of the language. Let’s explore what we can do with unsafe
+Rust and how to do it.",963,1448,,What is unsafe Rust need for?,ch19-01-unsafe-rust.txt,"t will reject the code. In these cases,
+you can use unsafe code to tell the compiler, “Trust me, I know what I’m
+doing.” Be warned, however, that you use unsafe Rust at your own risk: if you
+use unsafe code incorrectly, problems can occur due to memory unsafety, such as
+null pointer dereferencing.
+
+Another reason Rust has an unsafe alter ego is that the underlying computer
+hardware is inherently unsafe. If Rust didn’t let you do unsafe operations, you
+couldn’t do certain tasks. Rust needs to allow you to do low-level systems
+programming, such as directly interacting with the operating system or even
+writing your own operating system. Working with low-level systems programming
+is one of the goals of the language. Let’s explore what we can do with unsafe
+Rust and how to do it.
+
+### Unsafe Superpowers
+
+To switch to unsafe Rust, use the `unsafe` keyword and then start a new block
+that holds the unsafe code. You can take five actions in unsafe Rust that you
+can’t in safe Rust, which we call *unsafe superpowers*. Those superpowers
+include the ability to:
+
+* Dereference a raw"
+45,7,42,"However, there is a complication when you use
+named variables in `match` expressions. Because `match` starts a new scope,
+variables declared as part of a pattern inside the `match` expression will
+shadow those with the same name outside the `match` construct, as is the case
+with all variables",685,978,,What complications caused using named variables in `match` expressions?,ch18-03-pattern-syntax.txt,"``
+
+This code prints `one` because the value in `x` is 1. This syntax is useful
+when you want your code to take an action if it gets a particular concrete
+value.
+
+### Matching Named Variables
+
+Named variables are irrefutable patterns that match any value, and we’ve used
+them many times in the book. However, there is a complication when you use
+named variables in `match` expressions. Because `match` starts a new scope,
+variables declared as part of a pattern inside the `match` expression will
+shadow those with the same name outside the `match` construct, as is the case
+with all variables. In Listing 18-11, we declare a variable named `x` with the
+value `Some(5)` and a variable `y` with the value `10`. We then create a
+`match` expression on the value `x`. Look at the patterns in the match arms and
+`println!` at the end, and try to figure out what the code will print before
+running t"
+46,7,43,"you can match multiple patterns using the `|` syntax,
+which is the pattern *or* operator.",3196,3285,,How to match multiple patterns?,ch18-03-pattern-syntax.txt,"y`, rather than introducing a shadowed variable, we would need to use a match
+guard conditional instead. We’ll talk about match guards later in the [“Extra
+Conditionals with Match Guards”](#extra-conditionals-with-match-guards)<!--
+ignore --> section.
+
+### Multiple Patterns
+
+In `match` expressions, you can match multiple patterns using the `|` syntax,
+which is the pattern *or* operator. For example, in the following code we match
+the value of `x` against the match arms, the first of which has an *or* option,
+meaning if the value of `x` matches either of the values in that arm, that
+arm’s code will run:
+
+```rust
+{{#rustdoc_include ../listings/ch18-patterns-and-matching/no-listing-0"
+47,7,44,ranges are only allowed with numeric or `char` values,4507,4560,,With what types are ranges allowed?,ch18-03-pattern-syntax.txt,"`1 | 2 | 3 | 4 | 5`.
+Specifying a range is much shorter, especially if we want to match, say, any
+number between 1 and 1,000!
+
+The compiler checks that the range isn’t empty at compile time, and because the
+only types for which Rust can tell if a range is empty or not are `char` and
+numeric values, ranges are only allowed with numeric or `char` values.
+
+Here is an example using ranges of `char` values:
+
+```rust
+{{#rustdoc_include ../listings/ch18-patterns-and-matching/no-listing-04-ranges-of-char/src/main.rs:here}}
+```
+
+Rust can tell that `'c'` is within the first pattern’s range and prints `early
+ASCII letter`.
+
+### Destructuring to Break Apart"
+48,7,45,"We can also use patterns to destructure structs, enums, and tuples to use
+different parts of these values.",4869,4975,,What other use cases have patterns?,ch18-03-pattern-syntax.txt,"s an example using ranges of `char` values:
+
+```rust
+{{#rustdoc_include ../listings/ch18-patterns-and-matching/no-listing-04-ranges-of-char/src/main.rs:here}}
+```
+
+Rust can tell that `'c'` is within the first pattern’s range and prints `early
+ASCII letter`.
+
+### Destructuring to Break Apart Values
+
+We can also use patterns to destructure structs, enums, and tuples to use
+different parts of these values. Let’s walk through each value.
+
+#### Destructuring Structs
+
+Listing 18-12 shows a `Point` struct with two fields, `x` and `y`, that we can
+break apart using a pattern with a `let` statement.
+
+<span class=""filename"">Filename: src/main.rs</span>
+
+```rust
+{{#rustdoc_include ../listings/ch18-patterns-a"
+49,7,46,"a `match` expression stops checking arms once it has found the
+first matching pattern",8079,8164,,When the `match` expression stops checking arms?,ch18-03-pattern-syntax.txt,"e of the `y` field. The third arm doesn’t specify any literals, so it
+matches any other `Point` and creates variables for both the `x` and `y` fields.
+
+In this example, the value `p` matches the second arm by virtue of `x`
+containing a 0, so this code will print `On the y axis at 7`.
+
+Remember that a `match` expression stops checking arms once it has found the
+first matching pattern, so even though `Point { x: 0, y: 0}` is on the `x` axis
+and the `y` axis, this code would only print `On the x axis at 0`.
+
+#### Destructuring Enums
+
+We've destructured enums in this book (for example, Listing 6-5 in Chapter 6),
+but haven’t yet explicitly discussed that the pattern to destructure "
+50,7,47,"There are a few
+ways to ignore entire values or parts of values in a pattern: using the `_`
+pattern (which you’ve seen), using the `_` pattern within another pattern,
+using a name that starts with an underscore, or using `..` to ignore remaining
+parts of a value.",11789,12052,,What are the ways to ignore entire values or parts of values in a pattern?,ch18-03-pattern-syntax.txt," each field in a struct, separately from each other.
+
+### Ignoring Values in a Pattern
+
+You’ve seen that it’s sometimes useful to ignore values in a pattern, such as
+in the last arm of a `match`, to get a catchall that doesn’t actually do
+anything but does account for all remaining possible values. There are a few
+ways to ignore entire values or parts of values in a pattern: using the `_`
+pattern (which you’ve seen), using the `_` pattern within another pattern,
+using a name that starts with an underscore, or using `..` to ignore remaining
+parts of a value. Let’s explore how and why to use each of these patterns.
+
+#### Ignoring an Entire Value with `_`
+
+We’ve used the underscore as a wildcard pattern that will match any value but
+not bind to the value. This is especially useful as the last arm in a `match`
+expression, but we can also use it in any pat"
+51,7,48,"We can also use underscores in multiple places within one pattern to ignore
+particular values",14659,14752,,Is it possible to use underscores in multiple places of pattern?,ch18-03-pattern-syntax.txt,"variant. In that
+case, we print the reason for not changing `setting_value`, and it doesn’t get
+changed.
+
+In all other cases (if either `setting_value` or `new_setting_value` are
+`None`) expressed by the `_` pattern in the second arm, we want to allow
+`new_setting_value` to become `setting_value`.
+
+We can also use underscores in multiple places within one pattern to ignore
+particular values. Listing 18-19 shows an example of ignoring the second and
+fourth values in a tuple of five items.
+
+```rust
+{{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-19/src/main.rs:here}}
+```
+
+<span class=""caption"">Listing 18-19: Ignoring multiple parts of a tuple</span>
+
+This code will "
+52,7,49,"If you create a variable but don’t use it anywhere, Rust will usually issue a
+warning because an unused variable could be a bug. However, sometimes it’s
+useful to be able to create a variable you won’t use yet, such as when you’re
+prototyping or just starting a project. In this situation, you can tell Rust
+not to warn you about the unused variable by starting the name of the variable
+with an underscore",15190,15595,,What happens when I create a variable but don’t use it anywhere?,ch18-03-pattern-syntax.txt,"s/ch18-patterns-and-matching/listing-18-19/src/main.rs:here}}
+```
+
+<span class=""caption"">Listing 18-19: Ignoring multiple parts of a tuple</span>
+
+This code will print `Some numbers: 2, 8, 32`, and the values 4 and 16 will be
+ignored.
+
+#### Ignoring an Unused Variable by Starting Its Name with `_`
+
+If you create a variable but don’t use it anywhere, Rust will usually issue a
+warning because an unused variable could be a bug. However, sometimes it’s
+useful to be able to create a variable you won’t use yet, such as when you’re
+prototyping or just starting a project. In this situation, you can tell Rust
+not to warn you about the unused variable by starting the name of the variable
+with an underscore. In Listing 18-20, we create two unused variables, but when
+we compile this code, we should only get a warning about one of them.
+
+<span class=""filename"">Filename: src/main.rs</span>
+
+```rust
+{{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-18-20/src/main.rs}}
+```
+
+<span class=""cap"
+53,7,50,"A *match guard* is an additional `if` condition, specified after the pattern in
+a `match` arm, that must also match for that arm to be chosen. Match guards are
+useful for expressing more complex ideas than a pattern alone allows.",19991,20220,,What is match guard?,ch18-03-pattern-syntax.txt," or that we want to ignore
+`2` and `4`, bind `second` to `8`, and then ignore `16` and `32`; and so forth.
+The variable name `second` doesn’t mean anything special to Rust, so we get a
+compiler error because using `..` in two places like this is ambiguous.
+
+### Extra Conditionals with Match Guards
+
+A *match guard* is an additional `if` condition, specified after the pattern in
+a `match` arm, that must also match for that arm to be chosen. Match guards are
+useful for expressing more complex ideas than a pattern alone allows.
+
+The condition can use variables created in the pattern. Listing 18-26 shows a
+`match` where the first arm has the pattern `Some(x)` and also has a match
+guard of `if x % 2 == 0` (which will be true if the number is even).
+
+```rust
+{{#rustdoc_include ../listings/ch18-patterns-and-matching/listing-1"
+54,7,51,"You can also use the *or* operator `|` in a match guard to specify multiple
+patterns; the match guard condition will apply to all the patterns. ",22853,22997,,How to specify multiple patterns in match guard?,ch18-03-pattern-syntax.txt,"cause
+there is no `n` variable outside the `match`.
+
+The match guard `if n == y` is not a pattern and therefore doesn’t introduce
+new variables. This `y` *is* the outer `y` rather than a new shadowed `y`, and
+we can look for a value that has the same value as the outer `y` by comparing
+`n` to `y`.
+
+You can also use the *or* operator `|` in a match guard to specify multiple
+patterns; the match guard condition will apply to all the patterns. Listing
+18-28 shows the precedence when combining a pattern that uses `|` with a match
+guard. The important part of this example is that the `if y` match guard
+applies to `4`, `5`, *and* `6`, even though it might look like `if y` only
+applies to `6`.
+
+```rust
+{{#rustdoc_include ../listings/ch18-patt"
+55,7,52,"The *at* operator `@` lets us create a variable that holds a value at the same
+time as we’re testing that value for a pattern match.",24361,24493,,What does at* operator do?,ch18-03-pattern-syntax.txt,":
+
+```text
+4 | 5 | (6 if y) => ...
+```
+
+After running the code, the precedence behavior is evident: if the match guard
+were applied only to the final value in the list of values specified using the
+`|` operator, the arm would have matched and the program would have printed
+`yes`.
+
+### `@` Bindings
+
+The *at* operator `@` lets us create a variable that holds a value at the same
+time as we’re testing that value for a pattern match. In Listing 18-29, we want
+to test that a `Message::Hello` `id` field is within the range `3..=7`. We also
+want to bind the value to the variable `id_variable` so we can use it in the
+code associated with the arm. We could name this variable `id`, the same as the
+field, but for this example we’ll us"
+56,9,53,"Unsafe Rust exists because, by nature, static analysis is conservative. When
+the compiler tries to determine whether or not code upholds the guarantees,
+it’s better for it to reject some valid programs than to accept some invalid
+programs. Although the code *might* be okay, if the Rust compiler doesn’t have
+enough information to be confident, it will reject the code. In these cases,
+you can use unsafe code to tell the compiler, “Trust me, I know what I’m
+doing.” Be warned, however, that you use unsafe Rust at your own risk: if you
+use unsafe code incorrectly, problems can occur due to memory unsafety, such as
+null pointer dereferencing.",317,961,,What it the history behind unsafe Rust?,ch19-01-unsafe-rust.txt,"ll the code we’ve discussed so far has had Rust’s memory safety guarantees
+enforced at compile time. However, Rust has a second language hidden inside it
+that doesn’t enforce these memory safety guarantees: it’s called *unsafe Rust*
+and works just like regular Rust, but gives us extra superpowers.
+
+Unsafe Rust exists because, by nature, static analysis is conservative. When
+the compiler tries to determine whether or not code upholds the guarantees,
+it’s better for it to reject some valid programs than to accept some invalid
+programs. Although the code *might* be okay, if the Rust compiler doesn’t have
+enough information to be confident, it will reject the code. In these cases,
+you can use unsafe code to tell the compiler, “Trust me, I know what I’m
+doing.” Be warned, however, that you use unsafe Rust at your own risk: if you
+use unsafe code incorrectly, problems can occur due to memory unsafety, such as
+null pointer dereferencing.
+
+Another reason Rust has an unsafe alter ego is that the underlying computer
+hardware is inherently unsafe. If Rust didn’t let you do unsafe operations, you
+couldn’t do certain tasks. Rust needs to allow you to do low-level systems
+programming, such as directly interacting with the operating system"
+58,9,55,"To switch to unsafe Rust, use the `unsafe` keyword and then start a new block
+that holds the unsafe code.",1474,1579,,How to switch to unsafe Rust?,ch19-01-unsafe-rust.txt,"o low-level systems
+programming, such as directly interacting with the operating system or even
+writing your own operating system. Working with low-level systems programming
+is one of the goals of the language. Let’s explore what we can do with unsafe
+Rust and how to do it.
+
+### Unsafe Superpowers
+
+To switch to unsafe Rust, use the `unsafe` keyword and then start a new block
+that holds the unsafe code. You can take five actions in unsafe Rust that you
+can’t in safe Rust, which we call *unsafe superpowers*. Those superpowers
+include the ability to:
+
+* Dereference a raw pointer
+* Call an unsafe function or method
+* Access or modify a mutable static variable
+* Implement an unsafe trait
+* Access fiel"
+59,9,56,"You can take five actions in unsafe Rust that you
+can’t in safe Rust, which we call *unsafe superpowers*. Those superpowers
+include the ability to:
+
+* Dereference a raw pointer
+* Call an unsafe function or method
+* Access or modify a mutable static variable
+* Implement an unsafe trait
+* Access fields of `union`s",1580,1893,,What actions can I do within unsafe Rust?,ch19-01-unsafe-rust.txt,"ur own operating system. Working with low-level systems programming
+is one of the goals of the language. Let’s explore what we can do with unsafe
+Rust and how to do it.
+
+### Unsafe Superpowers
+
+To switch to unsafe Rust, use the `unsafe` keyword and then start a new block
+that holds the unsafe code. You can take five actions in unsafe Rust that you
+can’t in safe Rust, which we call *unsafe superpowers*. Those superpowers
+include the ability to:
+
+* Dereference a raw pointer
+* Call an unsafe function or method
+* Access or modify a mutable static variable
+* Implement an unsafe trait
+* Access fields of `union`s
+
+It’s important to understand that `unsafe` doesn’t turn off the borrow checker
+or disable any other of Rust’s safety checks: if you use a reference in unsafe
+code, it will still be checked. The `unsafe` keyword only gives you access to
+these five features that are then not checked by the compiler "
+61,9,58,"Unsafe Rust has two new types called *raw pointers* that are similar to
+references. As with references, raw pointers can be immutable or mutable and
+are written as `*const T` and `*mut T`, respectively. The asterisk isn’t the
+dereference operator; it’s part of the type name. In the context of raw
+pointers, *immutable* means that the pointer can’t be directly assigned to
+after being dereferenced.",3751,4149,,What are raw pointers?,ch19-01-unsafe-rust.txt,"afe superpowers in turn. We’ll also look at
+some abstractions that provide a safe interface to unsafe code.
+
+### Dereferencing a Raw Pointer
+
+In Chapter 4, in the [“Dangling References”][dangling-references]<!-- ignore
+--> section, we mentioned that the compiler ensures references are always
+valid. Unsafe Rust has two new types called *raw pointers* that are similar to
+references. As with references, raw pointers can be immutable or mutable and
+are written as `*const T` and `*mut T`, respectively. The asterisk isn’t the
+dereference operator; it’s part of the type name. In the context of raw
+pointers, *immutable* means that the pointer can’t be directly assigned to
+after being dereferenced.
+
+Different from references and smart pointers, raw pointers:
+
+* Are allowed to ignore the borrowing rules by having both immutable and
+  mutable pointers or multiple mutable pointers to the same location
+* Aren’t guaranteed to point to valid memory
+* Are allowed to be null
+* Don’t implement any aut"
+79,10,75,"Rust doesn’t allow you to create your own operators or overload arbitrary
+operators. But you can overload the operations and corresponding traits listed
+in `std::ops` by implementing the traits associated with the operator.",4643,4866,,Can I create my own operators in Rust?,ch19-03-advanced-traits.txt,"orks. You specify a default type
+when declaring a generic type with the `<PlaceholderType=ConcreteType>` syntax.
+
+A great example of a situation where this technique is useful is with *operator
+overloading*, in which you customize the behavior of an operator (such as `+`)
+in particular situations.
+
+Rust doesn’t allow you to create your own operators or overload arbitrary
+operators. But you can overload the operations and corresponding traits listed
+in `std::ops` by implementing the traits associated with the operator. For
+example, in Listing 19-14 we overload the `+` operator to add two `Point`
+instances together. We do this by implementing the `Add` trait on a `Point`
+struct:
+
+<span class=""filename"">Filename: src/main.rs</span>
+
+```rust
+{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-14/src/mai"
+62,9,59,"Different from references and smart pointers, raw pointers:
+
+* Are allowed to ignore the borrowing rules by having both immutable and
+  mutable pointers or multiple mutable pointers to the same location
+* Aren’t guaranteed to point to valid memory
+* Are allowed to be null
+* Don’t implement any automatic cleanup",4151,4463,,What differs references and smart pointers from raw pointers?,ch19-01-unsafe-rust.txt,"es, raw pointers can be immutable or mutable and
+are written as `*const T` and `*mut T`, respectively. The asterisk isn’t the
+dereference operator; it’s part of the type name. In the context of raw
+pointers, *immutable* means that the pointer can’t be directly assigned to
+after being dereferenced.
+
+Different from references and smart pointers, raw pointers:
+
+* Are allowed to ignore the borrowing rules by having both immutable and
+  mutable pointers or multiple mutable pointers to the same location
+* Aren’t guaranteed to point to valid memory
+* Are allowed to be null
+* Don’t implement any automatic cleanup
+
+By opting out of having Rust enforce these guarantees, you can give up
+guaranteed safety in exchange for greater performance or the ability to
+interface with another language or hardware where Rust’s guarantees don’t apply.
+
+Listing 19-1 shows how to create an immutable and a mutable raw pointer f"
+63,9,60,"With
+raw pointers, we can create a mutable pointer and an immutable pointer to the
+same location and change data through the mutable pointer, potentially creating
+a data race.",7105,7280,,What danger araises when using raw pointers?,ch19-01-unsafe-rust.txt,"w pointers that both pointed to the same memory location, where `num` is
+stored. If we instead tried to create an immutable and a mutable reference to
+`num`, the code would not have compiled because Rust’s ownership rules don’t
+allow a mutable reference at the same time as any immutable references. With
+raw pointers, we can create a mutable pointer and an immutable pointer to the
+same location and change data through the mutable pointer, potentially creating
+a data race. Be careful!
+
+With all of these dangers, why would you ever use raw pointers? One major use
+case is when interfacing with C code, as you’ll see in the next section,
+[“Calling an Unsafe Function or
+Method.”](#calling-an-unsafe-function-or-method)<!-- ignore --> Another case is
+when building up safe a"
+64,9,61,"Unsafe functions and methods look exactly like regular
+functions and methods, but they have an extra `unsafe` before the rest of the
+definition. The `unsafe` keyword in this context indicates the function has
+requirements we need to uphold when we call this function, because Rust can’t
+guarantee we’ve met these requirements. By calling an unsafe function within an
+`unsafe` block, we’re saying that we’ve read this function’s documentation and
+take responsibility for upholding the function’s contracts.",7878,8383,,What differs unsafe functions and methods from regular functions and methods?,ch19-01-unsafe-rust.txt," abstractions that the borrow checker doesn’t understand.
+We’ll introduce unsafe functions and then look at an example of a safe
+abstraction that uses unsafe code.
+
+### Calling an Unsafe Function or Method
+
+The second type of operation you can perform in an unsafe block is calling
+unsafe functions. Unsafe functions and methods look exactly like regular
+functions and methods, but they have an extra `unsafe` before the rest of the
+definition. The `unsafe` keyword in this context indicates the function has
+requirements we need to uphold when we call this function, because Rust can’t
+guarantee we’ve met these requirements. By calling an unsafe function within an
+`unsafe` block, we’re saying that we’ve read this function’s documentation and
+take responsibility for upholding the function’s contracts.
+
+Here is an unsafe function named `dangerous` that doesn’t do anything in its
+body:
+
+```rust
+{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-01-unsafe-fn/src/main.rs:here}}
+```
+
+We must call the `dangerous` function within a separate `unsafe` block. If we
+try to call `dangerous` wi"
+65,9,62,"Sometimes, your Rust code might need to interact with code written in another
+language. For this, Rust has the keyword `extern` that facilitates the creation
+and use of a *Foreign Function Interface (FFI)*. An FFI is a way for a
+programming language to define functions and enable a different (foreign)
+programming language to call those functions.",14480,14828,,Does Rust can interact with code written in another languages?,ch19-01-unsafe-rust.txt,"y
+location</span>
+
+We don’t own the memory at this arbitrary location, and there is no guarantee
+that the slice this code creates contains valid `i32` values. Attempting to use
+`values` as though it’s a valid slice results in undefined behavior.
+
+#### Using `extern` Functions to Call External Code
+
+Sometimes, your Rust code might need to interact with code written in another
+language. For this, Rust has the keyword `extern` that facilitates the creation
+and use of a *Foreign Function Interface (FFI)*. An FFI is a way for a
+programming language to define functions and enable a different (foreign)
+programming language to call those functions.
+
+Listing 19-8 demonstrates how to set up an integration with the `abs` function
+from the C standard library. Functions declared within `extern` blocks are
+always unsafe to call from Rust code. The reason is that other languages don’t
+enforce Rust’s rules and guarantees, and Rust can’t check them, s"
+66,9,63,"We can also use `extern` to create an interface that allows other languages
+> to call Rust functions. Instead of creating a whole `extern` block, we add
+> the `extern` keyword and specify the ABI to use just before the `fn` keyword
+> for the relevant function. We also need to add a `#[no_mangle]` annotation to
+> tell the Rust compiler not to mangle the name of this function.",15869,16246,,Can I call Rust Functions from Other Languages?,ch19-01-unsafe-rust.txt," call. The `""C""` part defines which
+*application binary interface (ABI)* the external function uses: the ABI
+defines how to call the function at the assembly level. The `""C""` ABI is the
+most common and follows the C programming language’s ABI.
+
+> #### Calling Rust Functions from Other Languages
+>
+> We can also use `extern` to create an interface that allows other languages
+> to call Rust functions. Instead of creating a whole `extern` block, we add
+> the `extern` keyword and specify the ABI to use just before the `fn` keyword
+> for the relevant function. We also need to add a `#[no_mangle]` annotation to
+> tell the Rust compiler not to mangle the name of this function. *Mangling* is
+> when a compiler changes the name we’ve given a function to a different name
+> that contains more information for other parts of the compilation process to
+> consume but is less human readable. Every programming language compiler
+> mangles names slightly differently, so for a Rust fu"
+67,9,64,"*Mangling* is
+> when a compiler changes the name we’ve given a function to a different name
+> that contains more information for other parts of the compilation process to
+> consume but is less human readable. Every programming language compiler
+> mangles names slightly differently, so for a Rust function to be nameable by
+> other languages, we must disable the Rust compiler’s name mangling.",16247,16640,,What is mangling?,ch19-01-unsafe-rust.txt,"to call Rust functions. Instead of creating a whole `extern` block, we add
+> the `extern` keyword and specify the ABI to use just before the `fn` keyword
+> for the relevant function. We also need to add a `#[no_mangle]` annotation to
+> tell the Rust compiler not to mangle the name of this function. *Mangling* is
+> when a compiler changes the name we’ve given a function to a different name
+> that contains more information for other parts of the compilation process to
+> consume but is less human readable. Every programming language compiler
+> mangles names slightly differently, so for a Rust function to be nameable by
+> other languages, we must disable the Rust compiler’s name mangling.
+>
+> In the following example, we make the `call_from_c` function accessible from
+> C code, after it’s compiled to a shared library and linked from C:
+>
+> ```rust
+> #[no_mangle]
+> pub extern ""C"" fn call_from_c() {
+>     println!(""Just called a Rust function from C!"");
+> }
+> ```
+>
+> This usage of `ex"
+68,9,65,"In Rust, global variables are called *static* variables.",17255,17311,,How global variables are called in Rust?,ch19-01-unsafe-rust.txt,"require `unsafe`.
+
+### Accessing or Modifying a Mutable Static Variable
+
+In this book, we’ve not yet talked about *global variables*, which Rust does
+support but can be problematic with Rust’s ownership rules. If two threads are
+accessing the same mutable global variable, it can cause a data race.
+
+In Rust, global variables are called *static* variables. Listing 19-9 shows an
+example declaration and use of a static variable with a string slice as a
+value.
+
+<span class=""filename"">Filename: src/main.rs</span>
+
+```rust
+{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-09/src/main.rs}}
+```
+
+<span class=""caption"">Listing 19-9: Defining an"
+69,9,66,"If two threads are
+accessing the same mutable global variable, it can cause a data race.",17165,17253,,What danger hides behind using global variables?,ch19-01-unsafe-rust.txt,"ln!(""Just called a Rust function from C!"");
+> }
+> ```
+>
+> This usage of `extern` does not require `unsafe`.
+
+### Accessing or Modifying a Mutable Static Variable
+
+In this book, we’ve not yet talked about *global variables*, which Rust does
+support but can be problematic with Rust’s ownership rules. If two threads are
+accessing the same mutable global variable, it can cause a data race.
+
+In Rust, global variables are called *static* variables. Listing 19-9 shows an
+example declaration and use of a static variable with a string slice as a
+value.
+
+<span class=""filename"">Filename: src/main.rs</span>
+
+```rust
+{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-09/src/main"
+70,9,67,"The names of static variables are in `SCREAMING_SNAKE_CASE` by
+convention.",17855,17929,,How are the names of static variables written in Rust?,ch19-01-unsafe-rust.txt,"s}}
+```
+
+<span class=""caption"">Listing 19-9: Defining and using an immutable static
+variable</span>
+
+Static variables are similar to constants, which we discussed in the
+[“Differences Between Variables and
+Constants”][differences-between-variables-and-constants]<!-- ignore --> section
+in Chapter 3. The names of static variables are in `SCREAMING_SNAKE_CASE` by
+convention. Static variables can only store references with the `'static`
+lifetime, which means the Rust compiler can figure out the lifetime and we
+aren’t required to annotate it explicitly. Accessing an immutable static
+variable is safe.
+
+A subtle difference between constants and immutable static variables i"
+71,9,68,"A subtle difference between constants and immutable static variables is that
+values in a static variable have a fixed address in memory. Using the value
+will always access the same data. Constants, on the other hand, are allowed to
+duplicate their data whenever they’re used. Another difference is that static
+variables can be mutable. Accessing and modifying mutable static variables is
+*unsafe*.",18159,18556,,What are the differences between between constants and immutable static variables in Rust?,ch19-01-unsafe-rust.txt,"names of static variables are in `SCREAMING_SNAKE_CASE` by
+convention. Static variables can only store references with the `'static`
+lifetime, which means the Rust compiler can figure out the lifetime and we
+aren’t required to annotate it explicitly. Accessing an immutable static
+variable is safe.
+
+A subtle difference between constants and immutable static variables is that
+values in a static variable have a fixed address in memory. Using the value
+will always access the same data. Constants, on the other hand, are allowed to
+duplicate their data whenever they’re used. Another difference is that static
+variables can be mutable. Accessing and modifying mutable static variables is
+*unsafe*. Listing 19-10 shows how to declare, access, and modify a mutable
+static variable named `COUNTER`.
+
+<span class=""filename"">Filename: src/main.rs</span>
+
+```rust
+{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-10/src/main.rs}}
+```
+
+<span class=""caption"">Listing 19-10: Reading from or"
+72,9,69,"We can use `unsafe` to implement an unsafe trait. A trait is unsafe when at
+least one of its methods has some invariant that the compiler can’t verify. We
+declare that a trait is `unsafe` by adding the `unsafe` keyword before `trait`
+and marking the implementation of the trait as `unsafe` too",19638,19931,,Does Rust have unsafe traits?,ch19-01-unsafe-rust.txt,"s why Rust considers mutable static variables to be
+unsafe. Where possible, it’s preferable to use the concurrency techniques and
+thread-safe smart pointers we discussed in Chapter 16 so the compiler checks
+that data accessed from different threads is done safely.
+
+### Implementing an Unsafe Trait
+
+We can use `unsafe` to implement an unsafe trait. A trait is unsafe when at
+least one of its methods has some invariant that the compiler can’t verify. We
+declare that a trait is `unsafe` by adding the `unsafe` keyword before `trait`
+and marking the implementation of the trait as `unsafe` too, as shown in
+Listing 19-11.
+
+```rust
+{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-11/src/main.rs}}
+```
+
+<span class=""caption"">Listing 19-11: Defining and implementing an unsafe
+trait</span>
+
+By using `unsafe impl`, we’re promising that we’ll uphold the invariants that
+the compil"
+73,9,70," A `union` is similar to a `struct`, but only one declared field is
+used in a particular instance at one time. Unions are primarily used to
+interface with unions in C code. Accessing union fields is unsafe because Rust
+can’t guarantee the type of the data currently being stored in the union
+instance.",21092,21393,,What differs union from struct?,ch19-01-unsafe-rust.txt,"pe upholds the guarantees that it can be safely sent
+across threads or accessed from multiple threads; therefore, we need to do
+those checks manually and indicate as such with `unsafe`.
+
+### Accessing Fields of a Union
+
+The final action that works only with `unsafe` is accessing fields of a
+*union*. A `union` is similar to a `struct`, but only one declared field is
+used in a particular instance at one time. Unions are primarily used to
+interface with unions in C code. Accessing union fields is unsafe because Rust
+can’t guarantee the type of the data currently being stored in the union
+instance. You can learn more about unions in [the Rust Reference][reference].
+
+### When to Use Unsafe Code
+
+Using `unsafe` to take one of the five actions (superpowers) just discussed
+isn’t wrong or even frowned upon. But it is trickier to get `unsafe` code
+correct because the compiler can’t help uphold memo"
+74,9,71,"Using `unsafe` to take one of the five actions (superpowers) just discussed
+isn’t wrong or even frowned upon. But it is trickier to get `unsafe` code
+correct because the compiler can’t help uphold memory safety. When you have a
+reason to use `unsafe` code, you can do so, and having the explicit `unsafe`
+annotation makes it easier to track down the source of problems when they occur.",21492,21877,, When to Use Unsafe Code?,ch19-01-unsafe-rust.txt," one time. Unions are primarily used to
+interface with unions in C code. Accessing union fields is unsafe because Rust
+can’t guarantee the type of the data currently being stored in the union
+instance. You can learn more about unions in [the Rust Reference][reference].
+
+### When to Use Unsafe Code
+
+Using `unsafe` to take one of the five actions (superpowers) just discussed
+isn’t wrong or even frowned upon. But it is trickier to get `unsafe` code
+correct because the compiler can’t help uphold memory safety. When you have a
+reason to use `unsafe` code, you can do so, and having the explicit `unsafe`
+annotation makes it easier to track down the source of problems when they occur.
+
+[dangling-references]:
+ch04-02-references-and-borrowing.html#dangling-references
+[differences-between-variables-and-constants]:
+ch03-01-variables-and-mutability.html#constants
+[extensible-concurrency-with-the-sync-and-send-traits]:
+ch16-04-extensible-concurrency-sync-and-send.html#extensible-concu"
+75,10,72,"Associated types might seem like a similar concept to generics, in that the
+latter allow us to define a function without specifying what types it can
+handle.",1907,2064,,What differs associated types from generics?,ch19-03-advanced-traits.txt,"he type `Item` is a placeholder, and the `next` method’s definition shows that
+it will return values of type `Option<Self::Item>`. Implementors of the
+`Iterator` trait will specify the concrete type for `Item`, and the `next`
+method will return an `Option` containing a value of that concrete type.
+
+Associated types might seem like a similar concept to generics, in that the
+latter allow us to define a function without specifying what types it can
+handle. To examine the difference between the two concepts, we’ll look at an
+implementation of the `Iterator` trait on a type named `Counter` that specifies
+the `Item` type is `u32`:
+
+<span class=""filename"">Filename: src/lib.rs</span>
+
+```rust,ignore
+{{#rustdoc_include ../listings/ch19-advanced-features/no"
+76,10,73,"when a trait has a
+generic parameter, it can be implemented for a type multiple times, changing
+the concrete types of the generic type parameters each time.",3053,3209,,What gives us a generic parameter in a trait?,ch19-03-advanced-traits.txt,"ng generics</span>
+
+The difference is that when using generics, as in Listing 19-13, we must
+annotate the types in each implementation; because we can also implement
+`Iterator<String> for Counter` or any other type, we could have multiple
+implementations of `Iterator` for `Counter`. In other words, when a trait has a
+generic parameter, it can be implemented for a type multiple times, changing
+the concrete types of the generic type parameters each time. When we use the
+`next` method on `Counter`, we would have to provide type annotations to
+indicate which implementation of `Iterator` we want to use.
+
+With associated types, we don’t need to annotate types because we can’t
+implement a trait on a type multiple times. In Listing 19-12 with the
+definit"
+78,10,74,"When we use generic type parameters, we can specify a default concrete type for
+the generic type. This eliminates the need for implementors of the trait to
+specify a concrete type if the default type works. You specify a default type
+when declaring a generic type with the `‹PlaceholderType=ConcreteType>` syntax.
+
+A great example of a situation where this technique is useful is with *operator
+overloading*, in which you customize the behavior of an operator (such as `+`)
+in particular situations.",4142,4641,,What give me a default Generic Type Parameters?,ch19-03-advanced-traits.txt,"f the
+trait must provide a type to stand in for the associated type placeholder.
+Associated types often have a name that describes how the type will be used,
+and documenting the associated type in the API documentation is good practice.
+
+### Default Generic Type Parameters and Operator Overloading
+
+When we use generic type parameters, we can specify a default concrete type for
+the generic type. This eliminates the need for implementors of the trait to
+specify a concrete type if the default type works. You specify a default type
+when declaring a generic type with the `<PlaceholderType=ConcreteType>` syntax.
+
+A great example of a situation where this technique is useful is with *operator
+overloading*, in which you customize the behavior of an operator (such as `+`)
+in particular situations.
+
+Rust doesn’t allow you to create your own operators or overload arbitrary
+operators. But you can overload the operations and corresponding traits listed
+in `std::ops` by implementing the traits associated with the operator. For
+example, in Listing 19-14 we overload the `+` operator to add two `Poi"
+80,10,76,"Nothing in Rust prevents a trait from having a method with the same name as
+another trait’s method, nor does Rust prevent you from implementing both traits
+on one type. It’s also possible to implement a method directly on the type with
+the same name as methods from traits.
+
+When calling methods with the same name, you’ll need to tell Rust which one you
+want to use. ",8339,8707,,Can I have two methods with the same name in Rust?,ch19-03-advanced-traits.txt," the second but in reverse: if you want to add a
+type parameter to an existing trait, you can give it a default to allow
+extension of the functionality of the trait without breaking the existing
+implementation code.
+
+### Fully Qualified Syntax for Disambiguation: Calling Methods with the Same Name
+
+Nothing in Rust prevents a trait from having a method with the same name as
+another trait’s method, nor does Rust prevent you from implementing both traits
+on one type. It’s also possible to implement a method directly on the type with
+the same name as methods from traits.
+
+When calling methods with the same name, you’ll need to tell Rust which one you
+want to use. Consider the code in Listing 19-16 where we’ve defined two traits,
+`Pilot` and `Wizard`, that both have a method called `fly`. We then implement
+both traits on a type `Human` that already has a method named `fly` implemented
+on it. Each `fly` method does something different.
+
+<span class=""filename"">"
+81,10,77,"Sometimes, you might write a trait definition that depends on another trait:
+for a type to implement the first trait, you want to require that type to also
+implement the second trait. You would do this so that your trait definition can
+make use of the associated items of the second trait. The trait your trait
+definition is relying on is called a *supertrait* of your trait.",15218,15593,,Can I use trait inside another trait?,ch19-03-advanced-traits.txt,"information
+in the program. You only need to use this more verbose syntax in cases where
+there are multiple implementations that use the same name and Rust needs help
+to identify which implementation you want to call.
+
+### Using Supertraits to Require One Trait’s Functionality Within Another Trait
+
+Sometimes, you might write a trait definition that depends on another trait:
+for a type to implement the first trait, you want to require that type to also
+implement the second trait. You would do this so that your trait definition can
+make use of the associated items of the second trait. The trait your trait
+definition is relying on is called a *supertrait* of your trait.
+
+For example, let’s say we want to make an `OutlinePrint` trait with an
+`outline_print` method that will print a given value formatted so that it's
+framed in asterisks. That is, given a `Point` struct that implements the
+standard library trait `Display` to result in `(x, y)`, when we call
+`outline_"
+83,11,79,"The newtype pattern is also useful for tasks beyond those we’ve discussed so
+far, including statically enforcing that values are never confused and
+indicating the units of a value.",623,803,,What other usage has newtype pattern?,ch19-04-advanced-types.txt,"discuss
+the `!` type and dynamically sized types.
+
+### Using the Newtype Pattern for Type Safety and Abstraction
+
+> Note: This section assumes you’ve read the earlier section [“Using the
+> Newtype Pattern to Implement External Traits on External
+> Types.”][using-the-newtype-pattern]<!-- ignore -->
+
+The newtype pattern is also useful for tasks beyond those we’ve discussed so
+far, including statically enforcing that values are never confused and
+indicating the units of a value. You saw an example of using newtypes to
+indicate units in Listing 19-15: recall that the `Millimeters` and `Meters`
+structs wrapped `u32` values in a newtype. If we wrote a function with a
+parameter of type `Millimeters`, we couldn’t compile a program that
+accidentally tried to call that function w"
+84,11,80,"We can also use the newtype pattern to abstract away some implementation
+details of a type: the new type can expose a public API that is different from
+the API of the private inner type.",1151,1337,,What is example usage of newtype pattern?,ch19-04-advanced-types.txt,"e units in Listing 19-15: recall that the `Millimeters` and `Meters`
+structs wrapped `u32` values in a newtype. If we wrote a function with a
+parameter of type `Millimeters`, we couldn’t compile a program that
+accidentally tried to call that function with a value of type `Meters` or a
+plain `u32`.
+
+We can also use the newtype pattern to abstract away some implementation
+details of a type: the new type can expose a public API that is different from
+the API of the private inner type.
+
+Newtypes can also hide internal implementation. For example, we could provide a
+`People` type to wrap a `HashMap<i32, String>` that stores a person’s ID
+associated with their name. Code using `People` would only interact with the
+public API we provide, such as a method to add a name string to the "
+85,11,81,"Rust provides the ability to declare a *type alias* to give an existing type
+another name. For this we use the `type` keyword.",2048,2174,,Can I give to an existing type another name?,ch19-04-advanced-types.txt,"e pattern is a lightweight way to achieve encapsulation
+to hide implementation details, which we discussed in the [“Encapsulation that
+Hides Implementation
+Details”][encapsulation-that-hides-implementation-details]<!-- ignore -->
+section of Chapter 17.
+
+### Creating Type Synonyms with Type Aliases
+
+Rust provides the ability to declare a *type alias* to give an existing type
+another name. For this we use the `type` keyword. For example, we can create
+the alias `Kilometers` to `i32` like so:
+
+```rust
+{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-04-kilometers-alias/src/main.rs:here}}
+```
+
+Now, the alias `Kilometers` is a *synonym* for `i32`; unlike the `Millimeters`
+and `Meters` types we created in L"
+86,11,82,"The type alias helps in two ways: it makes code easier to write *and* it gives
+us a consistent interface across all of `std::io`.",5529,5658,,What are the pros of using type aliases?,ch19-04-advanced-types.txt,"
+qualified alias `std::io::Result<T>`; that is, a `Result<T, E>` with the `E`
+filled in as `std::io::Error`. The `Write` trait function signatures end up
+looking like this:
+
+```rust,noplayground
+{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-06-result-alias/src/lib.rs:there}}
+```
+
+The type alias helps in two ways: it makes code easier to write *and* it gives
+us a consistent interface across all of `std::io`. Because it’s an alias, it’s
+just another `Result<T, E>`, which means we can use any methods that work on
+`Result<T, E>` with it, as well as special syntax like the `?` operator.
+
+### The Never Type that Never Returns
+
+Rust has a special type named `!` that’s known in type theory lingo as the
+*empty"
+87,11,83,"Rust has a special type named `!` that’s known in type theory lingo as the
+*empty type* because it has no values. We prefer to call it the *never type*
+because it stands in the place of the return type when a function will never
+return.",5877,6113,,How the Never Type in Rust works?,ch19-04-advanced-types.txt,"easier to write *and* it gives
+us a consistent interface across all of `std::io`. Because it’s an alias, it’s
+just another `Result<T, E>`, which means we can use any methods that work on
+`Result<T, E>` with it, as well as special syntax like the `?` operator.
+
+### The Never Type that Never Returns
+
+Rust has a special type named `!` that’s known in type theory lingo as the
+*empty type* because it has no values. We prefer to call it the *never type*
+because it stands in the place of the return type when a function will never
+return. Here is an example:
+
+```rust,noplayground
+{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-07-never-type/src/lib.rs:here}}
+```
+
+This code is read as “the function `bar` returns never.” Functions that return
+never are called *diverging functions*. We can’t create values of the type `"
+88,11,84,"Rust needs to know certain details about its types, such as how much space to
+allocate for a value of a particular type. This leaves one corner of its type
+system a little confusing at first: the concept of *dynamically sized types*.
+Sometimes referred to as *DSTs* or *unsized types*, these types let us write
+code using values whose size we can know only at runtime.",9229,9597,,What are dynamically Sized Types?,ch19-04-advanced-types.txt,"atures/no-listing-10-loop-returns-never/src/main.rs:here}}
+```
+
+Here, the loop never ends, so `!` is the value of the expression. However, this
+wouldn’t be true if we included a `break`, because the loop would terminate
+when it got to the `break`.
+
+### Dynamically Sized Types and the `Sized` Trait
+
+Rust needs to know certain details about its types, such as how much space to
+allocate for a value of a particular type. This leaves one corner of its type
+system a little confusing at first: the concept of *dynamically sized types*.
+Sometimes referred to as *DSTs* or *unsized types*, these types let us write
+code using values whose size we can know only at runtime.
+
+Let’s dig into the details of a dynamically sized type called `str`, which
+we’ve been using throughout the book. That’s right, not `&str`, but `str` on
+its own, is a DST. We can’t know how long the string is until runtime, meaning
+we can’t create a variable of type `str`, nor can we take an argume"
+89,11,85,"To work with DSTs, Rust provides the `Sized` trait to determine whether or not
+a type’s size is known at compile time. This trait is automatically implemented
+for everything whose size is known at compile time. In addition, Rust
+implicitly adds a bound on `Sized` to every generic function.",12084,12374,,How to work with dst in Rust?,ch19-04-advanced-types.txt,"t Objects That
+Allow for Values of Different
+Types”][using-trait-objects-that-allow-for-values-of-different-types]<!--
+ignore --> section, we mentioned that to use traits as trait objects, we must
+put them behind a pointer, such as `&dyn Trait` or `Box<dyn Trait>` (`Rc<dyn
+Trait>` would work too).
+
+To work with DSTs, Rust provides the `Sized` trait to determine whether or not
+a type’s size is known at compile time. This trait is automatically implemented
+for everything whose size is known at compile time. In addition, Rust
+implicitly adds a bound on `Sized` to every generic function. That is, a
+generic function definition like this:
+
+```rust,ignore
+{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-12-generic-fn-definition/src/lib.rs}}
+```
+
+is actually treated as though we had written this:
+
+```rust,ignore
+{{#rustdoc_include ../listings/ch19-advanced-features/no-l"
+90,12,86,"Closures are represented by traits, which means you can’t return closures
+directly. In most cases where you might want to return a trait, you can instead
+use the concrete type that implements the trait as the return value of the
+function. However, you can’t do that with closures because they don’t have a
+concrete type that is returnable; you’re not allowed to use the function
+pointer `fn` as a return type, for example.",4339,4761,,How to return a closure?,ch19-05-advanced-functions-and-closures.txt,"Value` instances using each `u32` value in the range
+that `map` is called on by using the initializer function of `Status::Value`.
+Some people prefer this style, and some people prefer to use closures. They
+compile to the same code, so use whichever style is clearer to you.
+
+### Returning Closures
+
+Closures are represented by traits, which means you can’t return closures
+directly. In most cases where you might want to return a trait, you can instead
+use the concrete type that implements the trait as the return value of the
+function. However, you can’t do that with closures because they don’t have a
+concrete type that is returnable; you’re not allowed to use the function
+pointer `fn` as a return type, for example.
+
+The following code tries to return a closure directly, but it won’t compile:
+
+```rust,ignore,does_not_compile
+{{#rustdoc_include ../listings/ch19-advanced-features/no-listing-18-returns-closure/src/lib.rs}}
+```
+
+The compiler error is as follows:
+
+```console
+{{#include ../listings/ch19-advanced-fea"
+91,13,87,"The term *macro* refers to a family
+of features in Rust: *declarative* macros with `macro_rules!` and three kinds
+of *procedural* macros:",131,268,,What does term macro refers to?,ch19-06-macros.txt,"## Macros
+
+We’ve used macros like `println!` throughout this book, but we haven’t fully
+explored what a macro is and how it works. The term *macro* refers to a family
+of features in Rust: *declarative* macros with `macro_rules!` and three kinds
+of *procedural* macros:
+
+* Custom `#[derive]` macros that specify code added with the `derive` attribute
+  used on structs and enums
+* Attribute-like macros that define custom attributes usable on any item
+* Function-like macros that look like function calls but operate on the tokens
+  specified as their argument
+
+We’ll t"
+92,13,88,"* Custom `#[derive]` macros that specify code added with the `derive` attribute
+  used on structs and enums
+* Attribute-like macros that define custom attributes usable on any item
+* Function-like macros that look like function calls but operate on the tokens
+  specified as their argument",270,559,,What are the types of procedural macros?,ch19-06-macros.txt,"## Macros
+
+We’ve used macros like `println!` throughout this book, but we haven’t fully
+explored what a macro is and how it works. The term *macro* refers to a family
+of features in Rust: *declarative* macros with `macro_rules!` and three kinds
+of *procedural* macros:
+
+* Custom `#[derive]` macros that specify code added with the `derive` attribute
+  used on structs and enums
+* Attribute-like macros that define custom attributes usable on any item
+* Function-like macros that look like function calls but operate on the tokens
+  specified as their argument
+
+We’ll talk about each of these in turn, but first, let’s look at why we even
+need macros when we already have functions.
+
+### The Difference Between Macros and Functions
+
+Fundamentally, macros are a way of writing code that writes other code, which
+is known as *metaprogramming*. In Appendix C, we "
+93,13,89,"Fundamentally, macros are a way of writing code that writes other code, which
+is known as *metaprogramming*. In Appendix C, we discuss the `derive`
+attribute, which generates an implementation of various traits for you. We’ve
+also used the `println!` and `vec!` macros throughout the book. All of these
+macros *expand* to produce more code than the code you’ve written manually.
+
+Metaprogramming is useful for reducing the amount of code you have to write and
+maintain, which is also one of the roles of functions. However, macros have
+some additional powers that functions don’t.
+
+A function signature must declare the number and type of parameters the
+function has. Macros, on the other hand, can take a variable number of
+parameters: we can call `println!(""hello"")` with one argument or
+`println!(""hello {}"", name)` with two arguments. Also, macros are expanded
+before the compiler interprets the meaning of the code, so a macro can, for
+example, implement a trait on a given type. A function can’t, because it gets
+called at runtime and a trait needs to be implemented at compile time.
+",732,1822,,What are the Differences Between Macros and Functions?,ch19-06-macros.txt,"usable on any item
+* Function-like macros that look like function calls but operate on the tokens
+  specified as their argument
+
+We’ll talk about each of these in turn, but first, let’s look at why we even
+need macros when we already have functions.
+
+### The Difference Between Macros and Functions
+
+Fundamentally, macros are a way of writing code that writes other code, which
+is known as *metaprogramming*. In Appendix C, we discuss the `derive`
+attribute, which generates an implementation of various traits for you. We’ve
+also used the `println!` and `vec!` macros throughout the book. All of these
+macros *expand* to produce more code than the code you’ve written manually.
+
+Metaprogramming is useful for reducing the amount of code you have to write and
+maintain, which is also one of the roles of functions. However, macros have
+some additional powers that functions don’t.
+
+A function signature must declare the number and type of parameters the
+function has. Macros, on the other hand, can take a variable number of
+parameters: we can call `println!(""hello"")` with one argument or
+`println!(""hello {}"", name)` with two arguments. Also, macros are expanded
+before the compiler interprets the meaning of the code, so a macro can, for
+example, implement a trait on a given type. A function can’t, because it gets
+called at runtime and a trait needs to be implemented at compile time.
+
+The downside to implementing a macro instead of a function is that macro
+definitions are more complex than function definitions because you’re writing
+Rust code that writes Rust code. Due to this indirection, macro definitions are
+generally more difficult to read, understand, and maintain than func"
+94,13,90,"The downside to implementing a macro instead of a function is that macro
+definitions are more complex than function definitions because you’re writing
+Rust code that writes Rust code. Due to this indirection, macro definitions are
+generally more difficult to read, understand, and maintain than function
+definitions.
+",1823,2140,,What is the downside to implementing a macro instead of a function?,ch19-06-macros.txt,"println!(""hello {}"", name)` with two arguments. Also, macros are expanded
+before the compiler interprets the meaning of the code, so a macro can, for
+example, implement a trait on a given type. A function can’t, because it gets
+called at runtime and a trait needs to be implemented at compile time.
+
+The downside to implementing a macro instead of a function is that macro
+definitions are more complex than function definitions because you’re writing
+Rust code that writes Rust code. Due to this indirection, macro definitions are
+generally more difficult to read, understand, and maintain than function
+definitions.
+
+Another important difference between macros and functions is that you must
+define macros or bring them into scope *before* you call them in a file, as
+opposed to functions you can define anywhere and call anywhere.
+
+### Declarative Macros with `macro_rules!` for General Metaprogramming
+
+The most wi"
+95,13,91,"Another important difference between macros and functions is that you must
+define macros or bring them into scope *before* you call them in a file, as
+opposed to functions you can define anywhere and call anywhere.",2141,2355,,What differs macros and functions?,ch19-06-macros.txt,"plementing a macro instead of a function is that macro
+definitions are more complex than function definitions because you’re writing
+Rust code that writes Rust code. Due to this indirection, macro definitions are
+generally more difficult to read, understand, and maintain than function
+definitions.
+
+Another important difference between macros and functions is that you must
+define macros or bring them into scope *before* you call them in a file, as
+opposed to functions you can define anywhere and call anywhere.
+
+### Declarative Macros with `macro_rules!` for General Metaprogramming
+
+The most widely used form of macros in Rust is the *declarative macro*. These
+are also sometimes referred to as “macros by example,” “`macro_rules!` macros,”
+or just plain “macros.” At their core, declarative macros allow you "
+97,13,92,"The most widely used form of macros in Rust is the *declarative macro*. These
+are also sometimes referred to as “macros by example,” “`macro_rules!` macros,”
+or just plain “macros.” At their core, declarative macros allow you to write
+something similar to a Rust `match` expression. As discussed in Chapter 6,
+`match` expressions are control structures that take an expression, compare the
+resulting value of the expression to patterns, and then run the code associated
+with the matching pattern. Macros also compare a value to patterns that are
+associated with particular code: in this situation, the value is the literal
+Rust source code passed to the macro; the patterns are compared with the
+structure of that source code; and the code associated with each pattern, when
+matched, replaces the code passed to the macro. This all happens during
+compilation.",2429,3288,,What are Declarative Macros?,ch19-06-macros.txt,"finitions.
+
+Another important difference between macros and functions is that you must
+define macros or bring them into scope *before* you call them in a file, as
+opposed to functions you can define anywhere and call anywhere.
+
+### Declarative Macros with `macro_rules!` for General Metaprogramming
+
+The most widely used form of macros in Rust is the *declarative macro*. These
+are also sometimes referred to as “macros by example,” “`macro_rules!` macros,”
+or just plain “macros.” At their core, declarative macros allow you to write
+something similar to a Rust `match` expression. As discussed in Chapter 6,
+`match` expressions are control structures that take an expression, compare the
+resulting value of the expression to patterns, and then run the code associated
+with the matching pattern. Macros also compare a value to patterns that are
+associated with particular code: in this situation, the value is the literal
+Rust source code passed to the macro; the patterns are compared with the
+structure of that source code; and the code associated with each pattern, when
+matched, replaces the code passed to the macro. This all happens during
+compilation.
+
+To define a macro, you use the `macro_rules!` construct. Let’s explore how to
+use `macro_rules!` by looking at how the `vec!` macro is defined. Chapter 8
+covered how we can use the `vec!` macro to create a new vector with particular
+values. For example, the following macro creates a new vector con"
+98,13,93,"To define a macro, you use the `macro_rules!` construct.",3290,3346,,How to define a macro?,ch19-06-macros.txt," particular code: in this situation, the value is the literal
+Rust source code passed to the macro; the patterns are compared with the
+structure of that source code; and the code associated with each pattern, when
+matched, replaces the code passed to the macro. This all happens during
+compilation.
+
+To define a macro, you use the `macro_rules!` construct. Let’s explore how to
+use `macro_rules!` by looking at how the `vec!` macro is defined. Chapter 8
+covered how we can use the `vec!` macro to create a new vector with particular
+values. For example, the following macro creates a new vector containing three
+integers:
+
+```rust
+let v: Vec<u32> = vec![1,"
+99,13,94,"The `#[macro_export]` annotation indicates that this macro should be made
+available whenever the crate in which the macro is defined is brought into
+scope. Without this annotation, the macro can’t be brought into scope.",4443,4662,,What does the macro '#[macro_export]' do?,ch19-06-macros.txt," 19-28: A simplified version of the `vec!` macro
+definition</span>
+
+> Note: The actual definition of the `vec!` macro in the standard library
+> includes code to preallocate the correct amount of memory up front. That code
+> is an optimization that we don’t include here to make the example simpler.
+
+The `#[macro_export]` annotation indicates that this macro should be made
+available whenever the crate in which the macro is defined is brought into
+scope. Without this annotation, the macro can’t be brought into scope.
+
+We then start the macro definition with `macro_rules!` and the name of the
+macro we’re defining *without* the exclamation mark. The name, in this case
+`vec`, is followed by curly brackets denoting the body of the macro definition.
+
+The structure in the `vec!` body is similar to the structure of a "
+100,13,95,"We use a
+dollar sign (`$`) to declare a variable in the macro system that will contain
+the Rust code matching the pattern. The dollar sign makes it clear this is a
+macro variable as opposed to a regular Rust variable.",5747,5964,,What does dollar sign (`$`) mean in macro definition? ,ch19-06-macros.txt,"ed in Chapter 18 because macro patterns are matched against Rust code
+structure rather than values. Let’s walk through what the pattern pieces in
+Listing 19-28 mean; for the full macro pattern syntax, see the [Rust
+Reference][ref].
+
+First, we use a set of parentheses to encompass the whole pattern. We use a
+dollar sign (`$`) to declare a variable in the macro system that will contain
+the Rust code matching the pattern. The dollar sign makes it clear this is a
+macro variable as opposed to a regular Rust variable. Next comes a set of
+parentheses that captures values that match the pattern within the parentheses
+for use in the replacement code. Within `$()` is `$x:expr`, which matches any
+Rust expression and gives the expression the name `$x`.
+
+The comma following `$()` indicates that a literal comma separato"
+101,13,96,"The second form of macros is the *procedural macro*, which acts more like a
+function (and is a type of procedure). Procedural macros accept some code as an
+input, operate on that code, and produce some code as an output rather than
+matching against patterns and replacing the code with other code as declarative
+macros do. The three kinds of procedural macros are custom derive,
+attribute-like, and function-like, and all work in a similar fashion.",7522,7970,,What is procedural macro?,ch19-06-macros.txt,"ector containing the specified elements.
+
+To learn more about how to write macros, consult the online documentation or
+other resources, such as [“The Little Book of Rust Macros”][tlborm] started by
+Daniel Keep and continued by Lukas Wirth.
+
+### Procedural Macros for Generating Code from Attributes
+
+The second form of macros is the *procedural macro*, which acts more like a
+function (and is a type of procedure). Procedural macros accept some code as an
+input, operate on that code, and produce some code as an output rather than
+matching against patterns and replacing the code with other code as declarative
+macros do. The three kinds of procedural macros are custom derive,
+attribute-like, and function-like, and all work in a similar fashion.
+
+When creating procedural macros, the definitions must reside in their own crate
+with a special crate type. This is for complex technical reasons that we hope
+to eliminate in the future. In Listing 19-29, we show how to define a
+procedural macro, where `some_attribute` is a placeholder for using a "
+102,13,97,"The default implementation will print `Hello, Macro! My name is
+TypeName!` where `TypeName` is the name of the type on which this trait has
+been defined.",9738,9891,,What will print the default HelloMacro implementation?,ch19-06-macros.txt,"cro` with one associated function named `hello_macro`. Rather than
+making our users implement the `HelloMacro` trait for each of their types,
+we’ll provide a procedural macro so users can annotate their type with
+`#[derive(HelloMacro)]` to get a default implementation of the `hello_macro`
+function. The default implementation will print `Hello, Macro! My name is
+TypeName!` where `TypeName` is the name of the type on which this trait has
+been defined. In other words, we’ll write a crate that enables another
+programmer to write code like Listing 19-30 using our crate.
+
+<span class=""filename"">Filename: src/main.rs</span>
+
+```rust,ignore,does_not_compile
+{{#rustdoc_include ../listings/ch19-advanced-features/listing-19-30/src/main.rs}}
+```
+
+<span cl"
+103,13,98,"It takes a Rust
+expression, such as `1 + 2`, and at compile time turns the expression into a
+string literal, such as `""1 + 2""`. This is different than `format!` or
+`println!`, macros which evaluate the expression and then turn the result into
+a `String`.",19465,19719,,What does the `stringify!` macro?,ch19-06-macros.txt,"ser annotated, which we can get by using `#name`. The
+trait implementation has the one function `hello_macro`, whose body contains the
+functionality we want to provide: printing `Hello, Macro! My name is` and then
+the name of the annotated type.
+
+The `stringify!` macro used here is built into Rust. It takes a Rust
+expression, such as `1 + 2`, and at compile time turns the expression into a
+string literal, such as `""1 + 2""`. This is different than `format!` or
+`println!`, macros which evaluate the expression and then turn the result into
+a `String`. There is a possibility that the `#name` input might be an
+expression to print literally, so we use `stringify!`. Using `stringify!` also
+saves an allocation by converting `#name` to a string literal at compile time.
+
+At this point, `cargo build` should complete successfully in both `hello_macro`
+an"
+104,13,99,"Attribute-like macros are similar to custom derive macros, but instead of
+generating code for the `derive` attribute, they allow you to create new
+attributes. They’re also more flexible: `derive` only works for structs and
+enums; attributes can be applied to other items as well, such as functions.",21101,21399,,What differs attribute-like macros from custom derive macros?,ch19-06-macros.txt,"the
+`HelloMacro` trait from the procedural macro was included without the
+`pancakes` crate needing to implement it; the `#[derive(HelloMacro)]` added the
+trait implementation.
+
+Next, let’s explore how the other kinds of procedural macros differ from custom
+derive macros.
+
+### Attribute-like macros
+
+Attribute-like macros are similar to custom derive macros, but instead of
+generating code for the `derive` attribute, they allow you to create new
+attributes. They’re also more flexible: `derive` only works for structs and
+enums; attributes can be applied to other items as well, such as functions.
+Here’s an example of using an attribute-like macro: say you have an attribute
+named `route` that annotates functions when using a web application framework:
+
+```rust,ignore
+#[route(GET, ""/"")]
+fn index() {
+```
+
+This `#[route]` attribute would be defined by the framework as a procedural
+macro. The si"
+106,13,100,"Function-like macros define macros that look like function calls. Similarly to
+`macro_rules!` macros, they’re more flexible than functions; for example, they
+can take an unknown number of arguments. However, `macro_rules!` macros can be
+defined only using the match-like syntax we discussed in the section
+[“Declarative Macros with `macro_rules!` for General
+Metaprogramming”][decl]‹!-- ignore --> earlier. Function-like macros take a
+`TokenStream` parameter and their definition manipulates that `TokenStream`
+using Rust code as the other two types of procedural macros do.",22349,22923,,How function-like macros work?,ch19-06-macros.txt,"ttached to: in this case, `fn index() {}` and the rest
+of the function’s body.
+
+Other than that, attribute-like macros work the same way as custom derive
+macros: you create a crate with the `proc-macro` crate type and implement a
+function that generates the code you want!
+
+### Function-like macros
+
+Function-like macros define macros that look like function calls. Similarly to
+`macro_rules!` macros, they’re more flexible than functions; for example, they
+can take an unknown number of arguments. However, `macro_rules!` macros can be
+defined only using the match-like syntax we discussed in the section
+[“Declarative Macros with `macro_rules!` for General
+Metaprogramming”][decl]<!-- ignore --> earlier. Function-like macros take a
+`TokenStream` parameter and their definition manipulates that `TokenStream`
+using Rust code as the other two types of procedural macros do. An example of a
+function-like macro is an `sql!` macro that might be called like so:
+
+```rust,ignore
+let sql = sql!(SELECT * FROM posts WHERE id=1);
+```
+
+This macro would parse the SQL statement inside it and check that it’s
+syntactically correct, which is much more complex processing than a
+`macro"
+107,15,101,"The two main protocols involved in web servers are *Hypertext Transfer
+Protocol* *(HTTP)* and *Transmission Control Protocol* *(TCP)*. Both protocols
+are *request-response* protocols, meaning a *client* initiates requests and a
+*server* listens to the requests and provides a response to the client. The
+contents of those requests and responses are defined by the protocols.",330,704,,What are the two main protocols involved in web servers?,ch20-01-single-threaded.txt,"Web Server
+
+We’ll start by getting a single-threaded web server working. Before we begin,
+let’s look at a quick overview of the protocols involved in building web
+servers. The details of these protocols are beyond the scope of this book, but
+a brief overview will give you the information you need.
+
+The two main protocols involved in web servers are *Hypertext Transfer
+Protocol* *(HTTP)* and *Transmission Control Protocol* *(TCP)*. Both protocols
+are *request-response* protocols, meaning a *client* initiates requests and a
+*server* listens to the requests and provides a response to the client. The
+contents of those requests and responses are defined by the protocols.
+
+TCP is the lower-level protocol that describes the details of how information
+gets from one server to another but doesn’t specify what that information is.
+HTTP builds on top of TCP by defining the contents of the requests and
+responses. It’s technically possible to use HTTP with other protocols, "
+108,15,102,"TCP is the lower-level protocol that describes the details of how information
+gets from one server to another but doesn’t specify what that information is.",706,861,,What is TCP protocol?,ch20-01-single-threaded.txt,"col* *(HTTP)* and *Transmission Control Protocol* *(TCP)*. Both protocols
+are *request-response* protocols, meaning a *client* initiates requests and a
+*server* listens to the requests and provides a response to the client. The
+contents of those requests and responses are defined by the protocols.
+
+TCP is the lower-level protocol that describes the details of how information
+gets from one server to another but doesn’t specify what that information is.
+HTTP builds on top of TCP by defining the contents of the requests and
+responses. It’s technically possible to use HTTP with other protocols, but in
+the vast majority of cases, HTTP sends its data over TCP. We’ll work with the
+raw bytes of TCP and HTTP requests and responses.
+
+### Listening to the "
+109,15,103,"HTTP builds on top of TCP by defining the contents of the requests and
+responses. It’s technically possible to use HTTP with other protocols, but in
+the vast majority of cases, HTTP sends its data over TCP. ",862,1069,,What is HTTP protocol?,ch20-01-single-threaded.txt,"ver* listens to the requests and provides a response to the client. The
+contents of those requests and responses are defined by the protocols.
+
+TCP is the lower-level protocol that describes the details of how information
+gets from one server to another but doesn’t specify what that information is.
+HTTP builds on top of TCP by defining the contents of the requests and
+responses. It’s technically possible to use HTTP with other protocols, but in
+the vast majority of cases, HTTP sends its data over TCP. We’ll work with the
+raw bytes of TCP and HTTP requests and responses.
+
+### Listening to the TCP Connection
+
+Our web server needs to listen to a TCP connection, so that’s the first part
+we’ll work on. The standard library offers a `std::net` module that lets us do
+this. Let’s make a new project in th"
+110,15,104,"The `bind` function in this scenario works like the `new` function in that it
+will return a new `TcpListener` instance. The function is called `bind`
+because, in networking, connecting to a port to listen to is known as “binding
+to a port.”
+
+The `bind` function returns a `Result‹T, E>`, which indicates that it’s
+possible for binding to fail.",2500,2843,,How does function 'bind' works?,ch20-01-single-threaded.txt,"
+represent the authors’ computer specifically), and `7878` is the port. We’ve
+chosen this port for two reasons: HTTP isn’t normally accepted on this port so
+our server is unlikely to conflict with any other web server you might have
+running on your machine, and 7878 is *rust* typed on a telephone.
+
+The `bind` function in this scenario works like the `new` function in that it
+will return a new `TcpListener` instance. The function is called `bind`
+because, in networking, connecting to a port to listen to is known as “binding
+to a port.”
+
+The `bind` function returns a `Result<T, E>`, which indicates that it’s
+possible for binding to fail. For example, connecting to port 80 requires
+administrator privileges (nonadministrators can listen only on ports higher
+than 1023), so if we tried to connect to port 80 without being an
+administrator, binding wouldn’t work. Binding also wouldn’t work, for example,
+if we ran two instances of our pro"
+111,15,105,Invoke `cargo run` in the terminal,4867,4901,,How to start Rust application from terminal?,ch20-01-single-threaded.txt,"ns, many of them
+operating system specific. For example, many operating systems have a limit to
+the number of simultaneous open connections they can support; new connection
+attempts beyond that number will produce an error until some of the open
+connections are closed.
+
+Let’s try running this code! Invoke `cargo run` in the terminal and then load
+*127.0.0.1:7878* in a web browser. The browser should show an error message
+like “Connection reset,” because the server isn’t currently sending back any
+data. But when you look at your terminal, you should see several messages that
+were printed when the browser connected to the server"
+112,15,106,"stop the program by pressing ‹span class=""keystroke"">ctrl-c‹/span>",6038,6104,,How to stop running Rust application from terminal?,ch20-01-single-threaded.txt,"nd is dropped at the end of the loop, the connection is closed as
+part of the `drop` implementation. Browsers sometimes deal with closed
+connections by retrying, because the problem might be temporary. The important
+factor is that we’ve successfully gotten a handle to a TCP connection!
+
+Remember to stop the program by pressing <span class=""keystroke"">ctrl-c</span>
+when you’re done running a particular version of the code. Then restart the
+program by invoking the `cargo run` command after you’ve made each set of code
+changes to make sure you’re running the newest code.
+
+### Reading the Request
+
+Let’s implement the functionality to read the request from the br"
+113,15,107,"HTTP is a text-based protocol, and a request takes this format:
+
+```text
+Method Request-URI HTTP-Version CRLF
+headers CRLF
+message-body
+```",10175,10314,,What format must have an http request?,ch20-01-single-threaded.txt,"equest. If the repeated connections are all requesting */*, we know the
+browser is trying to fetch */* repeatedly because it’s not getting a response
+from our program.
+
+Let’s break down this request data to understand what the browser is asking of
+our program.
+
+### A Closer Look at an HTTP Request
+
+HTTP is a text-based protocol, and a request takes this format:
+
+```text
+Method Request-URI HTTP-Version CRLF
+headers CRLF
+message-body
+```
+
+The first line is the *request line* that holds information about what the
+client is requesting. The first part of the request line indicates the *method*
+being used, such as `GET` or `POST`, which describes how the client is making
+this request. Our client used a `GET` request, which means it is "
+114,15,108,"The first line is the *request line* that holds information about what the
+client is requesting. The first part of the request line indicates the *method*
+being used, such as `GET` or `POST`, which describes how the client is making
+this request. Our client used a `GET` request, which means it is asking for
+information.
+
+The next part of the request line is */*, which indicates the *Uniform Resource
+Identifier* *(URI)* the client is requesting: a URI is almost, but not quite,
+the same as a *Uniform Resource Locator* *(URL)*. The difference between URIs
+and URLs isn’t important for our purposes in this chapter, but the HTTP spec
+uses the term URI, so we can just mentally substitute URL for URI here.
+
+The last part is the HTTP version the client uses, and then the request line
+ends in a *CRLF sequence*. (CRLF stands for *carriage return* and *line feed*,
+which are terms from the typewriter days!) The CRLF sequence can also be
+written as `\r\n`, where `\r` is a carriage return and `\n` is a line feed. The
+CRLF sequence separates the request line from the rest of the request data.
+Note that when the CRLF is printed, we see a new line start rather than `\r\n`.",10316,11489,,How to interprete each line of http request?,ch20-01-single-threaded.txt,"response
+from our program.
+
+Let’s break down this request data to understand what the browser is asking of
+our program.
+
+### A Closer Look at an HTTP Request
+
+HTTP is a text-based protocol, and a request takes this format:
+
+```text
+Method Request-URI HTTP-Version CRLF
+headers CRLF
+message-body
+```
+
+The first line is the *request line* that holds information about what the
+client is requesting. The first part of the request line indicates the *method*
+being used, such as `GET` or `POST`, which describes how the client is making
+this request. Our client used a `GET` request, which means it is asking for
+information.
+
+The next part of the request line is */*, which indicates the *Uniform Resource
+Identifier* *(URI)* the client is requesting: a URI is almost, but not quite,
+the same as a *Uniform Resource Locator* *(URL)*. The difference between URIs
+and URLs isn’t important for our purposes in this chapter, but the HTTP spec
+uses the term URI, so we can just mentally substitute URL for URI here.
+
+The last part is the HTTP version the client uses, and then the request line
+ends in a *CRLF sequence*. (CRLF stands for *carriage return* and *line feed*,
+which are terms from the typewriter days!) The CRLF sequence can also be
+written as `\r\n`, where `\r` is a carriage return and `\n` is a line feed. The
+CRLF sequence separates the request line from the rest of the request data.
+Note that when the CRLF is printed, we see a new line start rather than `\r\n`.
+
+Looking at the request line data we received from running our program so far,
+we see that `GET` is the method, */* is the request URI, and `HTTP/1.1` is the
+version.
+
+After the request line, the remaining lines starting from `Host:` onward are
+headers. `GET` requests have no body.
+
+Try making a re"
+115,15,109,"Responses have the following format:
+
+```text
+HTTP-Version Status-Code Reason-Phrase CRLF
+headers CRLF
+message-body
+```",12096,12215,,What format must have http responses?,ch20-01-single-threaded.txt,"rom a different browser or asking for a different
+address, such as *127.0.0.1:7878/test*, to see how the request data changes.
+
+Now that we know what the browser is asking for, let’s send back some data!
+
+### Writing a Response
+
+We’re going to implement sending data in response to a client request.
+Responses have the following format:
+
+```text
+HTTP-Version Status-Code Reason-Phrase CRLF
+headers CRLF
+message-body
+```
+
+The first line is a *status line* that contains the HTTP version used in the
+response, a numeric status code that summarizes the result of the request, and
+a reason phrase that provides a text description of the status code. After the
+CRLF sequence are any headers, another CRLF sequence, and the b"
+116,15,110,The status code 200 is the standard success response. ,12703,12757,,What does status code 200 means?,ch20-01-single-threaded.txt,"a text description of the status code. After the
+CRLF sequence are any headers, another CRLF sequence, and the body of the
+response.
+
+Here is an example response that uses HTTP version 1.1, has a status code of
+200, an OK reason phrase, no headers, and no body:
+
+```text
+HTTP/1.1 200 OK\r\n\r\n
+```
+
+The status code 200 is the standard success response. The text is a tiny
+successful HTTP response. Let’s write this to the stream as our response to a
+successful request! From the `handle_connection` function, remove the
+`println!` that was printing the request data and replace it with the code in
+Listing 20-3.
+
+<span class=""filename"">Filename: src/mai"
+117,15,111,"a response
+with the status code 404, which signals that the content for the request was
+not found.",18069,18167,,What does status code 404 means?,ch20-01-single-threaded.txt,".0.1:7878*; you should get the HTML in
+*hello.html*. If you make any other request, such as
+*127.0.0.1:7878/something-else*, you’ll get a connection error like those you
+saw when running the code in Listing 20-1 and Listing 20-2.
+
+Now let’s add the code in Listing 20-7 to the `else` block to return a response
+with the status code 404, which signals that the content for the request was
+not found. We’ll also return some HTML for a page to render in the browser
+indicating the response to the end user.
+
+<span class=""filename"">Filename: src/main.rs</span>
+
+```rust,no_run
+{{#rustdoc_include ../listings/ch20-web-server/listing-20-07/src/main.rs:here}}
+```
+
+<span class=""caption"">Listing 20-7: Resp"
+118,16,112,"A *thread pool* is a group of spawned threads that are waiting and ready to
+handle a task. When the program receives a new task, it assigns one of the
+threads in the pool to the task, and that thread will process the task. The
+remaining threads in the pool are available to handle any other tasks that come
+in while the first thread is processing. When the first thread is done
+processing its task, it’s returned to the pool of idle threads, ready to handle
+a new task. A thread pool allows you to process connections concurrently,
+increasing the throughput of your server.",2394,2967,,What is a thread pool?,ch20-02-multithreaded.txt,"/sleep* and then load */*, you’ll see that */* waits until
+`sleep` has slept for its full 5 seconds before loading.
+
+There are multiple techniques we could use to avoid requests backing up behind
+a slow request; the one we’ll implement is a thread pool.
+
+### Improving Throughput with a Thread Pool
+
+A *thread pool* is a group of spawned threads that are waiting and ready to
+handle a task. When the program receives a new task, it assigns one of the
+threads in the pool to the task, and that thread will process the task. The
+remaining threads in the pool are available to handle any other tasks that come
+in while the first thread is processing. When the first thread is done
+processing its task, it’s returned to the pool of idle threads, ready to handle
+a new task. A thread pool allows you to process connections concurrently,
+increasing the throughput of your server.
+
+We’ll limit the number of threads in the pool to a small number to protect us
+from Denial of Service (DoS) attacks; if we had our program create a new thread
+for each request as it came in, someone making 10 million requests to our
+server could create havoc by using up all our server’s resources a"
+119,16,113,"Write the API of the code so it’s
+structured in the way you want to call it; then implement the functionality
+within that structure rather than implementing the functionality and then
+designing the public API.",4574,4783,,How to implement API?,ch20-02-multithreaded.txt,"ns and
+try to implement them; with a low-level language like Rust, all of these
+options are possible.
+
+Before we begin implementing a thread pool, let’s talk about what using the
+pool should look like. When you’re trying to design code, writing the client
+interface first can help guide your design. Write the API of the code so it’s
+structured in the way you want to call it; then implement the functionality
+within that structure rather than implementing the functionality and then
+designing the public API.
+
+Similar to how we used test-driven development in the project in Chapter 12,
+we’ll use compiler-driven development here. We’ll write the code that calls the
+functions we want, and then we’ll look at errors from the compiler to determine
+what we should change next to get the code to work. Before we"
+120,16,114,"We use `ThreadPool::new` to create a new thread pool with a configurable number
+of threads, in this case four.",7224,7334,,How to create a new thread pool?,ch20-02-multithreaded.txt,"
+struct we want to use instead of `thread::spawn`.
+
+<span class=""filename"">Filename: src/main.rs</span>
+
+```rust,ignore,does_not_compile
+{{#rustdoc_include ../listings/ch20-web-server/listing-20-12/src/main.rs:here}}
+```
+
+<span class=""caption"">Listing 20-12: Our ideal `ThreadPool` interface</span>
+
+We use `ThreadPool::new` to create a new thread pool with a configurable number
+of threads, in this case four. Then, in the `for` loop, `pool.execute` has a
+similar interface as `thread::spawn` in that it takes a closure the pool should
+run for each stream. We need to implement `pool.execute` so it takes the
+closure and gives it to a thread in the pool to run. This code won’t yet
+compile, but we’ll try so t"
+121,18,115,"Programmers who are already working with low-level code can use Rust to raise
+their ambitions. For example, introducing parallelism in Rust is a relatively
+low-risk operation: the compiler will catch the classical mistakes for you. And
+you can tackle more aggressive optimizations in your code with the confidence
+that you won’t accidentally introduce crashes or vulnerabilities.",1183,1562,,For whom might be Rust?,foreword.txt,"control can do so with Rust, without taking on
+the customary risk of crashes or security holes, and without having to learn
+the fine points of a fickle toolchain. Better yet, the language is designed to
+guide you naturally towards reliable code that is efficient in terms of speed
+and memory usage.
+
+Programmers who are already working with low-level code can use Rust to raise
+their ambitions. For example, introducing parallelism in Rust is a relatively
+low-risk operation: the compiler will catch the classical mistakes for you. And
+you can tackle more aggressive optimizations in your code with the confidence
+that you won’t accidentally introduce crashes or vulnerabilities.
+
+But Rust isn’t limited to low-level systems programming. It’s expressive and
+ergonomic enough to make CLI apps, web servers, and many other kinds of code
+quite pleasant to write — you’ll find simple examples of both later in the
+book. Working with Rust allows you to build skills that transfer from"
+122,18,116,"But Rust isn’t limited to low-level systems programming. It’s expressive and
+ergonomic enough to make CLI apps, web servers, and many other kinds of code
+quite pleasant to write",1564,1741,,Is Rust limited to low-level systems programming?,foreword.txt,"ir ambitions. For example, introducing parallelism in Rust is a relatively
+low-risk operation: the compiler will catch the classical mistakes for you. And
+you can tackle more aggressive optimizations in your code with the confidence
+that you won’t accidentally introduce crashes or vulnerabilities.
+
+But Rust isn’t limited to low-level systems programming. It’s expressive and
+ergonomic enough to make CLI apps, web servers, and many other kinds of code
+quite pleasant to write — you’ll find simple examples of both later in the
+book. Working with Rust allows you to build skills that transfer from one
+domain to another; you can learn Rust by writing a web app, then apply those
+same skills to target your Raspberry Pi.
+
+This book fully embraces the potential of Rust to empow"
+123,18,117,"Working with Rust allows you to build skills that transfer from one
+domain to another; you can learn Rust by writing a web app, then apply those
+same skills to target your Raspberry Pi.",1799,1984,,Where else I could use Rust?,foreword.txt,"at you won’t accidentally introduce crashes or vulnerabilities.
+
+But Rust isn’t limited to low-level systems programming. It’s expressive and
+ergonomic enough to make CLI apps, web servers, and many other kinds of code
+quite pleasant to write — you’ll find simple examples of both later in the
+book. Working with Rust allows you to build skills that transfer from one
+domain to another; you can learn Rust by writing a web app, then apply those
+same skills to target your Raspberry Pi.
+
+This book fully embraces the potential of Rust to empower its users. It’s a
+friendly and approachable text intended to help you level up not just your
+knowledge of Rust, but also your reach and confidence as a programmer in
+general. So dive in, get ready to learn—and welcome to the Rust community!"
+124,1,118,"Subclasses shouldn’t always share all characteristics of their
+parent class but will do so with inheritance. This can make a program’s design
+less flexible. It also introduces the possibility of calling methods on
+subclasses that don’t make sense or that cause errors because the methods don’t
+apply to the subclass. In addition, some languages will only allow single
+inheritance (meaning a subclass can only inherit from one class), further
+restricting the flexibility of a program’s design.",7568,8060,,Why subclasses shouldn’t always share all characteristics of their parent class?,ch17-01-what-is-oo.txt,"t bounds to impose constraints on what those types must provide. This is
+> sometimes called *bounded parametric polymorphism*.
+
+Inheritance has recently fallen out of favor as a programming design solution
+in many programming languages because it’s often at risk of sharing more code
+than necessary. Subclasses shouldn’t always share all characteristics of their
+parent class but will do so with inheritance. This can make a program’s design
+less flexible. It also introduces the possibility of calling methods on
+subclasses that don’t make sense or that cause errors because the methods don’t
+apply to the subclass. In addition, some languages will only allow single
+inheritance (meaning a subclass can only inherit from one class), further
+restricting the flexibility of a program’s design.
+
+For these reasons, Rust takes the different approach of using trait objects
+instead of inheritance. Let’s look at how trait objects enable polymorphism in
+Rust.
+"
