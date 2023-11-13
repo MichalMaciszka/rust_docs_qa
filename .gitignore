@@ -1,2 +1,3 @@
 venv
 annotation/postgres-data
+model_checkpoints
