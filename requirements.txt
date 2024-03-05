@@ -1,4 +1,6 @@
 accelerate==0.21.0
+aiohttp==3.9.1
+aiosignal==1.3.1
 alembic==1.11.3
 appdirs==1.4.4
 attrs==23.1.0
@@ -7,6 +9,7 @@ azure-common==1.1.28
 azure-core==1.29.3
 backoff==2.2.1
 beautifulsoup4==4.12.2
+beir==2.0.0
 blinker==1.6.2
 boilerpy3==1.0.6
 canals==0.3.2
@@ -19,22 +22,26 @@ cmake==3.27.2
 contourpy==1.1.0
 cycler==0.11.0
 databricks-cli==0.17.7
+datasets==2.16.0
+dill==0.3.7
 docker==6.1.3
 docopt==0.6.2
-elastic-transport==7.16.0
+elastic-transport==8.12.0
 elasticsearch==7.17.9
 entrypoints==0.4
 Events==0.5
+faiss-cpu==1.7.4
 farm-haystack==1.19.0
 filelock==3.12.2
 Flask==2.3.2
 fonttools==4.42.1
+frozenlist==1.4.1
 fsspec==2023.6.0
 gitdb==4.0.10
 GitPython==3.1.32
 greenlet==2.0.2
 gunicorn==21.2.0
-huggingface-hub==0.16.4
+huggingface-hub==0.20.1
 idna==3.4
 importlib-metadata==6.8.0
 inflect==7.0.0
@@ -58,6 +65,8 @@ monotonic==1.6
 more-itertools==10.1.0
 mpmath==1.3.0
 msrest==0.7.1
+multidict==6.0.4
+multiprocess==0.70.15
 networkx==3.1
 nltk==3.8.1
 num2words==0.5.12
@@ -84,6 +93,7 @@ protobuf==4.24.0
 psutil==5.9.5
 psycopg2-binary==2.9.7
 pyarrow==12.0.1
+pyarrow-hotfix==0.6
 pydantic==1.10.12
 PyJWT==2.8.0
 pyparsing==3.0.9
@@ -91,6 +101,7 @@ python-dateutil==2.8.2
 python-docx==0.8.11
 python-frontmatter==1.0.0
 python-magic==0.4.27
+pytrec-eval==0.5
 pytz==2023.3
 PyYAML==6.0.1
 quantulum3==0.9.0
@@ -134,4 +145,6 @@ url-normalize==1.4.3
 urllib3==1.26.16
 websocket-client==1.6.1
 Werkzeug==2.3.7
+xxhash==3.4.1
+yarl==1.9.4
 zipp==3.16.2
