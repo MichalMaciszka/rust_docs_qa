@@ -9,7 +9,7 @@ from haystack.document_stores import InMemoryDocumentStore
 from haystack.nodes import MarkdownConverter, TextConverter
 from haystack.pipelines import Pipeline, ExtractiveQAPipeline
 from pathlib import Path
-from haystack.nodes import FARMReader, TransformersReader, EmbeddingRetriever, BM25Retriever
+from haystack.nodes import FARMReader, TransformersReader, EmbeddingRetriever, BM25Retriever, DensePassageRetriever
 from haystack.nodes.file_classifier import FileTypeClassifier
 from haystack.nodes.preprocessor import PreProcessor
 from haystack.utils import print_answers
@@ -35,7 +35,13 @@ II. query pipeline:
 def basic_qa():
     paths = [p for p in Path("rust_txt").glob("**/*")]
 
-    document_store = InMemoryDocumentStore(use_bm25=True, use_gpu=True)
+    # document_store = InMemoryDocumentStore(use_bm25=True, use_gpu=True, similarity='dot_product')
+    document_store = InMemoryDocumentStore(use_bm25=False,
+        use_gpu=True,
+        similarity='dot_product',
+        return_embedding=True,
+        embedding_dim=768
+    )
     indexing_pipeline = Pipeline()
 
     classifier = FileTypeClassifier(supported_types=["txt"])
@@ -47,7 +53,7 @@ def basic_qa():
     preprocessor = PreProcessor(
         clean_whitespace=False,
         clean_empty_lines=False,
-        split_length=30,
+        split_length=768,
         split_overlap=0,
         split_respect_sentence_boundary=False,
     )
@@ -57,8 +63,17 @@ def basic_qa():
 
     indexing_pipeline.run(file_paths=paths)
 
-    retriever = BM25Retriever(document_store=document_store)
-    reader = FARMReader(model_name_or_path="./model_checkpoints/epoch_19_step_0", use_gpu=True)
+    # retriever = BM25Retriever(document_store=document_store)
+    # retriever = DensePassageRetriever.load(load_dir="./dpr_models", document_store=document_store)
+    retriever = EmbeddingRetriever(
+        document_store=document_store,
+        # embedding_model="sentence-transformers/multi-qa-mpnet-base-cos-v1"
+        # embedding_model="sentence-transformers/multi-qa-mpnet-base-dot-v1"
+        embedding_model="./embedding_model"
+    )
+    # retriever = DensePassageRetriever(document_store=document_store, query_embedding_model="facebook/dpr-question_encoder-single-nq-base", passage_embedding_model="facebook/dpr-ctx_encoder-single-nq-base")
+    # reader = FARMReader(model_name_or_path="./model_checkpoints/epoch_10_step_0", use_gpu=True)
+    reader = FARMReader(model_name_or_path="reader_models", use_gpu=True)
     # retriever = EmbeddingRetriever(document_store=document_store, embedding_model="sentence-transformers/all-mpnet-base-v2", use_gpu=True)
     # reader = FARMReader(model_name_or_path="deepset/roberta-base-squad2", use_gpu=True)
     # reader = TransformersReader(model_name_or_path="impira/layoutlm-document-qa", use_gpu=False)
@@ -67,7 +82,7 @@ def basic_qa():
 
     # document_store.delete_documents()
     # document_store.write_documents(doc['documents'])
-    # document_store.update_embeddings(retriever)
+    document_store.update_embeddings(retriever)
 
     document_store.add_eval_data(
         filename="annotation/test_dataset.json",
@@ -75,10 +90,11 @@ def basic_qa():
     )
 
     # Query Pipeline
+    # document_store.update_embeddings(retriever)
     pipeline = Pipeline()
     pipeline.add_node(component=retriever, name="Retriever", inputs=["Query"])
     pipeline.add_node(component=reader, name="Reader", inputs=["Retriever"])
-    #pipeline.add_node(component=prompt_node, name="Prompt node", inputs=["Reader"])
+    # pipeline.add_node(component=prompt_node, name="Prompt node", inputs=["Reader"])
 
 
     eval_labels = document_store.get_all_labels_aggregated(drop_negative_labels=True, drop_no_answers=True)
@@ -120,13 +136,13 @@ def basic_qa():
     eval_pipe.add_node(preprocessor, name="Preprocessor", inputs=["Converter"])
     eval_pipe.add_node(eval_store, name="DS", inputs=["Preprocessor"])
     
-    retriever.document_store = eval_store
-    print(20 * '-' + "\n beir:")
-    ndcg, _map, recall, precision = Pipeline.eval_beir(
-        index_pipeline=eval_pipe, query_pipeline=pipeline, dataset="scifact"
-    )
-    print(ndcg, _map, recall, precision)
-    print(20 * '-')
+    # retriever.document_store = eval_store
+    # print(20 * '-' + "\n beir:")
+    # ndcg, _map, recall, precision = Pipeline.eval_beir(
+    #     index_pipeline=eval_pipe, query_pipeline=pipeline, dataset="scifact"
+    # )
+    # print(ndcg, _map, recall, precision)
+    # print(20 * '-')
 
     retriever.document_store = document_store
 

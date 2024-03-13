@@ -4,3 +4,6 @@ model_checkpoints
 prezentacje
 article
 models
+embedding_model
+model_checkpoints_reader
+reader_models

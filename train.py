@@ -21,9 +21,9 @@ if __name__ == "__main__":
                  dev_filename="validation_dataset.json",
                  test_filename="test_dataset.json",
                  use_gpu=True,
-                 n_epochs=20,
+                 n_epochs=100,
                  checkpoint_every=100000,
-                 checkpoints_to_keep=20,
-                 save_dir="models",
+                 checkpoints_to_keep=100,
+                 save_dir="reader_models",
                  evaluate_every=2223,
                  batch_size=10)
